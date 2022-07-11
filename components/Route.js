@@ -12,29 +12,53 @@ import AdviceScreen from '../pages/AdviceScreen';
 import Settings from '../pages/Settings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {Text, StyleSheet} from 'react-native';
 import AuthCont from '../constants/AuthContext';
 
 const Route = () => {
-  const {userContext} = useContext(AuthCont);
+  const {userContext, setUserContext} = useContext(AuthCont);
   const Tab = createBottomTabNavigator();
   const Stack = createStackNavigator();
   const Drawer = createDrawerNavigator();
 
+  const drawerIcon = navigation => (
+    <EvilIcons
+      style={{paddingLeft: 12}}
+      name={'navicon'}
+      size={27}
+      color={'blue'}
+      onPress={() => navigation.openDrawer()}
+    />
+  );
+
+  const logOutIcon = () => (
+    <Entypo
+      style={{paddingRight: 12}}
+      name={'log-out'}
+      size={27}
+      color={'blue'}
+      onPress={() => {
+        setUserContext(null);
+      }}
+    />
+  );
+
   const AdviceStack = () => (
     <Stack.Navigator>
       <Stack.Screen
-        name="Expert Advice"
+        name="Advice from Expert"
         component={ExpertAdvice}
-        options={{
+        options={({navigation}) => ({
           headerStyle: {
             backgroundColor: '#DFF6FF',
           },
           headerTitleAlign: 'center',
           headerShadowVisible: false,
           headerTintColor: 'blue',
-          headerTitle: 'Advice from Expert',
-        }}
+          headerLeft: () => drawerIcon(navigation),
+          headerRight: () => logOutIcon(),
+        })}
       />
       <Stack.Screen
         name="Advice"
@@ -81,14 +105,16 @@ const Route = () => {
   const TabNav = () => (
     <Tab.Navigator
       initialRouteName={'Covid-19 Guide'}
-      screenOptions={({route}) => ({
+      screenOptions={({route, navigation}) => ({
         headerShadowVisible: false,
+        headerLeft: () => drawerIcon(navigation),
+        headerRight: () => logOutIcon(),
         tabBarIcon: ({_focused, color, size}) => {
           let iconName;
           let rn = route.name;
           if (rn === 'Music') {
             iconName = 'music-note';
-          } else if (rn === 'Home') {
+          } else if (rn === 'Covid-19 Guide') {
             iconName = 'home-outline';
           } else if (rn === 'Profile') {
             iconName = 'account';
@@ -105,7 +131,7 @@ const Route = () => {
 
           if (rn === 'Music') {
             return focused ? <Text style={styles.text}>Music</Text> : null;
-          } else if (rn === 'Home') {
+          } else if (rn === 'Covid-19 Guide') {
             return focused ? <Text style={styles.text}>Home</Text> : null;
           } else if (rn === 'Profile') {
             return focused ? <Text style={styles.text}>Profile</Text> : null;
@@ -122,16 +148,8 @@ const Route = () => {
         headerTitleAlign: 'center',
         tabBarHideOnKeyboard: true,
       })}>
-      <Tab.Screen
-        options={{
-          headerLeft: () => (
-            <EvilIcons style={{paddingLeft: 12}} name={'navicon'} size={27} color={'blue'} />
-          ),
-        }}
-        name={'Music'}
-        component={MusicPlaylist}
-      />
-      <Tab.Screen name={'Home'} component={Home} />
+      <Tab.Screen name={'Music'} component={MusicPlaylist} />
+      <Tab.Screen name={'Covid-19 Guide'} component={Home} />
       <Tab.Screen name={'Profile'} component={Profile} />
       <Tab.Screen
         name={'Expert Advices'}
@@ -152,10 +170,47 @@ const Route = () => {
         headerTitleAlign: 'center',
         tabBarHideOnKeyboard: true,
         headerShadowVisible: false,
+        drawerLabelStyle: {
+          marginLeft: -25,
+          fontSize: 15,
+        },
       }}>
-      <Drawer.Screen name="HOME" component={TabNav} />
-      <Drawer.Screen name="PROFILE" component={Profile} />
-      <Drawer.Screen name="SETTINGS" component={Settings} />
+      <Drawer.Screen
+        name="HOME"
+        component={TabNav}
+        options={{
+          headerShown: false,
+          drawerIcon: ({color}) => (
+            <MaterialCommunityIcons
+              name="home-outline"
+              size={22}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="PROFILE"
+        component={Profile}
+        options={{
+          drawerIcon: ({color}) => (
+            <MaterialCommunityIcons name="account" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="SETTINGS"
+        component={Settings}
+        options={{
+          drawerIcon: ({color}) => (
+            <MaterialCommunityIcons
+              name="cog-outline"
+              size={22}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
 
