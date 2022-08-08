@@ -63,7 +63,7 @@ export default function Home({navigation}) {
                 advice,
                 advice_date,
                 like_id,
-                advice_id,
+                id,
                 advice_contact,
                 advice_email,
               },
@@ -83,7 +83,7 @@ export default function Home({navigation}) {
                 <Task
                   getAdvice={getAdvice}
                   text={advice}
-                  adviceID={advice_id}
+                  adviceID={id}
                   likeID={like_id}
                   title={advice_title}
                   date={moment(advice_date).format('DD/MM/YYYY')}

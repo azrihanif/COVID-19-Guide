@@ -116,7 +116,7 @@ app.post(
       const query = await db
         .promise()
         .query(
-          `SELECT b.advice_id, b.like_id, a.advice_title, a.advice, a.advice_picture, a.advice_contact, a.advice_date, a.advice_email FROM advice_list a INNER JOIN expert_advice b ON b.advice_id = a.id WHERE b.user_id = ${id}`,
+          `SELECT b.like_id, a.id, a.advice_title, a.advice_picture, a.advice, a.advice_contact, a.advice_date, a.advice_email FROM advice_list a LEFT JOIN expert_advice b ON b.advice_id = a.id`,
         );
 
       if (query[0]) {
@@ -136,13 +136,13 @@ app.post('/updateLike', async (req, result) => {
     return result.status(400).json(errors);
   }
 
-  const {advice_id, like} = req.body;
-
+  const {advice_id, like, user_id} = req.body;
+  
   if (advice_id) {
     const query = await db
       .promise()
       .query(
-        `UPDATE expert_advice SET like_id= '${like}' WHERE advice_id = '${advice_id}'`,
+        `UPDATE expert_advice SET like_id= '${like}' WHERE user_id = '${user_id}' AND advice_id='${advice_id}'`,
       );
     if (query) {
       result.status(400).send({msg: 'Successfully update', error: null});

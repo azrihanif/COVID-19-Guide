@@ -1,13 +1,15 @@
 import React, {useContext, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, Button} from 'react-native';
+import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
 import {sha256} from 'react-native-sha256';
 import {AuthCont} from '../constants/AuthContext';
 import LinearGradient from 'react-native-linear-gradient';
 import {connector} from '../constants/Connector';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Login = ({navigation}) => {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const {setUserContext} = useContext(AuthCont);
 
   const hashPassword = pass => {
@@ -50,7 +52,7 @@ const Login = ({navigation}) => {
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.text}>USER LOGIN</Text>
+        <Text style={styles.text}>Login</Text>
         <TextInput
           style={styles.input}
           placeholder={'Username'}
@@ -60,18 +62,40 @@ const Login = ({navigation}) => {
           style={styles.input}
           placeholder={'Password'}
           value={password}
-          secureTextEntry={true}
+          secureTextEntry={isPasswordSecure}
           onChangeText={pass => setPassword(pass)}></TextInput>
-        <Button
+        <MaterialCommunityIcons
+          name={isPasswordSecure ? 'eye-off' : 'eye'}
+          size={28}
+          color={'black'}
+          style={{
+            position: 'absolute',
+            right: 25,
+            top: 140
+          }}
+          onPress={() => {
+            isPasswordSecure
+              ? setIsPasswordSecure(false)
+              : setIsPasswordSecure(true);
+          }}
+        />
+        <Pressable
           style={styles.button}
-          title="LOGIN"
           onPress={() => {
             if (password && username) {
               hashPassword(password);
             } else {
               alert('Please enter your username or password');
             }
-          }}></Button>
+          }}>
+          <Text style={styles.loginText}>{'LOGIN'}</Text>
+        </Pressable>
+        <Pressable style={styles.text} onPress={() => {}}>
+          <Text style={styles.bottomText}>{'Forgot password?'}</Text>
+        </Pressable>
+        <Pressable style={styles.text} onPress={() => {}}>
+          <Text style={styles.bottomText}>{'Sign Up'}</Text>
+        </Pressable>
       </View>
     </LinearGradient>
   );
@@ -97,21 +121,42 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     paddingBottom: 16,
+    color: '#030852',
+    fontFamily: 'Sans-serif',
   },
   input: {
-    paddingVertical: 15,
+    paddingVertical: 10,
     paddingHorizontal: 15,
     backgroundColor: '#fff',
-    borderRadius: 60,
+    borderRadius: 11,
     borderColor: '#C0C0C0',
     borderWidth: 1,
     width: 250,
     marginBottom: 16,
   },
   button: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: '#030852',
+  },
+  loginText: {
+    fontSize: 16,
+    lineHeight: 21,
+    letterSpacing: 0.25,
+    color: 'white',
+    fontFamily: 'Sans-serif',
+  },
+  bottomText: {
+    fontSize: 16,
+    fontFamily: 'Sans-serif',
+    color: '#030852',
+    paddingTop: 16,
+    marginBottom: -16,
+    textAlign: 'center',
   },
 });
 

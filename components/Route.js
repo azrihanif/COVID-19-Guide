@@ -13,7 +13,7 @@ import Settings from '../pages/Settings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Text, StyleSheet} from 'react-native';
+import {Text, StyleSheet, Alert} from 'react-native';
 import AuthCont from '../constants/AuthContext';
 
 const Route = () => {
@@ -32,6 +32,20 @@ const Route = () => {
     />
   );
 
+  const logOut = () => {
+    return Alert.alert('Confirmation', 'Are you sure, you want to logout?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          setUserContext(null);
+        },
+      },
+      {
+        text: 'No',
+      },
+    ]);
+  };
+
   const logOutIcon = () => (
     <Entypo
       style={{paddingRight: 12}}
@@ -39,7 +53,7 @@ const Route = () => {
       size={27}
       color={'blue'}
       onPress={() => {
-        setUserContext(null);
+        logOut();
       }}
     />
   );

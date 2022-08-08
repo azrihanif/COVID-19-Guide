@@ -1,13 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import {connector} from '../constants/Connector';
+import AuthCont from '../constants/AuthContext';
 
 const Task = ({text, date, title, likeID, adviceID, getAdvice}) => {
   const [like, setLike] = useState(false);
   const [dislike, setDislike] = useState(false);
+  const {userContext} = useContext(AuthCont);
 
   useEffect(() => {
     getData();
@@ -24,6 +26,7 @@ const Task = ({text, date, title, likeID, adviceID, getAdvice}) => {
   };
 
   const updateLike = async (l, d) => {
+    const {id} = userContext;
     let newLike = '';
 
     if (l === 'T') {
@@ -36,7 +39,7 @@ const Task = ({text, date, title, likeID, adviceID, getAdvice}) => {
       let res = await fetch(connector + '/updateLike', {
         method: 'post',
         mode: 'no-cors',
-        body: JSON.stringify({advice_id: adviceID, like: newLike}),
+        body: JSON.stringify({advice_id: adviceID, like: newLike, user_id: id}),
         headers: {
           Accept: 'application/json',
           'Content-type': 'application/json',
