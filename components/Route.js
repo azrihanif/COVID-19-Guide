@@ -9,6 +9,7 @@ import Profile from '../pages/Profile';
 import ExpertAdvice from '../pages/ExpertAdvice';
 import MusicPlaylist from '../pages/MusicPlaylist';
 import AdviceScreen from '../pages/AdviceScreen';
+import IndoorActivity from '../pages/IndoorActivity';
 import Settings from '../pages/Settings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -130,8 +131,8 @@ const Route = () => {
             iconName = 'music-note';
           } else if (rn === 'Covid-19 Guide') {
             iconName = 'home-outline';
-          } else if (rn === 'Profile') {
-            iconName = 'account';
+          } else if (rn === 'Indoor Activity') {
+            iconName = 'human-handsup';
           } else if (rn === 'Expert Advices') {
             iconName = 'account-voice';
           }
@@ -147,8 +148,10 @@ const Route = () => {
             return focused ? <Text style={styles.text}>Music</Text> : null;
           } else if (rn === 'Covid-19 Guide') {
             return focused ? <Text style={styles.text}>Home</Text> : null;
-          } else if (rn === 'Profile') {
-            return focused ? <Text style={styles.text}>Profile</Text> : null;
+          } else if (rn === 'Indoor Activity') {
+            return focused ? (
+              <Text style={styles.text}>Indoor Activity</Text>
+            ) : null;
           } else if (rn === 'Expert Advices') {
             return focused ? (
               <Text style={styles.text}>Expert Advice</Text>
@@ -164,7 +167,11 @@ const Route = () => {
       })}>
       <Tab.Screen name={'Music'} component={MusicPlaylist} />
       <Tab.Screen name={'Covid-19 Guide'} component={Home} />
-      <Tab.Screen name={'Profile'} component={Profile} />
+      <Tab.Screen
+        name={'Indoor Activity'}
+        component={IndoorActivity}
+        options={{title: 'Activity Recommendation'}}
+      />
       <Tab.Screen
         name={'Expert Advices'}
         component={AdviceStack}
