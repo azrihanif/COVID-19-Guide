@@ -1,0 +1,85 @@
+import React, {useState} from 'react';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Feather from 'react-native-vector-icons/Feather';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+
+export default function MusicContainer({name, title, time}) {
+  const [playing, setPlaying] = useState(false);
+
+  return (
+    <TouchableOpacity style={[styles.item, styles.Shadow]}>
+      <TouchableOpacity
+        onPress={() => {
+          setPlaying(playing => !playing);
+        }}>
+        {playing ? (
+          <Feather name="pause-circle" color="#030852" size={40} />
+        ) : (
+          <Ionicons name="play-circle-outline" color={'#030852'} size={40} />
+        )}
+      </TouchableOpacity>
+      <View style={styles.textWrapper}>
+        <Text style={[styles.titleText, {opacity: 0.5}]}>{name}</Text>
+        <Text style={styles.titleText}>{title}</Text>
+      </View>
+      <View style={styles.iconWrapper}>
+        <View>
+          {playing ? (
+            <SimpleLineIcons name="options" color="#030852" size={32} />
+          ) : (
+            <Text style={styles.smallText}>{time}</Text>
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  item: {
+    backgroundColor: '#FFFFFF',
+    opacity: 0.85,
+    padding: 16,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    maxHeight: 100,
+  },
+  textWrapper: {
+    width: '70%',
+  },
+  titleText: {
+    flexDirection: 'row',
+    fontWeight: 'bold',
+    color: '#030852',
+    fontSize: 18,
+    fontFamily: 'sans-serif',
+    paddingBottom: 5,
+  },
+  Shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 6.27,
+    elevation: 3,
+  },
+  itemText: {
+    textAlign: 'left',
+    maxHeight: '70%',
+  },
+  iconWrapper: {
+    maxWidth: '30%',
+  },
+  smallText: {
+    fontSize: 16,
+    textAlign: 'right',
+    fontWeight: 'bold',
+    color: '#030852',
+  },
+});
