@@ -31,7 +31,7 @@ export default function MusicPlaylist() {
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <View style={{padding: 16}}>
-        {data?.map(({name, title, time, playing}, index) => (
+        {data?.map(({name, title, time}, index) => (
           <MusicContainer title={title} name={name} time={time} key={index} />
         ))}
       </View>
