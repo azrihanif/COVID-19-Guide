@@ -65,24 +65,11 @@ export default function IndoorActivity({navigation}) {
           <Text style={styles.text}>
             Today's Activities ({moment(new Date()).format('DD/MM/YYYY')})
           </Text>
-          {taskItem?.map(
-            (
-              {
-                advice_title,
-                advice,
-                advice_date,
-                like_id,
-                id,
-                advice_contact,
-                advice_email,
-              },
-              index,
-            ) => (
-              <TouchableOpacity key={index} onPress={() => {}}>
-                <Activity text={advice} />
-              </TouchableOpacity>
-            ),
-          )}
+          {taskItem?.map(({advice}, index) => (
+            <TouchableOpacity key={index} onPress={() => {}}>
+              <Activity text={advice} />
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
       <TouchableOpacity onPress={() => {}}>

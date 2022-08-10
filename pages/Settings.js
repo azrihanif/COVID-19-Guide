@@ -1,96 +1,105 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
-import Task from '../components/Task';
+import React, {useContext, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Text,
+  Switch,
+} from 'react-native';
 import AuthCont from '../constants/AuthContext';
-import moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
-import Searchbar from '../components/Searchbar';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Feather from 'react-native-vector-icons/Feather';
 import {connector} from '../constants/Connector';
 
-export default function Home({navigation}) {
-  const [taskItem, setTaskItem] = useState([]);
-  const [filterItem, setFilterItem] = useState([]);
+export default function Settings({navigation}) {
   const {userContext} = useContext(AuthCont);
-
-  useEffect(() => {
-    getAdvice();
-  }, []);
-
-  const getAdvice = async () => {
-    const {id} = userContext;
-
-    if (id) {
-      try {
-        let res = await fetch(connector + '/getAdvice', {
-          method: 'post',
-          mode: 'no-cors',
-          body: JSON.stringify({id: id}),
-          headers: {
-            Accept: 'application/json',
-            'Content-type': 'application/json',
-          },
-        });
-        if (res) {
-          let responseJSON = await res.json();
-          if (responseJSON?.error) {
-            Alert.alert('System Error', responseJSON?.msg);
-          } else {
-            setTaskItem(responseJSON?.msg);
-            setFilterItem(responseJSON?.msg);
-          }
-        } else {
-          console.log('Error!');
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  };
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <ScrollView bounces={false} style={styles.taskWrapper}>
-        <View style={styles.items}>
-          <Searchbar
-            item={taskItem}
-            setItem={setTaskItem}
-            filterItem={filterItem}
-          />
-          {taskItem?.map(
-            (
-              {
-                advice_title,
-                advice,
-                advice_date,
-                like_id,
-                advice_id,
-                advice_contact,
-                advice_email,
-              },
-              index,
-            ) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() =>
-                  navigation.navigate('Advice', {
-                    title: advice_title,
-                    advice: advice,
-                    adviceDate: moment(advice_date).format('DD/MM/YYYY'),
-                    adviceContact: advice_contact,
-                    adviceEmail: advice_email,
-                  })
-                }>
-                <Task
-                  getAdvice={getAdvice}
-                  text={advice}
-                  adviceID={advice_id}
-                  likeID={like_id}
-                  title={advice_title}
-                  date={moment(advice_date).format('DD/MM/YYYY')}
-                />
-              </TouchableOpacity>
-            ),
-          )}
+        <View>
+          <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
+            Content
+          </Text>
+          <TouchableOpacity>
+            <View style={styles.item}>
+              <FontAwesome name={'heart-o'} size={28} color={'#030852'} />
+              <Text style={styles.text}>Favorites</Text>
+              <FontAwesome
+                style={styles.angle}
+                name={'angle-right'}
+                size={32}
+                color={'#030852'}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
+            Preferences
+          </Text>
+          <TouchableOpacity>
+            <View style={styles.item}>
+              <FontAwesome name={'globe'} size={28} color={'#030852'} />
+              <Text style={styles.text}>Language</Text>
+              <Text style={styles.Langtext}>English</Text>
+              <FontAwesome
+                style={styles.angle}
+                name={'angle-right'}
+                size={32}
+                color={'#030852'}
+              />
+            </View>
+          </TouchableOpacity>
+          <View style={[styles.item, styles.secondItem]}>
+            <Ionicons name={'moon'} size={28} color={'#030852'} />
+            <Text style={styles.text}>Dark Mode</Text>
+            <Switch
+              trackColor={{false: '#767577', true: 'blue'}}
+              thumbColor={isEnabled ? 'blue' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+              style={[
+                styles.angle,
+                {transform: [{scaleX: 1.5}, {scaleY: 1.5}]},
+              ]}
+            />
+          </View>
+        </View>
+        <View>
+          <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
+            Contact Us
+          </Text>
+          <TouchableOpacity>
+            <View style={styles.item}>
+              <Feather name={'user'} size={28} color={'#030852'} />
+              <Text style={styles.text}>FAQ</Text>
+              <FontAwesome
+                style={styles.angle}
+                name={'angle-right'}
+                size={32}
+                color={'#030852'}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.secondItem}>
+            <View style={styles.item}>
+              <FontAwesome name={'phone'} size={28} color={'#030852'} />
+              <Text style={styles.text}>Contact Us</Text>
+              <FontAwesome
+                style={styles.angle}
+                name={'angle-right'}
+                size={32}
+                color={'#030852'}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </LinearGradient>
@@ -106,39 +115,34 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingHorizontal: 16,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  items: {
-    marginTop: 0,
-  },
-  writeTaskWrapper: {
-    position: 'absolute',
-    bottom: 16,
-    width: '100%',
+  item: {
+    backgroundColor: '#EFF9FE',
+    padding: 16,
+    borderRadius: 10,
+    marginBottom: 20,
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
   },
-  input: {
-    paddingVertical: 15,
-    paddingHorizontal: 15,
-    backgroundColor: '#fff',
-    borderRadius: 60,
-    borderColor: '#C0C0C0',
-    borderWidth: 1,
-    width: 250,
+  text: {
+    paddingLeft: 16,
+    fontSize: 18,
+    color: '#030852',
+    fontFamily: 'sans-serif',
   },
-  addWrapper: {
-    width: 60,
-    height: 60,
-    backgroundColor: '#FFF',
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#C0C0C0',
-    borderWidth: 1,
+  Langtext: {
+    position: 'absolute',
+    right: 45,
+    top: 18,
+    fontSize: 16,
+    color: 'grey',
+    fontFamily: 'sans-serif',
   },
-  addText: {},
+  angle: {
+    position: 'absolute',
+    right: 16,
+    top: 12,
+  },
+  secondItem: {
+    display: 'flex',
+    marginTop: -20,
+  },
 });
