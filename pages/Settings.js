@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   item: {
-    backgroundColor: '#EFF9FE',
+    backgroundColor: '#FFFFFF',
+    opacity: 0.85,
     padding: 16,
     borderRadius: 10,
     marginBottom: 20,

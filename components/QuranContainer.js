@@ -4,11 +4,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-export default function MusicContainer({name, title, time}) {
+export default function QuranContainer({name, title, time}) {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <View style={[styles.item, styles.Shadow]}>
+    <TouchableOpacity style={[styles.item, styles.Shadow]}>
       <TouchableOpacity
         onPress={() => {
           setPlaying(playing => !playing);
@@ -20,7 +20,6 @@ export default function MusicContainer({name, title, time}) {
         )}
       </TouchableOpacity>
       <View style={styles.textWrapper}>
-        <Text style={[styles.titleText, {opacity: 0.5}]}>{name}</Text>
         <Text style={styles.titleText}>{title}</Text>
       </View>
       <View style={styles.iconWrapper}>
@@ -32,7 +31,7 @@ export default function MusicContainer({name, title, time}) {
           )}
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

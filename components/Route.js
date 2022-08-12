@@ -8,11 +8,13 @@ import Login from '../pages/Login';
 import Profile from '../pages/Profile';
 import ExpertAdvice from '../pages/ExpertAdvice';
 import MusicPlaylist from '../pages/MusicPlaylist';
+import QuranPlaylist from '../pages/QuranPlaylists';
 import AdviceScreen from '../pages/AdviceScreen';
 import IndoorActivity from '../pages/IndoorActivity';
 import Settings from '../pages/Settings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {Text, StyleSheet, Alert} from 'react-native';
 import AuthCont from '../constants/AuthContext';
@@ -137,7 +139,9 @@ const Route = () => {
             iconName = 'account-voice';
           }
 
-          return (
+          return rn === 'Quran Playlists' ? (
+            <FontAwesome5 name={'quran'} size={size} color={color} />
+          ) : (
             <MaterialCommunityIcons name={iconName} size={size} color={color} />
           );
         },
@@ -156,6 +160,10 @@ const Route = () => {
             return focused ? (
               <Text style={styles.text}>Expert Advice</Text>
             ) : null;
+          } else if (rn === 'Quran Playlists') {
+            return focused ? (
+              <Text style={styles.text}>Quran Playlists</Text>
+            ) : null;
           }
         },
         headerStyle: {
@@ -166,6 +174,7 @@ const Route = () => {
         tabBarHideOnKeyboard: true,
       })}>
       <Tab.Screen name={'Music'} component={MusicPlaylist} />
+      <Tab.Screen name={'Quran Playlists'} component={QuranPlaylist} />
       <Tab.Screen name={'Covid-19 Guide'} component={Home} />
       <Tab.Screen
         name={'Indoor Activity'}

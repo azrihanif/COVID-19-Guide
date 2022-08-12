@@ -1,7 +1,6 @@
 import React, {useState, useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
-import LinearGradient from 'react-native-linear-gradient';
 import {connector} from '../constants/Connector';
 import AuthCont from '../constants/AuthContext';
 
@@ -10,9 +9,7 @@ const Activity = ({text}) => {
   const {userContext} = useContext(AuthCont);
 
   return (
-    <LinearGradient
-      colors={['#E0EAFC', '#FFFFFF', '#E0EAFC']}
-      style={[styles.item, styles.Shadow]}>
+    <View style={[styles.item, styles.Shadow]}>
       <View style={styles.textWrapper}>
         <View style={styles.checkBox}>
           <CheckBox
@@ -26,13 +23,14 @@ const Activity = ({text}) => {
           <Text style={styles.titleText}>{text}</Text>
         </View>
       </View>
-    </LinearGradient>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   item: {
-    backgroundColor: '#EFF9FE',
+    backgroundColor: '#FFFFFF',
+    opacity: 0.85,
     padding: 16,
     borderRadius: 10,
     marginBottom: 20,
@@ -48,12 +46,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#030852',
     paddingBottom: 16,
-    fontSize: 16
+    fontSize: 16,
   },
   checkBox: {
     position: 'absolute',
     left: 0,
-    top: 16
+    top: 16,
   },
   Shadow: {
     shadowColor: '#000',

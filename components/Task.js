@@ -2,7 +2,6 @@ import React, {useEffect, useState, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import LinearGradient from 'react-native-linear-gradient';
 import {connector} from '../constants/Connector';
 import AuthCont from '../constants/AuthContext';
 
@@ -62,9 +61,7 @@ const Task = ({text, date, title, likeID, adviceID, getAdvice}) => {
   };
 
   return (
-    <LinearGradient
-      colors={['#E0EAFC', '#FFFFFF', '#E0EAFC']}
-      style={[styles.item, styles.Shadow]}>
+    <View style={[styles.item, styles.Shadow]}>
       <View style={styles.itemLeft}>
         <Feather name="info" color={'#000'} size={23} />
       </View>
@@ -131,13 +128,14 @@ const Task = ({text, date, title, likeID, adviceID, getAdvice}) => {
           </TouchableOpacity>
         </View>
       </View>
-    </LinearGradient>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   item: {
-    backgroundColor: '#EFF9FE',
+    backgroundColor: '#FFFFFF',
+    opacity: 0.85,
     padding: 16,
     borderRadius: 10,
     flexDirection: 'row',
