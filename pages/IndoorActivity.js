@@ -19,15 +19,15 @@ export default function IndoorActivity({navigation}) {
   const {userContext} = useContext(AuthCont);
 
   useEffect(() => {
-    getAdvice();
+    getActivity();
   }, []);
 
-  const getAdvice = async () => {
+  const getActivity = async () => {
     const {id} = userContext;
 
     if (id) {
       try {
-        let res = await fetch(connector + '/getAdvice', {
+        let res = await fetch(connector + '/getActivity', {
           method: 'post',
           mode: 'no-cors',
           body: JSON.stringify({id: id}),
@@ -65,9 +65,9 @@ export default function IndoorActivity({navigation}) {
           <Text style={styles.text}>
             Today's Activities ({moment(new Date()).format('DD/MM/YYYY')})
           </Text>
-          {taskItem?.map(({advice}, index) => (
+          {taskItem?.map(({activity, picture, video_name, video_data}, index) => (
             <TouchableOpacity key={index} onPress={() => {}}>
-              <Activity text={advice} />
+              <Activity text={activity} />
             </TouchableOpacity>
           ))}
         </View>

@@ -137,12 +137,12 @@ app.post('/updateLike', async (req, result) => {
   }
 
   const {advice_id, like, user_id} = req.body;
-  
+
   if (advice_id) {
     const query = await db
       .promise()
       .query(
-        `UPDATE expert_advice SET like_id= '${like}' WHERE user_id = '${user_id}' AND advice_id='${advice_id}'`,
+        `INSERT INTO expert_advice (user_id, advice_id, like_id) VALUES (${user_id}, ${advice_id}, '${like}')ON DUPLICATE KEY UPDATE like_id = '${like}'`,
       );
     if (query) {
       result.status(400).send({msg: 'Successfully update', error: null});
@@ -270,6 +270,59 @@ app.post(
           .status(400)
           .send({msg: 'Error occured while updating', error: '400'});
       }
+    } else {
+      result.status(400).send({msg: 'Error Occured', error: '400'});
+    }
+  },
+);
+
+app.post(
+  '/getCOVIDInfo',
+  check('id').notEmpty().withMessage('Id cannot be empty'),
+  async (req, result) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return result.status(400).json(errors);
+    }
+
+    const {id} = req.body;
+    if (id) {
+      const query = await db
+        .promise()
+        .query(
+          'SELECT `covid19_info`, `picture`, `links`, `title`, `date` FROM `covid19_info` ORDER BY `date` DESC',
+        );
+
+      if (query[0]) {
+        result.status(200).send({msg: query[0], error: null});
+      } else {
+        result.status(400).send({msg: 'Internal Error', error: '400'});
+      }
+    } else {
+      result.status(400).send({msg: 'Error Occured', error: '400'});
+    }
+  },
+);
+
+app.post(
+  '/getActivity',
+  check('id').notEmpty().withMessage('Id cannot be empty'),
+  async (req, result) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return result.status(400).json(errors);
+    }
+    const {id} = req.body;
+    const query = await db
+      .promise()
+      .query(
+        `SELECT activity, picture, video_name, video_data FROM indoor_activity WHERE user_id = ${id}`,
+      );
+
+    if (query[0][0]) {
+      result.status(200).send({msg: query[0], error: null});
+    } else if (!query[0][0]) {
+      result.status(200).send({msg: 'No available task', error: null});
     } else {
       result.status(400).send({msg: 'Error Occured', error: '400'});
     }

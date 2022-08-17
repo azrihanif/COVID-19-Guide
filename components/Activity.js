@@ -1,12 +1,9 @@
-import React, {useState, useContext} from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
-import {connector} from '../constants/Connector';
-import AuthCont from '../constants/AuthContext';
 
 const Activity = ({text}) => {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const {userContext} = useContext(AuthCont);
 
   return (
     <View style={[styles.item, styles.Shadow]}>

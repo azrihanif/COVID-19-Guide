@@ -1,89 +1,129 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
-  Text,
   View,
   StyleSheet,
-  KeyboardAvoidingView,
-  TextInput,
   TouchableOpacity,
+  ScrollView,
+  Modal,
+  Text,
 } from 'react-native';
-import Task from '../components/Task';
+import COVID_19Guide from '../components/COVID_19Guide';
 import LinearGradient from 'react-native-linear-gradient';
+import Searchbar from '../components/Searchbar';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import moment from 'moment';
+import {connector} from '../constants/Connector';
+import {AuthCont} from '../constants/AuthContext';
 
 export default function Home() {
-  const [task, setTask] = useState();
   const [taskItem, setTaskItem] = useState([]);
+  const [filterItem, setFilterItem] = useState([]);
+  const {userContext} = useContext(AuthCont);
+  const [popUp, setPopUp] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleAdd = () => {
-    let date = new Date().getDate();
-    let month = new Date().getMonth();
+  useEffect(() => {
+    getInfo();
+  }, []);
 
-    if (month === 0) {
-      date += ' Jan';
-    } else if (month === 1) {
-      date += ' Feb';
-    } else if (month === 2) {
-      date += ' Mac';
-    } else if (month === 3) {
-      date += ' Apr';
-    } else if (month === 4) {
-      date += ' May';
-    } else if (month === 5) {
-      date += ' Jun';
-    } else if (month === 6) {
-      date += ' Jul';
-    } else if (month === 7) {
-      date += ' Aug';
-    } else if (month === 8) {
-      date += ' Sep';
-    } else if (month === 9) {
-      date += ' Oct';
-    } else if (month === 10) {
-      date += ' Nov';
-    } else if (month === 11) {
-      date += ' Dec';
-    }
+  const getInfo = async () => {
+    const {id} = userContext;
 
-    if (task) {
-      setTaskItem([{text: task, date: date}].concat(taskItem));
-      setTask(null);
-    } else {
-      alert('Please enter a task');
+    try {
+      let res = await fetch(connector + '/getCOVIDInfo', {
+        method: 'post',
+        mode: 'no-cors',
+        body: JSON.stringify({id: id}),
+        headers: {
+          Accept: 'application/json',
+          'Content-type': 'application/json',
+        },
+      });
+      if (res) {
+        let responseJSON = await res.json();
+        if (responseJSON?.error) {
+          setPopUp(true);
+          setErrorMsg(responseJSON?.msg);
+          modal();
+        } else {
+          setTaskItem(
+            responseJSON?.msg?.map(
+              ({covid19_info, links, picture, title, date}, index) => ({
+                text: covid19_info,
+                adviceID: index,
+                title: title,
+                date: moment(date).format('DD/MM/YYYY'),
+                links: links,
+                picture: picture,
+              }),
+            ),
+          );
+          setFilterItem(
+            responseJSON?.msg?.map(
+              ({covid19_info, links, picture, title, date}, index) => ({
+                text: covid19_info,
+                adviceID: index,
+                title: title,
+                date: moment(date).format('DD/MM/YYYY'),
+                links: links,
+                picture: picture,
+              }),
+            ),
+          );
+        }
+      } else {
+        setErrorMsg('Error!');
+        modal();
+      }
+    } catch (e) {
+      setPopUp(true);
+      setErrorMsg(e);
+      modal();
     }
   };
 
-  const completeTask = index => {
-    let newItem = [...taskItem];
-    newItem.splice(index, 1);
-    setTaskItem(newItem);
+  const modal = () => {
+    return (
+      <Modal transparent visible={popUp} animationType="fade">
+        <View style={styles.modalBackGround}>
+          <View style={styles.modalContainer}>
+            <View style={styles.header}>
+              <TouchableOpacity onPress={() => setPopUp(false)}>
+                <FontAwesome name="close" color={'#000'} size={25} />
+              </TouchableOpacity>
+            </View>
+            <View style={{paddingBottom: 16}}>
+              <Text style={styles.text}>{errorMsg}</Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
   };
 
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <View style={styles.taskWrapper}>
+      <ScrollView bounces={false} style={styles.taskWrapper}>
         <View style={styles.items}>
-          {taskItem?.map(({text, date}, index) => (
-            <TouchableOpacity key={index} onPress={() => completeTask(index)}>
-              <Task text={text} date={date} />
+          <Searchbar
+            item={taskItem}
+            setItem={setTaskItem}
+            filterItem={filterItem}
+          />
+          {modal()}
+          {taskItem?.map(({text, adviceID, title, date, picture, links}) => (
+            <TouchableOpacity key={adviceID} onPress={() => {}}>
+              <COVID_19Guide
+                text={text}
+                adviceID={adviceID}
+                title={title}
+                date={date}
+                picture={picture}
+              />
             </TouchableOpacity>
           ))}
         </View>
-      </View>
-
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.writeTaskWrapper}>
-        <TextInput
-          style={styles.input}
-          placeholder={'Write a task'}
-          value={task}
-          onChangeText={text => setTask(text)}></TextInput>
-        <TouchableOpacity onPress={handleAdd}>
-          <View style={styles.addWrapper}>
-            <Text style={styles.addText}>+</Text>
-          </View>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </LinearGradient>
   );
 }
@@ -94,7 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
   taskWrapper: {
-    paddingTop: 8,
+    paddingTop: 0,
     paddingHorizontal: 16,
   },
   sectionTitle: {
@@ -102,7 +142,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   items: {
-    marginTop: 16,
+    marginTop: 0,
   },
   writeTaskWrapper: {
     position: 'absolute',

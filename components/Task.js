@@ -159,6 +159,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     maxHeight: '40%',
+    fontFamily: 'Sans-serif',
+    color: '#030852',
   },
   Shadow: {
     shadowColor: '#000',
@@ -173,6 +175,8 @@ const styles = StyleSheet.create({
   itemText: {
     textAlign: 'left',
     maxHeight: '70%',
+    fontFamily: 'Sans-serif',
+    color: '#030852',
   },
   iconWrapper: {
     maxWidth: '30%',
@@ -181,6 +185,8 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlign: 'right',
     fontWeight: 'bold',
+    fontFamily: 'Sans-serif',
+    color: '#030852',
   },
 });
 
