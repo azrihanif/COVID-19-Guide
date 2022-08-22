@@ -1,29 +1,26 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import MusicContainer from '../components/MusicContainer';
-import MusicPlayer from '../components/MusicPlayer';
+import QuranContainer from '../../components/QuranContainer';
+import MusicPlayer from '../../components/MusicPlayer';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
-export default function MusicPlaylist() {
+export default function QuranPlaylist({navigation}) {
   const data = [
     {
-      name: 'Charlie Puth',
-      title: 'Light Switch',
+      title: 'Al-Fatiha',
       time: '3:13',
     },
     {
-      name: 'Joji',
-      title: 'Glimpse of Us',
+      title: 'Al-Baqarah',
       time: '3:53',
     },
     {
-      name: 'Charlie Puth & Jong Kook',
-      title: 'Left and Right',
+      title: 'Al-Imran',
       time: '2:34',
     },
     {
-      name: 'Ed Sheeran',
-      title: 'Shivers',
+      title: 'Al-Nisa',
       time: '3:13',
     },
   ];
@@ -31,8 +28,10 @@ export default function MusicPlaylist() {
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <View style={{padding: 16}}>
-        {data?.map(({name, title, time}, index) => (
-          <MusicContainer title={title} name={name} time={time} key={index} />
+        {data?.map(({title, time}, index) => (
+          <TouchableOpacity key={index} onPress={() => navigation.navigate('Quran Play')}>
+            <QuranContainer title={title} time={time} />
+          </TouchableOpacity>
         ))}
       </View>
       <View style={styles.musicPlayer}>
@@ -50,6 +49,6 @@ const styles = StyleSheet.create({
   musicPlayer: {
     position: 'absolute',
     width: '100%',
-    bottom: -20
+    bottom: -20,
   },
 });

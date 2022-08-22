@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
-import Task from '../components/Task';
-import AuthCont from '../constants/AuthContext';
+import Task from '../../components/Task';
+import AuthCont from '../../constants/AuthContext';
 import moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
-import Searchbar from '../components/Searchbar';
-import {connector} from '../constants/Connector';
+import Searchbar from '../../components/Searchbar';
+import {connector} from '../../constants/Connector';
 
 export default function Home({navigation}) {
   const [taskItem, setTaskItem] = useState([]);

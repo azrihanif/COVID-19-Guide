@@ -9,7 +9,6 @@ import {
   Image,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {connector} from '../constants/Connector';
 
 export default function AdviceScreen({route}) {
   const {title, advice, adviceDate, adviceContact, adviceEmail} = route.params;
@@ -31,7 +30,7 @@ export default function AdviceScreen({route}) {
           <View style={styles.imageWrapper}>
             <Image
               style={styles.image}
-              source={require('../images/profilepic/profile.jpg')}
+              source={require('../../images/profilepic/profile.jpg')}
             />
           </View>
           <Text style={styles.title}>{title}</Text>

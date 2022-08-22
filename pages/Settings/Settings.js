@@ -7,7 +7,7 @@ import {
   Text,
   Switch,
 } from 'react-native';
-import AuthCont from '../constants/AuthContext';
+import AuthCont from '../../constants/AuthContext';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -26,7 +26,7 @@ export default function Settings({navigation}) {
           <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
             Content
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
             <View style={styles.item}>
               <FontAwesome name={'heart-o'} size={28} color={'#030852'} />
               <Text style={styles.text}>Favorites</Text>
@@ -43,7 +43,7 @@ export default function Settings({navigation}) {
           <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
             Preferences
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Language')}>
             <View style={styles.item}>
               <FontAwesome name={'globe'} size={28} color={'#030852'} />
               <Text style={styles.text}>Language</Text>
@@ -76,7 +76,7 @@ export default function Settings({navigation}) {
           <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
             Contact Us
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('FAQ')}>
             <View style={styles.item}>
               <Feather name={'user'} size={28} color={'#030852'} />
               <Text style={styles.text}>FAQ</Text>
@@ -88,7 +88,9 @@ export default function Settings({navigation}) {
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.secondItem}>
+          <TouchableOpacity
+            style={styles.secondItem}
+            onPress={() => navigation.navigate('Contact Us')}>
             <View style={styles.item}>
               <FontAwesome name={'phone'} size={28} color={'#030852'} />
               <Text style={styles.text}>Contact Us</Text>

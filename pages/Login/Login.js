@@ -1,9 +1,9 @@
 import React, {useContext, useState} from 'react';
 import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
 import {sha256} from 'react-native-sha256';
-import {AuthCont} from '../constants/AuthContext';
+import {AuthCont} from '../../constants/AuthContext';
 import LinearGradient from 'react-native-linear-gradient';
-import {connector} from '../constants/Connector';
+import {connector} from '../../constants/Connector';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Login = ({navigation}) => {
@@ -71,7 +71,7 @@ const Login = ({navigation}) => {
           style={{
             position: 'absolute',
             right: 25,
-            top: 140
+            top: 140,
           }}
           onPress={() => {
             isPasswordSecure
@@ -90,10 +90,18 @@ const Login = ({navigation}) => {
           }}>
           <Text style={styles.loginText}>{'LOGIN'}</Text>
         </Pressable>
-        <Pressable style={styles.text} onPress={() => {}}>
+        <Pressable
+          style={styles.text}
+          onPress={() => {
+            navigation.navigate('Forgot Password');
+          }}>
           <Text style={styles.bottomText}>{'Forgot password?'}</Text>
         </Pressable>
-        <Pressable style={styles.text} onPress={() => {}}>
+        <Pressable
+          style={styles.text}
+          onPress={() => {
+            navigation.navigate('Sign Up');
+          }}>
           <Text style={styles.bottomText}>{'Sign Up'}</Text>
         </Pressable>
       </View>

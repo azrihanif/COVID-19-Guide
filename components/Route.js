@@ -3,15 +3,27 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import Home from '../pages/Home';
-import Login from '../pages/Login';
+
+import Home from '../pages/Home/Home';
+import Login from '../pages/Login/Login';
 import Profile from '../pages/Profile';
-import ExpertAdvice from '../pages/ExpertAdvice';
-import MusicPlaylist from '../pages/MusicPlaylist';
-import QuranPlaylist from '../pages/QuranPlaylists';
-import AdviceScreen from '../pages/AdviceScreen';
-import IndoorActivity from '../pages/IndoorActivity';
-import Settings from '../pages/Settings';
+import ExpertAdvice from '../pages/ExpertAdvice/ExpertAdvice';
+import MusicPlaylist from '../pages/Music/MusicPlaylist';
+import QuranPlaylist from '../pages/Quran/QuranPlaylists';
+import AdviceScreen from '../pages/ExpertAdvice/AdviceScreen';
+import IndoorActivity from '../pages/Activity/IndoorActivity';
+import ForgotPassword from '../pages/Login/ForgotPassword';
+import SignUp from '../pages/Login/SignUp';
+import COVIDGuide from '../pages/Home/COVIDGuide';
+import Settings from '../pages/Settings/Settings';
+import ContactUs from '../pages/Settings/ContactUs';
+import FAQ from '../pages/Settings/FAQ';
+import Favorites from '../pages/Settings/Favorites';
+import Language from '../pages/Settings/Language';
+import Activity from '../pages/Activity/Activity';
+import QuranPlay from '../pages/Quran/QuranPlay';
+import MusicPlay from '../pages/Music/MusicPlay';
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -97,8 +109,8 @@ const Route = () => {
     </Stack.Navigator>
   );
 
-  const Auth = () => (
-    <Tab.Navigator
+  const loginStack = () => (
+    <Stack.Navigator
       screenOptions={{
         headerStyle: {
           backgroundColor: '#DFF6FF',
@@ -108,7 +120,7 @@ const Route = () => {
         tabBarHideOnKeyboard: true,
         headerShadowVisible: false,
       }}>
-      <Tab.Screen
+      <Stack.Screen
         options={{
           tabBarStyle: {display: 'none'},
           tabBarItemStyle: {display: 'none'},
@@ -116,7 +128,219 @@ const Route = () => {
         name={'Covid-19 Guide'}
         component={Login}
       />
-    </Tab.Navigator>
+      <Stack.Screen
+        options={{
+          tabBarStyle: {display: 'none'},
+          tabBarItemStyle: {display: 'none'},
+        }}
+        name={'Forgot Password'}
+        component={ForgotPassword}
+      />
+      <Stack.Screen
+        options={{
+          tabBarStyle: {display: 'none'},
+          tabBarItemStyle: {display: 'none'},
+        }}
+        name={'Sign Up'}
+        component={SignUp}
+      />
+    </Stack.Navigator>
+  );
+
+  const HomeStack = () => (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={({navigation}) => ({
+          headerTitle: 'Covid-19 Guide',
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerShadowVisible: false,
+          headerTintColor: 'blue',
+          headerLeft: () => drawerIcon(navigation),
+          headerRight: () => logOutIcon(),
+        })}
+      />
+      <Stack.Screen
+        name="COVID-19 Guide"
+        component={COVIDGuide}
+        options={({route}) => ({
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+    </Stack.Navigator>
+  );
+
+  const ActivityStack = () => (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Activity Recommendation"
+        component={IndoorActivity}
+        options={({navigation}) => ({
+          headerTitle: 'Activity Recommendation',
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerShadowVisible: false,
+          headerTintColor: 'blue',
+          headerLeft: () => drawerIcon(navigation),
+          headerRight: () => logOutIcon(),
+        })}
+      />
+      <Stack.Screen
+        name="Activity"
+        component={Activity}
+        options={({route}) => ({
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+    </Stack.Navigator>
+  );
+
+  const SettingsStack = () => (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SETTINGS Screen"
+        component={Settings}
+        options={({navigation}) => ({
+          headerTitle: 'Settings',
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerShadowVisible: false,
+          headerTintColor: 'blue',
+          headerLeft: () => drawerIcon(navigation),
+          headerRight: () => logOutIcon(),
+        })}
+      />
+      <Stack.Screen
+        name="Favorites"
+        component={Favorites}
+        options={({route}) => ({
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="Language"
+        component={Language}
+        options={({route}) => ({
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="FAQ"
+        component={FAQ}
+        options={({route}) => ({
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="Contact Us"
+        component={ContactUs}
+        options={({route}) => ({
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+    </Stack.Navigator>
+  );
+
+  const MusicStack = () => (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Music Playlist"
+        component={MusicPlaylist}
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerShadowVisible: false,
+          headerTintColor: 'blue',
+          headerLeft: () => drawerIcon(navigation),
+          headerRight: () => logOutIcon(),
+        })}
+      />
+      <Stack.Screen
+        name="Music Play"
+        component={MusicPlay}
+        options={({route}) => ({
+          headerTitle: 'Music',
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+    </Stack.Navigator>
+  );
+
+  const QuranStack = () => (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Quran Playlist"
+        component={QuranPlaylist}
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerShadowVisible: false,
+          headerTintColor: 'blue',
+          headerLeft: () => drawerIcon(navigation),
+          headerRight: () => logOutIcon(),
+        })}
+      />
+      <Stack.Screen
+        name="Quran Play"
+        component={QuranPlay}
+        options={({route}) => ({
+          headerTitle: 'Quran',
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+    </Stack.Navigator>
   );
 
   const TabNav = () => (
@@ -173,13 +397,25 @@ const Route = () => {
         headerTitleAlign: 'center',
         tabBarHideOnKeyboard: true,
       })}>
-      <Tab.Screen name={'Music'} component={MusicPlaylist} />
-      <Tab.Screen name={'Quran Playlists'} component={QuranPlaylist} />
-      <Tab.Screen name={'Covid-19 Guide'} component={Home} />
+      <Tab.Screen
+        name={'Music'}
+        component={MusicStack}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name={'Quran Playlists'}
+        component={QuranStack}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        options={{headerShown: false}}
+        name={'Covid-19 Guide'}
+        component={HomeStack}
+      />
       <Tab.Screen
         name={'Indoor Activity'}
-        component={IndoorActivity}
-        options={{title: 'Activity Recommendation'}}
+        component={ActivityStack}
+        options={{headerShown: false}}
       />
       <Tab.Screen
         name={'Expert Advices'}
@@ -230,7 +466,7 @@ const Route = () => {
       />
       <Drawer.Screen
         name="SETTINGS"
-        component={Settings}
+        component={SettingsStack}
         options={{
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons
@@ -239,6 +475,7 @@ const Route = () => {
               color={color}
             />
           ),
+          headerShown: false,
         }}
       />
     </Drawer.Navigator>
@@ -246,7 +483,7 @@ const Route = () => {
 
   return (
     <NavigationContainer>
-      {userContext?.id ? Drawers() : Auth()}
+      {userContext?.id ? Drawers() : loginStack()}
     </NavigationContainer>
   );
 };

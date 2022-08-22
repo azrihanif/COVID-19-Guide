@@ -6,12 +6,12 @@ import {
   ScrollView,
   Text,
 } from 'react-native';
-import Activity from '../components/Activity';
-import AuthCont from '../constants/AuthContext';
+import Activity from '../../components/Activity';
+import AuthCont from '../../constants/AuthContext';
 import moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
-import Searchbar from '../components/Searchbar';
-import {connector} from '../constants/Connector';
+import Searchbar from '../../components/Searchbar';
+import {connector} from '../../constants/Connector';
 
 export default function IndoorActivity({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
@@ -65,11 +65,17 @@ export default function IndoorActivity({navigation}) {
           <Text style={styles.text}>
             Today's Activities ({moment(new Date()).format('DD/MM/YYYY')})
           </Text>
-          {taskItem?.map(({activity, picture, video_name, video_data}, index) => (
-            <TouchableOpacity key={index} onPress={() => {}}>
-              <Activity text={activity} />
-            </TouchableOpacity>
-          ))}
+          {taskItem?.map(
+            ({activity, picture, video_name, video_data}, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  navigation.navigate('Activity');
+                }}>
+                <Activity text={activity} />
+              </TouchableOpacity>
+            ),
+          )}
         </View>
       </ScrollView>
       <TouchableOpacity onPress={() => {}}>

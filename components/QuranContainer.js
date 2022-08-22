@@ -8,7 +8,7 @@ export default function QuranContainer({name, title, time}) {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <TouchableOpacity style={[styles.item, styles.Shadow]}>
+    <View style={[styles.item, styles.Shadow]}>
       <TouchableOpacity
         onPress={() => {
           setPlaying(playing => !playing);
@@ -31,7 +31,7 @@ export default function QuranContainer({name, title, time}) {
           )}
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 

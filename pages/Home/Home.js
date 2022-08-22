@@ -7,15 +7,15 @@ import {
   Modal,
   Text,
 } from 'react-native';
-import COVID_19Guide from '../components/COVID_19Guide';
+import COVID_19Guide from '../../components/COVID_19Guide';
 import LinearGradient from 'react-native-linear-gradient';
-import Searchbar from '../components/Searchbar';
+import Searchbar from '../../components/Searchbar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
-import {connector} from '../constants/Connector';
-import {AuthCont} from '../constants/AuthContext';
+import {connector} from '../../constants/Connector';
+import {AuthCont} from '../../constants/AuthContext';
 
-export default function Home() {
+export default function Home({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
   const [filterItem, setFilterItem] = useState([]);
   const {userContext} = useContext(AuthCont);
@@ -112,7 +112,11 @@ export default function Home() {
           />
           {modal()}
           {taskItem?.map(({text, adviceID, title, date, picture, links}) => (
-            <TouchableOpacity key={adviceID} onPress={() => {}}>
+            <TouchableOpacity
+              key={adviceID}
+              onPress={() => {
+                navigation.navigate('COVID-19 Guide');
+              }}>
               <COVID_19Guide
                 text={text}
                 adviceID={adviceID}
