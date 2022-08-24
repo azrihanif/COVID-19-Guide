@@ -10,9 +10,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function SignUp({navigation}) {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+export default function NextScreen() {
+  const [password, setPassword] = useState('');
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+  const [isConfPasswordSecure, setIsConfPasswordSecure] = useState(true);
+  const [confPass, setConfPassword] = useState('');
   const [isFocus, setIsFocus] = useState('');
   const [correctEmail, setCorrectEmail] = useState(false);
 
@@ -32,68 +34,53 @@ export default function SignUp({navigation}) {
       <View style={styles.card}>
         <Text style={styles.text}>Sign Up for COVID-19 Guide</Text>
         <TextInput
-          style={[styles.input, isFocus === 'username' && styles.focus]}
-          placeholder={'Username'}
-          value={username}
-          onChangeText={user => setUsername(user)}
-          onFocus={() => setIsFocus('username')}
+          style={[styles.input, isFocus === 'password' && styles.focus]}
+          placeholder={'Password'}
+          value={password}
+          secureTextEntry={isPasswordSecure}
+          onChangeText={pass => setPassword(pass)}
+          onFocus={() => setIsFocus('password')}
           onBlur={() => setIsFocus('')}></TextInput>
-        <TextInput
-          style={[
-            styles.input,
-            isFocus === 'email' && styles.focus,
-            correctEmail && styles.correct,
-            !correctEmail && !!email && styles.incorrect,
-          ]}
-          placeholder={'Email or Phone number'}
-          value={email}
-          onChangeText={mail => {
-            setEmail(mail);
-            validateEmail(mail);
+        <MaterialCommunityIcons
+          name={isPasswordSecure ? 'eye-off' : 'eye'}
+          size={28}
+          color={'black'}
+          style={{
+            position: 'absolute',
+            right: 30,
+            top: 70,
           }}
-          onFocus={() => setIsFocus('email')}
-          onBlur={() => setIsFocus('')}></TextInput>
-        {correctEmail && (
-          <MaterialCommunityIcons
-            name={'check-circle'}
-            size={28}
-            color={'green'}
-            style={{
-              position: 'absolute',
-              right: 30,
-              top: 137,
-            }}
-          />
-        )}
-        {!correctEmail && !!email && (
-          <MaterialCommunityIcons
-            name={'close-circle'}
-            size={28}
-            color={'red'}
-            style={{
-              position: 'absolute',
-              right: 30,
-              top: 137,
-            }}
-          />
-        )}
-        <TouchableOpacity
-          style={styles.next}
           onPress={() => {
-            if (!email && !username) {
-              alert(
-                'Please enter both username and email address before proceed',
-              );
-              return;
-            }
-
-            if (!correctEmail) {
-              alert('Please enter correct email address');
-              return;
-            }
-            navigation.navigate('Next');
-          }}>
-          <Text style={styles.smallText}>Next</Text>
+            isPasswordSecure
+              ? setIsPasswordSecure(false)
+              : setIsPasswordSecure(true);
+          }}
+        />
+        <TextInput
+          style={[styles.input, isFocus === 'confPass' && styles.focus]}
+          placeholder={'Confirm Password'}
+          value={confPass}
+          secureTextEntry={isConfPasswordSecure}
+          onChangeText={pass => setConfPassword(pass)}
+          onFocus={() => setIsFocus('confPass')}
+          onBlur={() => setIsFocus('')}></TextInput>
+        <MaterialCommunityIcons
+          name={isConfPasswordSecure ? 'eye-off' : 'eye'}
+          size={28}
+          color={'black'}
+          style={{
+            position: 'absolute',
+            right: 30,
+            top: 135,
+          }}
+          onPress={() => {
+            isConfPasswordSecure
+              ? setIsConfPasswordSecure(false)
+              : setIsConfPasswordSecure(true);
+          }}
+        />
+        <TouchableOpacity style={styles.next}>
+          <Text style={styles.smallText}>Sign Up</Text>
           <FontAwesome name={'angle-right'} size={32} color={'#030852'} />
         </TouchableOpacity>
       </View>
@@ -137,7 +124,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   correct: {borderColor: 'green', borderWidth: 2},
-  incorrect: {borderColor: 'red', borderWidth: 2},
   next: {
     flexDirection: 'row',
     justifyContent: 'flex-end',

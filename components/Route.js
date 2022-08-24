@@ -23,6 +23,7 @@ import Language from '../pages/Settings/Language';
 import Activity from '../pages/Activity/Activity';
 import QuranPlay from '../pages/Quran/QuranPlay';
 import MusicPlay from '../pages/Music/MusicPlay';
+import NextScreen from '../pages/Login/NextScreen.js';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -143,6 +144,15 @@ const Route = () => {
         }}
         name={'Sign Up'}
         component={SignUp}
+      />
+      <Stack.Screen
+        options={{
+          tabBarStyle: {display: 'none'},
+          tabBarItemStyle: {display: 'none'},
+          headerTitle: 'Sign Up'
+        }}
+        name={'Next'}
+        component={NextScreen}
       />
     </Stack.Navigator>
   );

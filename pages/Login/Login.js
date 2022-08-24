@@ -10,6 +10,7 @@ const Login = ({navigation}) => {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+  const [isFocus, setIsFocus] = useState('');
   const {setUserContext} = useContext(AuthCont);
 
   const hashPassword = pass => {
@@ -54,16 +55,20 @@ const Login = ({navigation}) => {
       <View style={styles.card}>
         <Text style={styles.text}>Login</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isFocus === 'username' && styles.focus]}
           placeholder={'Username'}
           value={username}
-          onChangeText={user => setUsername(user)}></TextInput>
+          onChangeText={user => setUsername(user)}
+          onFocus={() => setIsFocus('username')}
+          onBlur={() => setIsFocus('')}></TextInput>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isFocus === 'password' && styles.focus]}
           placeholder={'Password'}
           value={password}
           secureTextEntry={isPasswordSecure}
-          onChangeText={pass => setPassword(pass)}></TextInput>
+          onChangeText={pass => setPassword(pass)}
+          onFocus={() => setIsFocus('password')}
+          onBlur={() => setIsFocus('')}></TextInput>
         <MaterialCommunityIcons
           name={isPasswordSecure ? 'eye-off' : 'eye'}
           size={28}
@@ -141,6 +146,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: 250,
     marginBottom: 16,
+  },
+  focus: {
+    borderColor: 'blue',
+    borderWidth: 2,
   },
   button: {
     alignItems: 'center',
