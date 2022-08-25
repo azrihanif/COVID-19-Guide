@@ -149,7 +149,7 @@ const Route = () => {
         options={{
           tabBarStyle: {display: 'none'},
           tabBarItemStyle: {display: 'none'},
-          headerTitle: 'Sign Up'
+          headerTitle: 'Sign Up',
         }}
         name={'Next'}
         component={NextScreen}
@@ -183,6 +183,7 @@ const Route = () => {
           },
           headerTitleAlign: 'center',
           headerTintColor: 'blue',
+          title: route?.params?.title,
           headerShadowVisible: false,
         })}
       />
@@ -215,6 +216,7 @@ const Route = () => {
           },
           headerTitleAlign: 'center',
           headerTintColor: 'blue',
+          title: route?.params?.activity,
           headerShadowVisible: false,
         })}
       />

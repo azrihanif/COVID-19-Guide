@@ -48,9 +48,8 @@ export default function Home({navigation}) {
         } else {
           setTaskItem(
             responseJSON?.msg?.map(
-              ({covid19_info, links, picture, title, date}, index) => ({
+              ({covid19_info, links, picture, title, date}) => ({
                 text: covid19_info,
-                adviceID: index,
                 title: title,
                 date: moment(date).format('DD/MM/YYYY'),
                 links: links,
@@ -60,9 +59,8 @@ export default function Home({navigation}) {
           );
           setFilterItem(
             responseJSON?.msg?.map(
-              ({covid19_info, links, picture, title, date}, index) => ({
+              ({covid19_info, links, picture, title, date}) => ({
                 text: covid19_info,
-                adviceID: index,
                 title: title,
                 date: moment(date).format('DD/MM/YYYY'),
                 links: links,
@@ -111,15 +109,20 @@ export default function Home({navigation}) {
             filterItem={filterItem}
           />
           {modal()}
-          {taskItem?.map(({text, adviceID, title, date, picture, links}) => (
+          {taskItem?.map(({text, title, date, picture, links}, index) => (
             <TouchableOpacity
-              key={adviceID}
+              key={index}
               onPress={() => {
-                navigation.navigate('COVID-19 Guide');
+                navigation.navigate('COVID-19 Guide', {
+                  text,
+                  title,
+                  date,
+                  picture,
+                  links,
+                });
               }}>
               <COVID_19Guide
                 text={text}
-                adviceID={adviceID}
                 title={title}
                 date={date}
                 picture={picture}

@@ -27,7 +27,7 @@ export default function QuranPlaylist({navigation}) {
 
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <View style={{padding: 16}}>
+      <View style={{paddingLeft: 16, paddingRight: 16}}>
         {data?.map(({title, time}, index) => (
           <TouchableOpacity key={index} onPress={() => navigation.navigate('Quran Play')}>
             <QuranContainer title={title} time={time} />

@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {Dimensions, TextInput, StyleSheet, View} from 'react-native';
+import {
+  Dimensions,
+  TextInput,
+  StyleSheet,
+  View,
+  TouchableWithoutFeedback,
+  Keyboard
+} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -7,7 +14,6 @@ const deviceWidth = Dimensions.get('window').width;
 
 export default function Searchbar({item, setItem, filterItem}) {
   const [text, setText] = useState(undefined);
-  const [clicked, setClicked] = useState(false);
 
   const filterData = text => {
     if (text) {
@@ -24,40 +30,38 @@ export default function Searchbar({item, setItem, filterItem}) {
   };
 
   return (
-    <View style={styles.container}>
-      <Feather
-        name="search"
-        size={23}
-        color="black"
-        style={[styles.search, {marginLeft: 1}]}
-      />
-      <TextInput
-        placeholder="Search"
-        style={styles.formField}
-        placeholderTextColor={'#888888'}
-        value={text}
-        onChangeText={text => {
-          filterData(text);
-          setText(text);
-        }}
-        onFocus={() => {
-          setClicked(true);
-        }}
-      />
-      {clicked && (
-        <AntDesign
-          name="closecircleo"
-          color={'#030852'}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Feather
+          name="search"
           size={23}
-          style={styles.clear}
-          onPress={() => {
-            setText('');
-            setItem(filterItem);
-            setClicked(false);
+          color="black"
+          style={[styles.search, {marginLeft: 1}]}
+        />
+        <TextInput
+          placeholder="Search"
+          style={styles.formField}
+          placeholderTextColor={'#888888'}
+          value={text}
+          onChangeText={text => {
+            filterData(text);
+            setText(text);
           }}
         />
-      )}
-    </View>
+        {!!text && (
+          <AntDesign
+            name="closecircleo"
+            color={'#030852'}
+            size={23}
+            style={styles.clear}
+            onPress={() => {
+              setText('');
+              setItem(filterItem);
+            }}
+          />
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 

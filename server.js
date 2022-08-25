@@ -116,7 +116,7 @@ app.post(
       const query = await db
         .promise()
         .query(
-          `SELECT b.like_id, a.id, a.advice_title, a.advice_picture, a.advice, a.advice_contact, a.advice_date, a.advice_email FROM advice_list a LEFT JOIN expert_advice b ON b.advice_id = a.id`,
+          `SELECT b.like_id, a.id, a.advice_title, a.advice_picture, a.advice, a.advice_contact, a.advice_date, a.advice_email FROM advice_list a LEFT JOIN expert_advice b ON b.advice_id = a.id ORDER BY a.advice_date DESC`,
         );
 
       if (query[0]) {

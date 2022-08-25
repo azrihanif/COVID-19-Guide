@@ -31,7 +31,7 @@ export default function MusicPlaylist({navigation}) {
 
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <View style={{padding: 16}}>
+      <View style={{paddingLeft: 16, paddingRight: 16}}>
         {data?.map(({name, title, time}, index) => (
           <TouchableOpacity
             key={index}

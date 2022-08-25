@@ -70,7 +70,12 @@ export default function IndoorActivity({navigation}) {
               <TouchableOpacity
                 key={index}
                 onPress={() => {
-                  navigation.navigate('Activity');
+                  navigation.navigate('Activity', {
+                    activity,
+                    picture,
+                    video_name,
+                    video_data,
+                  });
                 }}>
                 <Activity text={activity} />
               </TouchableOpacity>
