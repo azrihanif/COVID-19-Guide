@@ -6,6 +6,7 @@ import {
   ScrollView,
   Modal,
   Text,
+  FlatList,
 } from 'react-native';
 import COVID_19Guide from '../../components/COVID_19Guide';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,6 +22,7 @@ export default function Home({navigation}) {
   const {userContext} = useContext(AuthCont);
   const [popUp, setPopUp] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     getInfo();
@@ -30,6 +32,7 @@ export default function Home({navigation}) {
     const {id} = userContext;
 
     try {
+      setRefresh(false);
       let res = await fetch(connector + '/getCOVIDInfo', {
         method: 'post',
         mode: 'no-cors',
@@ -99,38 +102,50 @@ export default function Home({navigation}) {
     );
   };
 
+  const renderItem = ({item}) => (
+    <ScrollView bounces={false}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('COVID-19 Guide', {
+            text: item.text,
+            title: item.title,
+            date: item.date,
+            picture: item.picture,
+            links: item.links,
+          });
+        }}>
+        <COVID_19Guide
+          text={item.text}
+          title={item.title}
+          date={item.date}
+          picture={item.picture}
+        />
+      </TouchableOpacity>
+    </ScrollView>
+  );
+
+  const handleRefresh = () => {
+    setRefresh(true);
+    getInfo();
+  };
+
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <ScrollView bounces={false} style={styles.taskWrapper}>
-        <View style={styles.items}>
-          <Searchbar
-            item={taskItem}
-            setItem={setTaskItem}
-            filterItem={filterItem}
-          />
-          {modal()}
-          {taskItem?.map(({text, title, date, picture, links}, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => {
-                navigation.navigate('COVID-19 Guide', {
-                  text,
-                  title,
-                  date,
-                  picture,
-                  links,
-                });
-              }}>
-              <COVID_19Guide
-                text={text}
-                title={title}
-                date={date}
-                picture={picture}
-              />
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
+      <View style={styles.items}>
+        <Searchbar
+          item={taskItem}
+          setItem={setTaskItem}
+          filterItem={filterItem}
+        />
+        {modal()}
+        <FlatList
+          data={taskItem}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index}
+          refreshing={refresh}
+          onRefresh={handleRefresh}
+        />
+      </View>
     </LinearGradient>
   );
 }
@@ -140,16 +155,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF',
   },
-  taskWrapper: {
-    paddingTop: 0,
-    paddingHorizontal: 16,
-  },
   sectionTitle: {
     fontSize: 24,
     fontWeight: 'bold',
   },
   items: {
     marginTop: 0,
+    paddingHorizontal: 16,
   },
   writeTaskWrapper: {
     position: 'absolute',

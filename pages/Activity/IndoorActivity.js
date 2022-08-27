@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Text,
+  FlatList,
 } from 'react-native';
 import Activity from '../../components/Activity';
 import AuthCont from '../../constants/AuthContext';
@@ -17,6 +18,7 @@ export default function IndoorActivity({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
   const [filterItem, setFilterItem] = useState([]);
   const {userContext} = useContext(AuthCont);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     getActivity();
@@ -26,6 +28,7 @@ export default function IndoorActivity({navigation}) {
     const {id} = userContext;
 
     if (id) {
+      setRefresh(false);
       try {
         let res = await fetch(connector + '/getActivity', {
           method: 'post',
@@ -53,40 +56,49 @@ export default function IndoorActivity({navigation}) {
     }
   };
 
+  const renderItem = ({item}) => (
+    <ScrollView bounces={false}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Activity', {
+            activity: item?.activity,
+            picture: item?.picture,
+            video_name: item?.video_name,
+            video_data: item?.video_data,
+          });
+        }}>
+        <Activity text={item?.activity} />
+      </TouchableOpacity>
+    </ScrollView>
+  );
+
+  const handleRefresh = () => {
+    setRefresh(true);
+    getActivity();
+  };
+
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <ScrollView bounces={false} style={styles.taskWrapper}>
-        <View style={styles.items}>
-          <Searchbar
-            item={taskItem}
-            setItem={setTaskItem}
-            filterItem={filterItem}
-          />
-          <Text style={styles.text}>
-            Today's Activities ({moment(new Date()).format('DD/MM/YYYY')})
-          </Text>
-          {taskItem?.map(
-            ({activity, picture, video_name, video_data}, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  navigation.navigate('Activity', {
-                    activity,
-                    picture,
-                    video_name,
-                    video_data,
-                  });
-                }}>
-                <Activity text={activity} />
-              </TouchableOpacity>
-            ),
-          )}
-        </View>
-      </ScrollView>
-      <TouchableOpacity onPress={() => {}}>
-        <View style={styles.addWrapper}>
-          <Text style={styles.addText}>+</Text>
-        </View>
+      <View style={styles.items}>
+        <Searchbar
+          item={taskItem}
+          setItem={setTaskItem}
+          filterItem={filterItem}
+        />
+        <Text style={styles.text}>
+          Today's Activities ({moment(new Date()).format('DD/MM/YYYY')})
+        </Text>
+        <FlatList
+          data={taskItem}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index}
+          refreshing={refresh}
+          onRefresh={handleRefresh}
+        />
+      </View>
+
+      <TouchableOpacity style={styles.addWrapper} onPress={() => {}}>
+        <Text style={styles.addText}>+</Text>
       </TouchableOpacity>
     </LinearGradient>
   );
@@ -97,16 +109,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF',
   },
-  taskWrapper: {
-    paddingTop: 0,
-    paddingHorizontal: 16,
-  },
   sectionTitle: {
     fontSize: 24,
     fontWeight: 'bold',
   },
   items: {
     marginTop: 0,
+    paddingHorizontal: 16,
   },
   writeTaskWrapper: {
     position: 'absolute',
