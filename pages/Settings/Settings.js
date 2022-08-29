@@ -44,7 +44,11 @@ export default function Settings({navigation}) {
             Preferences
           </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Language')}>
-            <View style={styles.item}>
+            <View
+              style={[
+                styles.item,
+                {borderBottomLeftRadius: 0, borderBottomRightRadius: 0},
+              ]}>
               <FontAwesome name={'globe'} size={28} color={'#030852'} />
               <Text style={styles.text}>Language</Text>
               <Text style={styles.Langtext}>English</Text>
@@ -77,7 +81,11 @@ export default function Settings({navigation}) {
             Contact Us
           </Text>
           <TouchableOpacity onPress={() => navigation.navigate('FAQ')}>
-            <View style={styles.item}>
+            <View
+              style={[
+                styles.item,
+                {borderBottomLeftRadius: 0, borderBottomRightRadius: 0},
+              ]}>
               <Feather name={'user'} size={28} color={'#030852'} />
               <Text style={styles.text}>FAQ</Text>
               <FontAwesome
@@ -88,10 +96,8 @@ export default function Settings({navigation}) {
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.secondItem}
-            onPress={() => navigation.navigate('Contact Us')}>
-            <View style={styles.item}>
+          <TouchableOpacity onPress={() => navigation.navigate('Contact Us')}>
+            <View style={[styles.item, styles.secondItem]}>
               <FontAwesome name={'phone'} size={28} color={'#030852'} />
               <Text style={styles.text}>Contact Us</Text>
               <FontAwesome
@@ -147,5 +153,7 @@ const styles = StyleSheet.create({
   secondItem: {
     display: 'flex',
     marginTop: -20,
+    borderTopStartRadius: 0,
+    borderTopRightRadius: 0,
   },
 });

@@ -13,8 +13,8 @@ export default function Accordion({list}) {
           left={props => !!icon && <List.Icon {...props} icon={icon} />}
           expanded={expanded}
           onPress={handlePress}>
-          {listItem?.map(({title}) => (
-            <List.Item title={title} />
+          {listItem?.map(({title}, i) => (
+            <List.Item title={title} key={i}/>
           ))}
         </List.Accordion>
       ))}

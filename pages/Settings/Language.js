@@ -8,7 +8,7 @@ export default function Language() {
 
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <View style={{padding: 16}}>
+      <View style={{paddingHorizontal: 16}}>
         <TouchableOpacity onPress={() => setIsSelected('english')}>
           <View style={styles.item}>
             <Text style={styles.text}>English</Text>
@@ -22,10 +22,8 @@ export default function Language() {
             )}
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.secondItem}
-          onPress={() => setIsSelected('BM')}>
-          <View style={styles.item}>
+        <TouchableOpacity onPress={() => setIsSelected('BM')}>
+          <View style={[styles.item, styles.secondItem]}>
             <Text style={styles.text}>Bahasa Melayu</Text>
             {isSelected === 'BM' && (
               <FontAwesome
@@ -37,10 +35,8 @@ export default function Language() {
             )}
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.secondItem}
-          onPress={() => setIsSelected('chinese')}>
-          <View style={styles.item}>
+        <TouchableOpacity onPress={() => setIsSelected('chinese')}>
+          <View style={styles.secondItem}>
             <Text style={styles.text}>中文</Text>
             {isSelected === 'chinese' && (
               <FontAwesome
@@ -69,6 +65,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     flexDirection: 'row',
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
   angle: {
     position: 'absolute',
@@ -77,7 +75,14 @@ const styles = StyleSheet.create({
   },
   secondItem: {
     display: 'flex',
+    backgroundColor: '#FFFFFF',
+    opacity: 0.85,
+    padding: 16,
+    borderRadius: 10,
+    flexDirection: 'row',
     marginTop: -20,
+    borderTopStartRadius: 0,
+    borderTopRightRadius: 0,
   },
   text: {
     paddingLeft: 8,
