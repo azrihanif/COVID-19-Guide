@@ -5,7 +5,6 @@ import {
   View,
   StyleSheet,
   KeyboardAvoidingView,
-  TextInput,
   ScrollView,
   TouchableOpacity,
   Modal,
@@ -292,7 +291,10 @@ export default function Profile({navigation}) {
             <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
               Account Information
             </Text>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Username', {username: data?.username});
+              }}>
               <View
                 style={[
                   styles.item,
@@ -308,7 +310,10 @@ export default function Profile({navigation}) {
                 />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Phone', {phoneNumber: data?.phone_no});
+              }}>
               <View
                 style={[
                   styles.item,
@@ -321,7 +326,9 @@ export default function Profile({navigation}) {
                   },
                 ]}>
                 <FontAwesome name={'phone'} size={28} color={'#030852'} />
-                <Text style={[styles.text, {marginLeft: 5}]}>Change Phone Number</Text>
+                <Text style={[styles.text, {marginLeft: 5}]}>
+                  Change Phone Number
+                </Text>
                 <FontAwesome
                   style={styles.angle}
                   name={'angle-right'}
@@ -330,7 +337,10 @@ export default function Profile({navigation}) {
                 />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Email', {emailAddress: data?.email});
+              }}>
               <View
                 style={[
                   styles.item,
@@ -340,7 +350,11 @@ export default function Profile({navigation}) {
                     borderTopRightRadius: 0,
                   },
                 ]}>
-                <MaterialCommunityIcons name={'email'} size={28} color={'#030852'} />
+                <MaterialCommunityIcons
+                  name={'email'}
+                  size={28}
+                  color={'#030852'}
+                />
                 <Text style={styles.text}>Change Email Address</Text>
                 <FontAwesome
                   style={styles.angle}
@@ -355,10 +369,15 @@ export default function Profile({navigation}) {
             <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
               Security
             </Text>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('NewPass');
+              }}>
               <View style={styles.item}>
                 <FontAwesome name={'lock'} size={32} color={'#030852'} />
-                <Text style={[styles.text, {marginLeft: 5}]}>Change Password</Text>
+                <Text style={[styles.text, {marginLeft: 5}]}>
+                  Change Password
+                </Text>
                 <FontAwesome
                   style={styles.angle}
                   name={'angle-right'}
@@ -372,7 +391,10 @@ export default function Profile({navigation}) {
             <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
               Deactivate Account
             </Text>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Deactivate');
+              }}>
               <View style={styles.item}>
                 <FontAwesome name={'user'} size={28} color={'red'} />
                 <Text style={[styles.text, {color: 'red', marginLeft: 5}]}>

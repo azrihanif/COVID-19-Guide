@@ -24,6 +24,10 @@ import Activity from '../pages/Activity/Activity';
 import QuranPlay from '../pages/Quran/QuranPlay';
 import MusicPlay from '../pages/Music/MusicPlay';
 import NextScreen from '../pages/Login/NextScreen.js';
+import Username from '../pages/Profile/Username';
+import PhoneNumber from '../pages/Profile/PhoneNumber';
+import Email from '../pages/Profile/Email';
+import NewPass from '../pages/Profile/NewPass';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -31,6 +35,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {Text, StyleSheet, Alert} from 'react-native';
 import AuthCont from '../constants/AuthContext';
+import Deactivate from '../pages/Profile/Deactivate';
 
 const Route = () => {
   const {userContext, setUserContext} = useContext(AuthCont);
@@ -45,6 +50,16 @@ const Route = () => {
       size={27}
       color={'blue'}
       onPress={() => navigation.openDrawer()}
+    />
+  );
+
+  const goBackIcon = navigation => (
+    <MaterialCommunityIcons
+      style={{paddingLeft: 12}}
+      name={'arrow-left'}
+      size={27}
+      color={'blue'}
+      onPress={() => navigation.goBack()}
     />
   );
 
@@ -236,7 +251,7 @@ const Route = () => {
           headerTitleAlign: 'center',
           headerShadowVisible: false,
           headerTintColor: 'blue',
-          headerLeft: () => drawerIcon(navigation),
+          headerLeft: () => goBackIcon(navigation),
           headerRight: () => logOutIcon(),
         })}
       />
@@ -344,6 +359,90 @@ const Route = () => {
         component={QuranPlay}
         options={({route}) => ({
           headerTitle: 'Quran',
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+    </Stack.Navigator>
+  );
+
+  const ProfileStack = () => (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerShadowVisible: false,
+          headerTintColor: 'blue',
+          headerLeft: () => goBackIcon(navigation),
+          headerRight: () => logOutIcon(),
+        })}
+      />
+      <Stack.Screen
+        name="Username"
+        component={Username}
+        options={({route}) => ({
+          headerTitle: 'Profile',
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="Phone"
+        component={PhoneNumber}
+        options={({route}) => ({
+          headerTitle: 'Profile',
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="Email"
+        component={Email}
+        options={({route}) => ({
+          headerTitle: 'Profile',
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="NewPass"
+        component={NewPass}
+        options={({route}) => ({
+          headerTitle: 'Profile',
+          headerStyle: {
+            backgroundColor: '#DFF6FF',
+          },
+          headerTitleAlign: 'center',
+          headerTintColor: 'blue',
+          headerShadowVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="Deactivate"
+        component={Deactivate}
+        options={({route}) => ({
+          headerTitle: 'Profile',
           headerStyle: {
             backgroundColor: '#DFF6FF',
           },
@@ -469,8 +568,9 @@ const Route = () => {
       />
       <Drawer.Screen
         name="PROFILE"
-        component={Profile}
+        component={ProfileStack}
         options={{
+          headerShown: false,
           drawerIcon: ({color}) => (
             <MaterialCommunityIcons name="account" size={22} color={color} />
           ),
