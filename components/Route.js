@@ -6,7 +6,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import Home from '../pages/Home/Home';
 import Login from '../pages/Login/Login';
-import Profile from '../pages/Profile';
+import Profile from '../pages/Profile/Profile';
 import ExpertAdvice from '../pages/ExpertAdvice/ExpertAdvice';
 import MusicPlaylist from '../pages/Music/MusicPlaylist';
 import QuranPlaylist from '../pages/Quran/QuranPlaylists';

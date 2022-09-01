@@ -50,7 +50,7 @@ export default function Settings({navigation}) {
                 {borderBottomLeftRadius: 0, borderBottomRightRadius: 0},
               ]}>
               <FontAwesome name={'globe'} size={28} color={'#030852'} />
-              <Text style={styles.text}>Language</Text>
+              <Text style={[styles.text, {marginLeft: 5}]}>Language</Text>
               <Text style={styles.Langtext}>English</Text>
               <FontAwesome
                 style={styles.angle}
@@ -99,7 +99,7 @@ export default function Settings({navigation}) {
           <TouchableOpacity onPress={() => navigation.navigate('Contact Us')}>
             <View style={[styles.item, styles.secondItem]}>
               <FontAwesome name={'phone'} size={28} color={'#030852'} />
-              <Text style={styles.text}>Contact Us</Text>
+              <Text style={[styles.text, {marginLeft: 5}]}>Contact Us</Text>
               <FontAwesome
                 style={styles.angle}
                 name={'angle-right'}

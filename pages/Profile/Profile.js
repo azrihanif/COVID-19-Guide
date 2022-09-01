@@ -16,10 +16,10 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {AuthCont} from '../constants/AuthContext';
+import {AuthCont} from '../../constants/AuthContext';
 import {sha256} from 'react-native-sha256';
 import LinearGradient from 'react-native-linear-gradient';
-import {connector} from '../constants/Connector';
+import {connector} from '../../constants/Connector';
 
 export default function Profile({navigation}) {
   const {userContext} = useContext(AuthCont);
@@ -234,7 +234,7 @@ export default function Profile({navigation}) {
         address: data?.address,
         phone_no: data?.phone_no,
       };
-      
+
       try {
         let res = await fetch(connector + '/updateProfile', {
           method: 'post',
@@ -275,7 +275,7 @@ export default function Profile({navigation}) {
           <View style={styles.imageWrapper}>
             <Image
               style={styles.image}
-              source={require('../images/profilepic/profile.jpg')}
+              source={require('../../images/profilepic/profile.jpg')}
             />
           </View>
           <Text
@@ -287,152 +287,104 @@ export default function Profile({navigation}) {
           </Text>
           {changePhoto()}
           {modal()}
-          <View style={styles.action}>
-            <FontAwesome
-              style={{marginTop: 10}}
-              name="user"
-              color={'#000'}
-              size={25}
-            />
-            <View
-              style={{flexDirection: 'column', width: '94%', paddingLeft: 8}}>
-              <Text style={styles.text}>Name</Text>
-              <TextInput
-                style={styles.textInput}
-                underlineColorAndroid="#C0C0C0"
-                placeholder={'Name'}
-                value={data?.name}
-                onChangeText={text => {
-                  setData(prev => ({...prev, name: text}));
-                }}></TextInput>
-            </View>
-          </View>
-          <View style={styles.action}>
-            <MaterialCommunityIcons
-              style={{marginTop: 10}}
-              name="email"
-              color={'#000'}
-              size={25}
-            />
-            <View
-              style={{flexDirection: 'column', width: '92%', paddingLeft: 5}}>
-              <Text style={styles.text}>Email</Text>
-              <TextInput
-                style={styles.textInput}
-                underlineColorAndroid="#C0C0C0"
-                placeholder={'Email'}
-                value={data?.email}
-                onChangeText={text => {
-                  setData(prev => ({...prev, email: text}));
-                }}></TextInput>
-            </View>
-          </View>
-          <View style={styles.action}>
-            <FontAwesome
-              style={{marginTop: 10}}
-              name="globe"
-              color={'#000'}
-              size={25}
-            />
-            <View
-              style={{flexDirection: 'column', width: '93%', paddingLeft: 5}}>
-              <Text style={styles.text}>Address</Text>
-              <TextInput
-                style={styles.textInput}
-                underlineColorAndroid="#C0C0C0"
-                placeholder={'Address'}
-                value={data?.address}
-                onChangeText={text => {
-                  setData(prev => ({...prev, address: text}));
-                }}></TextInput>
-            </View>
-          </View>
-          <View style={styles.action}>
-            <Feather
-              style={{marginTop: 10}}
-              name="lock"
-              color={'#000'}
-              size={22}
-            />
-            <View
-              style={{flexDirection: 'column', width: '93%', paddingLeft: 5}}>
-              <Text style={styles.text}>Password</Text>
-              <TextInput
-                style={styles.textInput}
-                underlineColorAndroid="#C0C0C0"
-                placeholder={'Password'}
-                secureTextEntry={true}
-                value={data?.password}
-                onChangeText={text => {
-                  setData(prev => ({...prev, password: text}));
-                }}></TextInput>
-            </View>
-          </View>
-          <View style={styles.action}>
-            <Feather
-              style={{marginTop: 10}}
-              name="lock"
-              color={'#000'}
-              size={22}
-            />
-            <View
-              style={{flexDirection: 'column', width: '93%', paddingLeft: 5}}>
-              <Text style={styles.text}>Confirm Password</Text>
-              <TextInput
-                secureTextEntry={true}
-                style={styles.textInput}
-                underlineColorAndroid="#C0C0C0"
-                placeholder={'Confirm Password'}
-                value={data?.confPass}
-                onChangeText={text => {
-                  setData(prev => ({...prev, confPass: text}));
-                }}></TextInput>
-            </View>
-          </View>
-          <View style={styles.action}>
-            <FontAwesome
-              style={{marginTop: 10}}
-              name="phone"
-              color={'#000'}
-              size={22}
-            />
-            <View
-              style={{flexDirection: 'column', width: '94%', paddingLeft: 8}}>
-              <Text style={styles.text}>Phone</Text>
-              <TextInput
-                keyboardType="number-pad"
-                style={styles.textInput}
-                underlineColorAndroid="#C0C0C0"
-                placeholder={'Phone'}
-                value={data?.phone_no}
-                onChangeText={text => {
-                  setData(prev => ({...prev, phone_no: text}));
-                }}></TextInput>
-            </View>
-          </View>
-          <View>
-            <Text
-              style={styles.deleteAccount}
-              onPress={() => {
-                showConfirmDialog();
-              }}>
-              Delete My Account
+
+          <View style={{paddingTop: 16}}>
+            <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
+              Account Information
             </Text>
+            <TouchableOpacity onPress={() => {}}>
+              <View
+                style={[
+                  styles.item,
+                  {borderBottomRightRadius: 0, borderBottomLeftRadius: 0},
+                ]}>
+                <Feather name={'user'} size={28} color={'#030852'} />
+                <Text style={styles.text}>Change Username</Text>
+                <FontAwesome
+                  style={styles.angle}
+                  name={'angle-right'}
+                  size={32}
+                  color={'#030852'}
+                />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => {}}>
+              <View
+                style={[
+                  styles.item,
+                  {
+                    marginTop: -20,
+                    borderTopStartRadius: 0,
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0,
+                    borderBottomLeftRadius: 0,
+                  },
+                ]}>
+                <FontAwesome name={'phone'} size={28} color={'#030852'} />
+                <Text style={[styles.text, {marginLeft: 5}]}>Change Phone Number</Text>
+                <FontAwesome
+                  style={styles.angle}
+                  name={'angle-right'}
+                  size={32}
+                  color={'#030852'}
+                />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => {}}>
+              <View
+                style={[
+                  styles.item,
+                  {
+                    marginTop: -20,
+                    borderTopStartRadius: 0,
+                    borderTopRightRadius: 0,
+                  },
+                ]}>
+                <MaterialCommunityIcons name={'email'} size={28} color={'#030852'} />
+                <Text style={styles.text}>Change Email Address</Text>
+                <FontAwesome
+                  style={styles.angle}
+                  name={'angle-right'}
+                  size={32}
+                  color={'#030852'}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
           <View>
-            <TouchableOpacity
-              style={[styles.ButtonWrapper, styles.Shadow]}
-              activeOpacity={0.5}
-              onPress={() => {
-                if (data?.password && data?.confPass) {
-                  hashPassword(data?.password);
-                } else {
-                  setErrorMsg('Please enter your password to update profile');
-                  setPopUp(true);
-                  modal();
-                }
-              }}>
-              <Text style={styles.SubmitText}>SAVE</Text>
+            <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
+              Security
+            </Text>
+            <TouchableOpacity onPress={() => {}}>
+              <View style={styles.item}>
+                <FontAwesome name={'lock'} size={32} color={'#030852'} />
+                <Text style={[styles.text, {marginLeft: 5}]}>Change Password</Text>
+                <FontAwesome
+                  style={styles.angle}
+                  name={'angle-right'}
+                  size={32}
+                  color={'#030852'}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
+              Deactivate Account
+            </Text>
+            <TouchableOpacity onPress={() => {}}>
+              <View style={styles.item}>
+                <FontAwesome name={'user'} size={28} color={'red'} />
+                <Text style={[styles.text, {color: 'red', marginLeft: 5}]}>
+                  Deactivate My Account
+                </Text>
+                <FontAwesome
+                  style={styles.angle}
+                  name={'angle-right'}
+                  size={32}
+                  color={'red'}
+                />
+              </View>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -448,18 +400,12 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flex: 1,
+    paddingHorizontal: 16,
   },
   imageWrapper: {
-    paddingTop: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  deleteText: {
-    paddingHorizontal: 5,
-    paddingTop: 3,
-    color: '#000',
-    fontWeight: 'normal',
   },
   text: {
     paddingHorizontal: 5,
@@ -475,13 +421,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 100 / 2,
   },
-  deleteAccount: {
-    paddingTop: 8,
-    fontSize: 16,
-    fontWeight: 'normal',
-    color: 'red',
-    textAlign: 'center',
-  },
+
   sectionTitle: {
     paddingTop: 8,
     fontSize: 16,
@@ -489,14 +429,31 @@ const styles = StyleSheet.create({
     color: 'blue',
     textAlign: 'center',
   },
+  item: {
+    backgroundColor: '#FFFFFF',
+    opacity: 0.85,
+    padding: 16,
+    borderRadius: 10,
+    marginBottom: 20,
+    flexDirection: 'row',
+  },
+  text: {
+    paddingLeft: 16,
+    fontSize: 18,
+    color: '#030852',
+    fontFamily: 'sans-serif',
+  },
+  angle: {
+    position: 'absolute',
+    right: 16,
+    top: 12,
+  },
   items: {
     marginTop: 16,
   },
   writeTaskWrapper: {
     width: '100%',
     flexDirection: 'row',
-    paddingLeft: 8,
-    paddingRight: 8,
   },
   input: {
     paddingVertical: 8,
