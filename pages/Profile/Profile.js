@@ -393,7 +393,7 @@ export default function Profile({navigation}) {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Deactivate');
+                navigation.navigate('Deactivate', {name: data?.username});
               }}>
               <View style={styles.item}>
                 <FontAwesome name={'user'} size={28} color={'red'} />
