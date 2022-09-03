@@ -329,6 +329,96 @@ app.post(
   },
 );
 
+app.post('/changeUsername', async (req, res) => {
+  const {oldUsername, newUsername} = req.body;
+
+  if (!oldUsername || !newUsername)
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+  const query = await db
+    .promise()
+    .query(
+      `UPDATE user SET username= '${newUsername}' WHERE username = '${oldUsername}'`,
+    );
+
+  if (!!query[0]?.changedRows) {
+    res.status(200).send({msg: 'Successfully updated', error: null});
+  } else {
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+  }
+});
+
+app.post('/changePhone', async (req, res) => {
+  const {oldPhone, newPhone} = req.body;
+
+  if (!oldPhone || !newPhone)
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+  const query = await db
+    .promise()
+    .query(
+      `UPDATE profile SET phone_no = '${newPhone}' WHERE phone_no = '${oldPhone}'`,
+    );
+
+  if (!!query[0]?.changedRows) {
+    res.status(200).send({msg: 'Successfully updated', error: null});
+  } else {
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+  }
+});
+
+app.post('/changeEmail', async (req, res) => {
+  const {oldEmail, newEmail} = req.body;
+
+  if (!oldEmail || !newEmail)
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+  const query = await db
+    .promise()
+    .query(
+      `UPDATE profile SET email = '${newEmail}' WHERE email = '${oldEmail}'`,
+    );
+
+  if (!!query[0]?.changedRows) {
+    res.status(200).send({msg: 'Successfully updated', error: null});
+  } else {
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+  }
+});
+
+app.post('/changePass', async (req, res) => {
+  const {currentPass, confirmPass, newPass} = req.body;
+
+  if (!currentPass || !confirmPass || !newPass)
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+
+  if (confirmPass !== newPass) {
+    res.status(400).send({
+      msg: 'New Password and Confirm Password did not match',
+      error: '400',
+    });
+    return;
+  }
+
+  const passQuery = await db
+    .promise()
+    .query(`SELECT password FROM user WHERE password = '${currentPass}'`);
+
+  if (!passQuery[0]?.length) {
+    res.status(400).send({msg: 'Wrong current password!', error: '400'});
+    return;
+  }
+
+  const query = await db
+    .promise()
+    .query(
+      `UPDATE user SET password = '${newPass}' WHERE password = '${currentPass}'`,
+    );
+
+  if (!!query[0]?.changedRows) {
+    res.status(200).send({msg: 'Successfully updated', error: null});
+  } else {
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+  }
+});
+
 app.get('/cart', (req, _res) => {
   const {cart} = req.session;
   if (!cart) {

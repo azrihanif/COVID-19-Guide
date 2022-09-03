@@ -4,15 +4,12 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {UnorderedList} from '../../components/UnorderedList';
 
-const deviceWidth = Dimensions.get('window').width;
-
 export default function Deactivate({route}) {
-  const {name} = route?.params;
+  const {data} = route?.params;
 
   const listTexts = [
     "You won't be able to log in and use any services\nwith that account",
@@ -23,7 +20,7 @@ export default function Deactivate({route}) {
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <View style={{paddingHorizontal: 16}}>
         <Text style={[styles.text, {fontWeight: 'bold', fontSize: 20}]}>
-          {name} : delete this account?
+          {data?.username} : delete this account?
         </Text>
         <Text style={styles.text}>
           {'\n'}Your account will be deactivated for 7 days. During

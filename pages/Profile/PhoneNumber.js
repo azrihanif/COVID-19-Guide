@@ -5,23 +5,84 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {connector} from '../../constants/Connector';
 
-export default function PhoneNumber({route}) {
+export default function PhoneNumber({navigation, route}) {
   const [isFocus, setIsFocus] = useState('');
-  const {phoneNumber} = route.params;
+  const {data} = route.params;
   const [newPhone, setNewPhone] = useState('');
+  const [popUp, setPopUp] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const changePhone = async () => {
+    const params = {oldPhone: data?.phone_no, newPhone: newPhone};
+    
+    try {
+      let res = await fetch(connector + '/changePhone', {
+        method: 'post',
+        mode: 'no-cors',
+        body: JSON.stringify(params),
+        headers: {
+          Accept: 'application/json',
+          'Content-type': 'application/json',
+        },
+      });
+      if (res) {
+        let responseJSON = await res.json();
+
+        if (responseJSON) {
+          setPopUp(true);
+          setErrorMsg(responseJSON?.msg);
+          modal();
+        }
+      } else {
+        setErrorMsg('Error!');
+        modal();
+      }
+    } catch (e) {
+      setPopUp(true);
+      setErrorMsg(e);
+      modal();
+    }
+  };
+
+  const modal = () => {
+    return (
+      <Modal transparent visible={popUp} animationType="fade">
+        <View style={styles.modalBackGround}>
+          <View style={styles.modalContainer}>
+            <View style={styles.header}>
+              <TouchableOpacity
+                onPress={() => {
+                  setPopUp(false);
+                  navigation.navigate({name: 'Profile', params: {data: {...data, phone_no: newPhone}}});
+                }}>
+                <FontAwesome name="close" color={'#000'} size={25} />
+              </TouchableOpacity>
+            </View>
+            <View style={{paddingBottom: 16}}>
+              <Text style={styles.modalText}>{errorMsg}</Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
 
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <View style={{paddingHorizontal: 16}}>
+        {modal()}
         <Text style={styles.text}>Current Phone Number</Text>
         <TextInput
           editable={false}
           style={styles.input}
           placeholder={'Current Phone Number'}
-          value={phoneNumber}></TextInput>
+          value={data?.phone_no}></TextInput>
         <Text style={styles.text}>New Phone Number</Text>
         <TextInput
           style={[styles.input, isFocus === 'phone' && styles.focus]}
@@ -31,7 +92,7 @@ export default function PhoneNumber({route}) {
           onFocus={() => setIsFocus('phone')}
           onBlur={() => setIsFocus('')}></TextInput>
         <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
-          <TouchableOpacity style={styles.button} onPress={() => {}}>
+          <TouchableOpacity style={styles.button} onPress={changePhone}>
             <Text style={styles.loginText}>{'SAVE'}</Text>
           </TouchableOpacity>
         </View>
@@ -79,5 +140,29 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     color: 'white',
     fontFamily: 'Sans-serif',
+  },
+  modalBackGround: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    borderRadius: 20,
+    elevation: 20,
+  },
+  header: {
+    width: '100%',
+    height: 40,
+    alignItems: 'flex-end',
+  },
+  modalText: {
+    paddingHorizontal: 5,
+    paddingTop: 3,
+    color: '#000',
   },
 });

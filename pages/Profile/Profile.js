@@ -20,7 +20,7 @@ import {sha256} from 'react-native-sha256';
 import LinearGradient from 'react-native-linear-gradient';
 import {connector} from '../../constants/Connector';
 
-export default function Profile({navigation}) {
+export default function Profile({navigation, route}) {
   const {userContext} = useContext(AuthCont);
   const [data, setData] = useState();
   const [visible, setVisible] = useState(false);
@@ -30,6 +30,12 @@ export default function Profile({navigation}) {
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+    if(route?.params?.data){
+      getData()
+    }
+  }, [route?.params?.data])
 
   const getData = async () => {
     const {id} = userContext;
@@ -286,14 +292,13 @@ export default function Profile({navigation}) {
           </Text>
           {changePhoto()}
           {modal()}
-
           <View style={{paddingTop: 16}}>
             <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
               Account Information
             </Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Username', {username: data?.username});
+                navigation.navigate('Username', {data});
               }}>
               <View
                 style={[
@@ -312,7 +317,7 @@ export default function Profile({navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Phone', {phoneNumber: data?.phone_no});
+                navigation.navigate('Phone', {data});
               }}>
               <View
                 style={[
@@ -339,7 +344,7 @@ export default function Profile({navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Email', {emailAddress: data?.email});
+                navigation.navigate('Email', {data});
               }}>
               <View
                 style={[
@@ -393,7 +398,7 @@ export default function Profile({navigation}) {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Deactivate', {name: data?.username});
+                navigation.navigate('Deactivate', {data});
               }}>
               <View style={styles.item}>
                 <FontAwesome name={'user'} size={28} color={'red'} />

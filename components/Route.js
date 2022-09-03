@@ -63,12 +63,13 @@ const Route = () => {
     />
   );
 
-  const logOut = () => {
+  const logOut = (navigation) => {
     return Alert.alert('Confirmation', 'Are you sure, you want to logout?', [
       {
         text: 'Yes',
         onPress: () => {
           setUserContext(null);
+          navigation.navigate("Covid-19 Guide")
         },
       },
       {
@@ -77,14 +78,14 @@ const Route = () => {
     ]);
   };
 
-  const logOutIcon = () => (
+  const logOutIcon = (navigation) => (
     <Entypo
       style={{paddingRight: 12}}
       name={'log-out'}
       size={27}
       color={'blue'}
       onPress={() => {
-        logOut();
+        logOut(navigation);
       }}
     />
   );
@@ -102,7 +103,7 @@ const Route = () => {
           headerShadowVisible: false,
           headerTintColor: 'blue',
           headerLeft: () => drawerIcon(navigation),
-          headerRight: () => logOutIcon(),
+          headerRight: () => logOutIcon(navigation),
         })}
       />
       <Stack.Screen
@@ -186,7 +187,7 @@ const Route = () => {
           headerShadowVisible: false,
           headerTintColor: 'blue',
           headerLeft: () => drawerIcon(navigation),
-          headerRight: () => logOutIcon(),
+          headerRight: () => logOutIcon(navigation),
         })}
       />
       <Stack.Screen
@@ -219,7 +220,7 @@ const Route = () => {
           headerShadowVisible: false,
           headerTintColor: 'blue',
           headerLeft: () => drawerIcon(navigation),
-          headerRight: () => logOutIcon(),
+          headerRight: () => logOutIcon(navigation),
         })}
       />
       <Stack.Screen
@@ -252,7 +253,7 @@ const Route = () => {
           headerShadowVisible: false,
           headerTintColor: 'blue',
           headerLeft: () => goBackIcon(navigation),
-          headerRight: () => logOutIcon(),
+          headerRight: () => logOutIcon(navigation),
         })}
       />
       <Stack.Screen
@@ -319,7 +320,7 @@ const Route = () => {
           headerShadowVisible: false,
           headerTintColor: 'blue',
           headerLeft: () => drawerIcon(navigation),
-          headerRight: () => logOutIcon(),
+          headerRight: () => logOutIcon(navigation),
         })}
       />
       <Stack.Screen
@@ -351,7 +352,7 @@ const Route = () => {
           headerShadowVisible: false,
           headerTintColor: 'blue',
           headerLeft: () => drawerIcon(navigation),
-          headerRight: () => logOutIcon(),
+          headerRight: () => logOutIcon(navigation),
         })}
       />
       <Stack.Screen
@@ -383,7 +384,7 @@ const Route = () => {
           headerShadowVisible: false,
           headerTintColor: 'blue',
           headerLeft: () => goBackIcon(navigation),
-          headerRight: () => logOutIcon(),
+          headerRight: () => logOutIcon(navigation),
         })}
       />
       <Stack.Screen
@@ -460,7 +461,7 @@ const Route = () => {
       screenOptions={({route, navigation}) => ({
         headerShadowVisible: false,
         headerLeft: () => drawerIcon(navigation),
-        headerRight: () => logOutIcon(),
+        headerRight: () => logOutIcon(navigation),
         tabBarIcon: ({_focused, color, size}) => {
           let iconName;
           let rn = route.name;
