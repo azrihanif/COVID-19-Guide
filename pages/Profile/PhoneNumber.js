@@ -17,10 +17,19 @@ export default function PhoneNumber({navigation, route}) {
   const [newPhone, setNewPhone] = useState('');
   const [popUp, setPopUp] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [flag, setFlag] = useState(false);
 
   const changePhone = async () => {
+    if (data?.phone_no === newPhone || !newPhone) {
+      setPopUp(true);
+      setErrorMsg('Please enter your new phone number');
+      setFlag(false);
+      modal();
+      return;
+    }
+
     const params = {oldPhone: data?.phone_no, newPhone: newPhone};
-    
+
     try {
       let res = await fetch(connector + '/changePhone', {
         method: 'post',
@@ -37,15 +46,18 @@ export default function PhoneNumber({navigation, route}) {
         if (responseJSON) {
           setPopUp(true);
           setErrorMsg(responseJSON?.msg);
+          setFlag(true);
           modal();
         }
       } else {
         setErrorMsg('Error!');
+        setFlag(false);
         modal();
       }
     } catch (e) {
       setPopUp(true);
       setErrorMsg(e);
+      setFlag(false);
       modal();
     }
   };
@@ -59,7 +71,11 @@ export default function PhoneNumber({navigation, route}) {
               <TouchableOpacity
                 onPress={() => {
                   setPopUp(false);
-                  navigation.navigate({name: 'Profile', params: {data: {...data, phone_no: newPhone}}});
+                  flag &&
+                    navigation.navigate({
+                      name: 'Profile',
+                      params: {data: {...data, phone_no: newPhone}},
+                    });
                 }}>
                 <FontAwesome name="close" color={'#000'} size={25} />
               </TouchableOpacity>
@@ -88,6 +104,8 @@ export default function PhoneNumber({navigation, route}) {
           style={[styles.input, isFocus === 'phone' && styles.focus]}
           placeholder={'New Phone Number'}
           value={newPhone}
+          maxLength={11}
+          keyboardType={'phone-pad'}
           onChangeText={phone => setNewPhone(phone)}
           onFocus={() => setIsFocus('phone')}
           onBlur={() => setIsFocus('')}></TextInput>

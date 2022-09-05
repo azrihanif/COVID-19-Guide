@@ -26,7 +26,9 @@ export default function NewPass({navigation}) {
   const [storeHash1, setStoreHash1] = useState([]);
   const [storeHash2, setStoreHash2] = useState([]);
   const [storeHash3, setStoreHash3] = useState([]);
-  const [mod, setMod] = useState(false)
+  const [mod, setMod] = useState(false);
+  const [valid, setValid] = useState(true);
+  const [confValid, setConfValid] = useState(true);
 
   const hashPassword1 = pass => sha256(pass).then(hash => store1(hash));
   const hashPassword2 = pass => sha256(pass).then(hash => store2(hash));
@@ -36,7 +38,48 @@ export default function NewPass({navigation}) {
   const store2 = hash => setStoreHash2(hash);
   const store3 = hash => setStoreHash3(hash);
 
+  const validatePass = pass => {
+    let reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,256}$/;
+    if (!reg.test(pass)) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   const changePass = async () => {
+    if(!currentPass || !newPass || !confirmPass){
+      setPopUp(true);
+      setErrorMsg('Please enter your new password');
+      setMod(false);
+      modal();
+      return;
+    }
+
+    if (!valid || !confValid) {
+      setPopUp(true);
+      setErrorMsg('Please enter the password with correct format');
+      setMod(false);
+      modal();
+      return;
+    }
+
+    if (currentPass === newPass) {
+      setPopUp(true);
+      setErrorMsg('New password cannot be the same as old password');
+      setMod(false);
+      modal();
+      return;
+    }
+
+    if(newPass !== confirmPass){
+      setPopUp(true);
+      setErrorMsg('New password and confirm password did not match');
+      setMod(false);
+      modal();
+      return;
+    }
+
     const params = {
       currentPass: storeHash1,
       confirmPass: storeHash2,
@@ -78,7 +121,7 @@ export default function NewPass({navigation}) {
     }
   };
 
-  const modal = flag => {
+  const modal = () => {
     return (
       <Modal transparent visible={popUp} animationType="fade">
         <View style={styles.modalBackGround}>
@@ -104,7 +147,7 @@ export default function NewPass({navigation}) {
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <View style={{paddingHorizontal: 16}}>
-        {modal(mod)}
+        {modal()}
         <Text style={styles.text}>Current Password</Text>
         <TextInput
           style={[styles.input, isFocus === 'password' && styles.focus]}
@@ -141,9 +184,16 @@ export default function NewPass({navigation}) {
           onChangeText={pass => {
             setNewPass(pass);
             hashPassword3(pass);
+            setValid(validatePass(pass));
           }}
           onFocus={() => setIsFocus('newPassword')}
           onBlur={() => setIsFocus('')}></TextInput>
+        {!valid && (
+          <Text style={{fontSize: 12, color: 'red', marginTop: -10}}>
+            Use 8 or more characters with a mix of letters, numbers &#38;
+            symbols
+          </Text>
+        )}
         <MaterialCommunityIcons
           name={isPasswordSecure ? 'eye-off' : 'eye'}
           size={28}
@@ -167,10 +217,23 @@ export default function NewPass({navigation}) {
           onChangeText={pass => {
             setConfirmPass(pass);
             hashPassword2(pass);
+            setConfValid(validatePass(pass));
           }}
           onFocus={() => setIsFocus('confPassword')}
           secureTextEntry={isConfPasswordSecure}
           onBlur={() => setIsFocus('')}></TextInput>
+        {!confValid && (
+          <Text
+            style={{
+              fontSize: 12,
+              color: 'red',
+              marginTop: -10,
+              marginBottom: 8,
+            }}>
+            Use 8 or more characters with a mix of letters, numbers &#38;
+            symbols
+          </Text>
+        )}
         <MaterialCommunityIcons
           name={isConfPasswordSecure ? 'eye-off' : 'eye'}
           size={28}

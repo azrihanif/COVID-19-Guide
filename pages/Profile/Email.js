@@ -10,6 +10,7 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {connector} from '../../constants/Connector';
 import LinearGradient from 'react-native-linear-gradient';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function Email({navigation, route}) {
   const [isFocus, setIsFocus] = useState('');
@@ -17,8 +18,37 @@ export default function Email({navigation, route}) {
   const [newEmail, setNewEmail] = useState('');
   const [popUp, setPopUp] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [flag, setFlag] = useState(false);
+  const [correctEmail, setCorrectEmail] = useState(false);
+
+  const validateEmail = mail => {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if (reg.test(mail) === false) {
+      console.log('Email is Not Correct');
+      setCorrectEmail(false);
+    } else {
+      console.log('Email is Correct');
+      setCorrectEmail(true);
+    }
+  };
 
   const changeEmail = async () => {
+    if (data?.email === newEmail || !newEmail) {
+      setPopUp(true);
+      setErrorMsg('Please enter your new email address');
+      setFlag(false);
+      modal();
+      return;
+    }
+
+    if (!correctEmail) {
+      setPopUp(true);
+      setErrorMsg('Please enter correct email address');
+      setFlag(false);
+      modal();
+      return;
+    }
+
     const params = {oldEmail: data?.email, newEmail: newEmail};
     try {
       let res = await fetch(connector + '/changeEmail', {
@@ -36,15 +66,18 @@ export default function Email({navigation, route}) {
         if (responseJSON) {
           setPopUp(true);
           setErrorMsg(responseJSON?.msg);
+          setFlag(true);
           modal();
         }
       } else {
         setErrorMsg('Error!');
+        setFlag(false);
         modal();
       }
     } catch (e) {
       setPopUp(true);
       setErrorMsg(e);
+      setFlag(false);
       modal();
     }
   };
@@ -58,10 +91,11 @@ export default function Email({navigation, route}) {
               <TouchableOpacity
                 onPress={() => {
                   setPopUp(false);
-                  navigation.navigate({
-                    name: 'Profile',
-                    params: {data: {...data, email: newEmail}},
-                  });
+                  flag &&
+                    navigation.navigate({
+                      name: 'Profile',
+                      params: {data: {...data, email: newEmail}},
+                    });
                 }}>
                 <FontAwesome name="close" color={'#000'} size={25} />
               </TouchableOpacity>
@@ -90,9 +124,37 @@ export default function Email({navigation, route}) {
           style={[styles.input, isFocus === 'email' && styles.focus]}
           placeholder={'New Email Address'}
           value={newEmail}
-          onChangeText={email => setNewEmail(email)}
+          maxLength={256}
+          onChangeText={email => {
+            setNewEmail(email);
+            validateEmail(email);
+          }}
           onFocus={() => setIsFocus('email')}
           onBlur={() => setIsFocus('')}></TextInput>
+        {correctEmail && (
+          <MaterialCommunityIcons
+            name={'check-circle'}
+            size={28}
+            color={'green'}
+            style={{
+              position: 'absolute',
+              right: 30,
+              top: 137,
+            }}
+          />
+        )}
+        {!correctEmail && !!newEmail && (
+          <MaterialCommunityIcons
+            name={'close-circle'}
+            size={28}
+            color={'red'}
+            style={{
+              position: 'absolute',
+              right: 30,
+              top: 137,
+            }}
+          />
+        )}
         <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
           <TouchableOpacity style={styles.button} onPress={changeEmail}>
             <Text style={styles.loginText}>{'SAVE'}</Text>

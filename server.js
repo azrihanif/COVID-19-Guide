@@ -350,8 +350,10 @@ app.post('/changeUsername', async (req, res) => {
 app.post('/changePhone', async (req, res) => {
   const {oldPhone, newPhone} = req.body;
 
-  if (!oldPhone || !newPhone)
+  if (!oldPhone || !newPhone) {
     res.status(400).send({msg: 'Error Occured', error: '400'});
+    return;
+  }
   const query = await db
     .promise()
     .query(

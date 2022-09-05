@@ -17,8 +17,17 @@ export default function Username({navigation, route}) {
   const [newUsername, setNewUsername] = useState('');
   const [popUp, setPopUp] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [flag, setFlag] = useState(false);
 
   const changeUsername = async () => {
+    if (!newUsername || newUsername === data?.username) {
+      setPopUp(true);
+      setErrorMsg('Please enter your new username');
+      setFlag(false);
+      modal();
+      return;
+    }
+
     const params = {oldUsername: data?.username, newUsername: newUsername};
     try {
       let res = await fetch(connector + '/changeUsername', {
@@ -36,15 +45,18 @@ export default function Username({navigation, route}) {
         if (responseJSON) {
           setPopUp(true);
           setErrorMsg(responseJSON?.msg);
+          setFlag(true);
           modal();
         }
       } else {
         setErrorMsg('Error!');
+        setFlag(false);
         modal();
       }
     } catch (e) {
       setPopUp(true);
       setErrorMsg(e);
+      setFlag(false);
       modal();
     }
   };
@@ -58,7 +70,11 @@ export default function Username({navigation, route}) {
               <TouchableOpacity
                 onPress={() => {
                   setPopUp(false);
-                  navigation.navigate({name: 'Profile', params: {data: {...data, username: newUsername}}});
+                  flag &&
+                    navigation.navigate({
+                      name: 'Profile',
+                      params: {data: {...data, username: newUsername}},
+                    });
                 }}>
                 <FontAwesome name="close" color={'#000'} size={25} />
               </TouchableOpacity>
@@ -87,6 +103,7 @@ export default function Username({navigation, route}) {
           style={[styles.input, isFocus === 'username' && styles.focus]}
           placeholder={'New Username'}
           value={newUsername}
+          maxLength={256}
           onChangeText={name => setNewUsername(name)}
           onFocus={() => setIsFocus('username')}
           onBlur={() => setIsFocus('')}></TextInput>
