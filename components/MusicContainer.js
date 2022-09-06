@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-export default function MusicContainer({name, title, time}) {
+export default function MusicContainer({name, title, time, onPress}) {
   const [playing, setPlaying] = useState(false);
 
   return (
@@ -19,10 +19,10 @@ export default function MusicContainer({name, title, time}) {
           <Ionicons name="play-circle-outline" color={'#030852'} size={40} />
         )}
       </TouchableOpacity>
-      <View style={styles.textWrapper}>
+      <TouchableOpacity style={styles.textWrapper} onPress={() => onPress()}>
         <Text style={[styles.titleText, {opacity: 0.5}]}>{name}</Text>
         <Text style={styles.titleText}>{title}</Text>
-      </View>
+      </TouchableOpacity>
       <View style={styles.iconWrapper}>
         <View>
           {playing ? (

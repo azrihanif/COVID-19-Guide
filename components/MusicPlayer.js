@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Feather from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 export default function MusicPlayer({name, title, time}) {
@@ -21,9 +20,9 @@ export default function MusicPlayer({name, title, time}) {
           setPlaying(playing => !playing);
         }}>
         {playing ? (
-          <Feather name="pause-circle" color="#030852" size={61} />
+          <Ionicons name="pause-circle-outline" color="#030852" size={65} />
         ) : (
-          <Ionicons name="play-circle-outline" color={'#030852'} size={58} />
+          <Ionicons name="play-circle-outline" color={'#030852'} size={65} />
         )}
       </TouchableOpacity>
       <TouchableOpacity style={{paddingRight: 32}} onPress={() => {}}>

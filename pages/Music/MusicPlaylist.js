@@ -33,11 +33,20 @@ export default function MusicPlaylist({navigation}) {
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <View style={{paddingLeft: 16, paddingRight: 16}}>
         {data?.map(({name, title, time}, index) => (
-          <TouchableOpacity
+          <MusicContainer
             key={index}
-            onPress={() => navigation.navigate('Music Play')}>
-            <MusicContainer title={title} name={name} time={time} />
-          </TouchableOpacity>
+            title={title}
+            name={name}
+            time={time}
+            onPress={() =>
+              navigation.navigate('Music Play', {
+                title,
+                name,
+                time,
+                picture: require('../../images/profilepic/profile.jpg'),
+              })
+            }
+          />
         ))}
       </View>
       <View style={styles.musicPlayer}>

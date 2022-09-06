@@ -29,9 +29,18 @@ export default function QuranPlaylist({navigation}) {
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <View style={{paddingLeft: 16, paddingRight: 16}}>
         {data?.map(({title, time}, index) => (
-          <TouchableOpacity key={index} onPress={() => navigation.navigate('Quran Play')}>
-            <QuranContainer title={title} time={time} />
-          </TouchableOpacity>
+          <QuranContainer
+            key={index}
+            title={title}
+            time={time}
+            onPress={() =>
+              navigation.navigate('Quran Play', {
+                title,
+                time,
+                picture: require('../../images/profilepic/profile.jpg'),
+              })
+            }
+          />
         ))}
       </View>
       <View style={styles.musicPlayer}>

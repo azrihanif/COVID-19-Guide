@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-export default function QuranContainer({name, title, time}) {
+export default function QuranContainer({title, time, onPress}) {
   const [playing, setPlaying] = useState(false);
 
   return (
@@ -19,9 +19,9 @@ export default function QuranContainer({name, title, time}) {
           <Ionicons name="play-circle-outline" color={'#030852'} size={40} />
         )}
       </TouchableOpacity>
-      <View style={styles.textWrapper}>
+      <TouchableOpacity style={styles.textWrapper} onPress={() => onPress()}>
         <Text style={styles.titleText}>{title}</Text>
-      </View>
+      </TouchableOpacity>
       <View style={styles.iconWrapper}>
         <View>
           {playing ? (
