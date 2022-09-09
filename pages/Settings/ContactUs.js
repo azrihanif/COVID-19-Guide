@@ -1,51 +1,94 @@
-import React, {useState} from 'react';
-import {StyleSheet, View, Text, TextInput, TouchableOpacity} from 'react-native';
+import React, {useState, useContext} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { CustomDarkTheme } from '../../components/Route';
+import {AuthCont} from '../../constants/AuthContext';
 
 export default function ContactUs() {
   const [isFocus, setIsFocus] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const {userContext} = useContext(AuthCont);
 
-  return (
-    <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.text}>Drop us a message</Text>
-        <TextInput
-          style={[styles.input, isFocus === 'name' && styles.focus]}
-          placeholder={'Full Name'}
-          value={name}
-          onChangeText={user => setName(user)}
-          onFocus={() => setIsFocus('name')}
-          onBlur={() => setIsFocus('')}></TextInput>
-        <TextInput
-          style={[styles.input, isFocus === 'email' && styles.focus]}
-          placeholder={'Email Address'}
-          value={email}
-          onChangeText={pass => setEmail(pass)}
-          onFocus={() => setIsFocus('email')}
-          onBlur={() => setIsFocus('')}></TextInput>
-        <TextInput
-          style={[styles.input, isFocus === 'message' && styles.focus]}
-          placeholder={'Message'}
-          value={message}
-          onChangeText={pass => setMessage(pass)}
-          onFocus={() => setIsFocus('message')}
-          onBlur={() => setIsFocus('')}></TextInput>
+  const getTheme = () => {
+    return userContext?.dark_mode === 'F' ? (
+      <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
+        <View style={styles.card}>
+          <Text style={styles.text}>Drop us a message</Text>
+          <TextInput
+            style={[styles.input, isFocus === 'name' && styles.focus]}
+            placeholder={'Full Name'}
+            value={name}
+            onChangeText={user => setName(user)}
+            onFocus={() => setIsFocus('name')}
+            onBlur={() => setIsFocus('')}></TextInput>
+          <TextInput
+            style={[styles.input, isFocus === 'email' && styles.focus]}
+            placeholder={'Email Address'}
+            value={email}
+            onChangeText={pass => setEmail(pass)}
+            onFocus={() => setIsFocus('email')}
+            onBlur={() => setIsFocus('')}></TextInput>
+          <TextInput
+            style={[styles.input, isFocus === 'message' && styles.focus]}
+            placeholder={'Message'}
+            value={message}
+            onChangeText={pass => setMessage(pass)}
+            onFocus={() => setIsFocus('message')}
+            onBlur={() => setIsFocus('')}></TextInput>
 
-        <TouchableOpacity style={styles.button} onPress={() => {}}>
-          <Text style={styles.loginText}>{'SUBMIT'}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => {}}>
+            <Text style={styles.loginText}>{'SUBMIT'}</Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    ) : (
+      <View style={[styles.container, CustomDarkTheme]}>
+        <View style={styles.card}>
+          <Text style={styles.text}>Drop us a message</Text>
+          <TextInput
+            style={[styles.input, isFocus === 'name' && styles.focus]}
+            placeholder={'Full Name'}
+            value={name}
+            onChangeText={user => setName(user)}
+            onFocus={() => setIsFocus('name')}
+            onBlur={() => setIsFocus('')}></TextInput>
+          <TextInput
+            style={[styles.input, isFocus === 'email' && styles.focus]}
+            placeholder={'Email Address'}
+            value={email}
+            onChangeText={pass => setEmail(pass)}
+            onFocus={() => setIsFocus('email')}
+            onBlur={() => setIsFocus('')}></TextInput>
+          <TextInput
+            style={[styles.input, isFocus === 'message' && styles.focus]}
+            placeholder={'Message'}
+            value={message}
+            onChangeText={pass => setMessage(pass)}
+            onFocus={() => setIsFocus('message')}
+            onBlur={() => setIsFocus('')}></TextInput>
+
+          <TouchableOpacity style={styles.button} onPress={() => {}}>
+            <Text style={styles.loginText}>{'SUBMIT'}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </LinearGradient>
-  );
+    );
+  };
+
+  return getTheme();
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
   },

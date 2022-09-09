@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   StyleSheet,
   View,
@@ -11,6 +11,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {connector} from '../../constants/Connector';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { CustomDarkTheme } from '../../components/Route';
+import {AuthCont} from '../../constants/AuthContext';
 
 export default function Email({navigation, route}) {
   const [isFocus, setIsFocus] = useState('');
@@ -20,6 +22,7 @@ export default function Email({navigation, route}) {
   const [errorMsg, setErrorMsg] = useState('');
   const [flag, setFlag] = useState(false);
   const [correctEmail, setCorrectEmail] = useState(false);
+  const {userContext} = useContext(AuthCont);
 
   const validateEmail = mail => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -109,66 +112,122 @@ export default function Email({navigation, route}) {
     );
   };
 
-  return (
-    <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <View style={{paddingHorizontal: 16}}>
-        {modal()}
-        <Text style={styles.text}>Current Email Address</Text>
-        <TextInput
-          editable={false}
-          style={styles.input}
-          placeholder={'Current Email Address'}
-          value={data?.email}></TextInput>
-        <Text style={styles.text}>New Email Address</Text>
-        <TextInput
-          style={[styles.input, isFocus === 'email' && styles.focus]}
-          placeholder={'New Email Address'}
-          value={newEmail}
-          maxLength={256}
-          onChangeText={email => {
-            setNewEmail(email);
-            validateEmail(email);
-          }}
-          onFocus={() => setIsFocus('email')}
-          onBlur={() => setIsFocus('')}></TextInput>
-        {correctEmail && (
-          <MaterialCommunityIcons
-            name={'check-circle'}
-            size={28}
-            color={'green'}
-            style={{
-              position: 'absolute',
-              right: 30,
-              top: 137,
+  const getTheme = () => {
+    return userContext?.dark_mode === 'F' ? (
+      <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
+        <View style={{paddingHorizontal: 16}}>
+          {modal()}
+          <Text style={styles.text}>Current Email Address</Text>
+          <TextInput
+            editable={false}
+            style={styles.input}
+            placeholder={'Current Email Address'}
+            value={data?.email}></TextInput>
+          <Text style={styles.text}>New Email Address</Text>
+          <TextInput
+            style={[styles.input, isFocus === 'email' && styles.focus]}
+            placeholder={'New Email Address'}
+            value={newEmail}
+            maxLength={256}
+            onChangeText={email => {
+              setNewEmail(email);
+              validateEmail(email);
             }}
-          />
-        )}
-        {!correctEmail && !!newEmail && (
-          <MaterialCommunityIcons
-            name={'close-circle'}
-            size={28}
-            color={'red'}
-            style={{
-              position: 'absolute',
-              right: 30,
-              top: 137,
+            onFocus={() => setIsFocus('email')}
+            onBlur={() => setIsFocus('')}></TextInput>
+          {correctEmail && (
+            <MaterialCommunityIcons
+              name={'check-circle'}
+              size={28}
+              color={'green'}
+              style={{
+                position: 'absolute',
+                right: 30,
+                top: 137,
+              }}
+            />
+          )}
+          {!correctEmail && !!newEmail && (
+            <MaterialCommunityIcons
+              name={'close-circle'}
+              size={28}
+              color={'red'}
+              style={{
+                position: 'absolute',
+                right: 30,
+                top: 137,
+              }}
+            />
+          )}
+          <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+            <TouchableOpacity style={styles.button} onPress={changeEmail}>
+              <Text style={styles.loginText}>{'SAVE'}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </LinearGradient>
+    ) : (
+      <View style={[styles.container, CustomDarkTheme]}>
+        <View style={{paddingHorizontal: 16}}>
+          {modal()}
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>Current Email Address</Text>
+          <TextInput
+            editable={false}
+            style={styles.input}
+            placeholder={'Current Email Address'}
+            value={data?.email}></TextInput>
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>New Email Address</Text>
+          <TextInput
+            style={[styles.input, isFocus === 'email' && styles.focus]}
+            placeholder={'New Email Address'}
+            value={newEmail}
+            maxLength={256}
+            onChangeText={email => {
+              setNewEmail(email);
+              validateEmail(email);
             }}
-          />
-        )}
-        <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
-          <TouchableOpacity style={styles.button} onPress={changeEmail}>
-            <Text style={styles.loginText}>{'SAVE'}</Text>
-          </TouchableOpacity>
+            onFocus={() => setIsFocus('email')}
+            onBlur={() => setIsFocus('')}></TextInput>
+          {correctEmail && (
+            <MaterialCommunityIcons
+              name={'check-circle'}
+              size={28}
+              color={'green'}
+              style={{
+                position: 'absolute',
+                right: 30,
+                top: 137,
+              }}
+            />
+          )}
+          {!correctEmail && !!newEmail && (
+            <MaterialCommunityIcons
+              name={'close-circle'}
+              size={28}
+              color={'red'}
+              style={{
+                position: 'absolute',
+                right: 30,
+                top: 137,
+              }}
+            />
+          )}
+          <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+            <TouchableOpacity style={styles.button} onPress={changeEmail}>
+              <Text style={styles.loginText}>{'SAVE'}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </LinearGradient>
-  );
+    );
+  };
+
+  return getTheme();
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
   },
   text: {
     fontSize: 16,

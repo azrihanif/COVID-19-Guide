@@ -12,6 +12,7 @@ import moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
 import Searchbar from '../../components/Searchbar';
 import {connector} from '../../constants/Connector';
+import {CustomDarkTheme} from '../../components/Route';
 
 export default function Home({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
@@ -84,30 +85,51 @@ export default function Home({navigation}) {
     getAdvice();
   };
 
-  return (
-    <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <View style={styles.items}>
-        <Searchbar
-          item={taskItem}
-          setItem={setTaskItem}
-          filterItem={filterItem}
-        />
-        <FlatList
-          data={taskItem}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index}
-          refreshing={refresh}
-          onRefresh={handleRefresh}
-        />
+  const getTheme = () => {
+    return userContext?.dark_mode === 'F' ? (
+      <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
+        <View style={styles.items}>
+          <Searchbar
+            item={taskItem}
+            setItem={setTaskItem}
+            filterItem={filterItem}
+          />
+          <FlatList
+            data={taskItem}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index}
+            refreshing={refresh}
+            onRefresh={handleRefresh}
+          />
+        </View>
+      </LinearGradient>
+    ) : (
+      <View
+        style={[styles.container, CustomDarkTheme]}>
+        <View style={styles.items}>
+          <Searchbar
+            item={taskItem}
+            setItem={setTaskItem}
+            filterItem={filterItem}
+          />
+          <FlatList
+            data={taskItem}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index}
+            refreshing={refresh}
+            onRefresh={handleRefresh}
+          />
+        </View>
       </View>
-    </LinearGradient>
-  );
+    );
+  };
+
+  return getTheme();
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
   },
   sectionTitle: {
     fontSize: 24,

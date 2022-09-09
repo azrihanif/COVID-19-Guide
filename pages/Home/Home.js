@@ -15,6 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
 import {connector} from '../../constants/Connector';
 import {AuthCont} from '../../constants/AuthContext';
+import {CustomDarkTheme} from '../../components/Route';
 
 export default function Home({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
@@ -129,31 +130,52 @@ export default function Home({navigation}) {
     getInfo();
   };
 
-  return (
-    <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <View style={styles.items}>
-        <Searchbar
-          item={taskItem}
-          setItem={setTaskItem}
-          filterItem={filterItem}
-        />
-        {modal()}
-        <FlatList
-          data={taskItem}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index}
-          refreshing={refresh}
-          onRefresh={handleRefresh}
-        />
+  const getTheme = () => {
+    return userContext?.dark_mode === 'F' ? (
+      <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
+        <View style={styles.items}>
+          <Searchbar
+            item={taskItem}
+            setItem={setTaskItem}
+            filterItem={filterItem}
+          />
+          {modal()}
+          <FlatList
+            data={taskItem}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index}
+            refreshing={refresh}
+            onRefresh={handleRefresh}
+          />
+        </View>
+      </LinearGradient>
+    ) : (
+      <View style={[styles.container, {CustomDarkTheme}]}>
+        <View style={styles.items}>
+          <Searchbar
+            item={taskItem}
+            setItem={setTaskItem}
+            filterItem={filterItem}
+          />
+          {modal()}
+          <FlatList
+            data={taskItem}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index}
+            refreshing={refresh}
+            onRefresh={handleRefresh}
+          />
+        </View>
       </View>
-    </LinearGradient>
-  );
+    );
+  };
+
+  return getTheme();
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
   },
   sectionTitle: {
     fontSize: 24,

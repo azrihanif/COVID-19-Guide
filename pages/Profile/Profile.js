@@ -9,16 +9,15 @@ import {
   TouchableOpacity,
   Modal,
   Button,
-  Alert,
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {AuthCont} from '../../constants/AuthContext';
-import {sha256} from 'react-native-sha256';
 import LinearGradient from 'react-native-linear-gradient';
 import {connector} from '../../constants/Connector';
+import {CustomDarkTheme} from '../../components/Route';
 
 export default function Profile({navigation, route}) {
   const {userContext} = useContext(AuthCont);
@@ -32,10 +31,10 @@ export default function Profile({navigation, route}) {
   }, []);
 
   useEffect(() => {
-    if(route?.params?.data){
-      getData()
+    if (route?.params?.data) {
+      getData();
     }
-  }, [route?.params?.data])
+  }, [route?.params?.data]);
 
   const getData = async () => {
     const {id} = userContext;
@@ -135,54 +134,6 @@ export default function Profile({navigation, route}) {
     );
   };
 
-  const deleteUser = async () => {
-    const {id} = userContext;
-    if (id) {
-      try {
-        let res = await fetch(connector + '/deleteUser', {
-          method: 'post',
-          mode: 'no-cors',
-          body: JSON.stringify({id: id}),
-          headers: {
-            Accept: 'application/json',
-            'Content-type': 'application/json',
-          },
-        });
-        if (res) {
-          let responseJSON = await res.json();
-          if (responseJSON.error) {
-            Alert.alert('Account Deleted', responseJSON?.msg);
-          } else {
-            Alert.alert('Account Deleted', responseJSON?.msg);
-            navigation.navigate('Covid-19 Guide');
-          }
-        } else {
-          console.log('Error!');
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  };
-
-  const showConfirmDialog = () => {
-    return Alert.alert(
-      'Are you sure?',
-      'This action will delete your account. Are you sure you want to proceed?',
-      [
-        {
-          text: 'Yes',
-          onPress: () => {
-            deleteUser();
-          },
-        },
-        {
-          text: 'No',
-        },
-      ],
-    );
-  };
-
   const changePhoto = () => {
     return (
       <Modal transparent visible={visible} animationType="fade">
@@ -215,215 +166,326 @@ export default function Profile({navigation, route}) {
     );
   };
 
-  const hashPassword = pass => {
-    sha256(pass).then(hash => {
-      submit(hash);
-    });
+  const getTheme = () => {
+    return userContext?.dark_mode === 'F' ? (
+      <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.writeTaskWrapper}>
+          <ScrollView bounces={false} style={styles.scroll}>
+            <View style={styles.imageWrapper}>
+              <Image
+                style={styles.image}
+                source={require('../../images/profilepic/profile.jpg')}
+              />
+            </View>
+            <Text
+              style={styles.sectionTitle}
+              onPress={() => {
+                setVisible(true);
+              }}>
+              Change profile photo
+            </Text>
+            {changePhoto()}
+            {modal()}
+            <View style={{paddingTop: 16}}>
+              <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
+                Account Information
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Username', {data});
+                }}>
+                <View
+                  style={[
+                    styles.item,
+                    {borderBottomRightRadius: 0, borderBottomLeftRadius: 0},
+                  ]}>
+                  <Feather name={'user'} size={28} color={'#030852'} />
+                  <Text style={styles.text}>Change Username</Text>
+                  <FontAwesome
+                    style={styles.angle}
+                    name={'angle-right'}
+                    size={32}
+                    color={'#030852'}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Phone', {data});
+                }}>
+                <View
+                  style={[
+                    styles.item,
+                    {
+                      marginTop: -20,
+                      borderTopStartRadius: 0,
+                      borderTopRightRadius: 0,
+                      borderBottomRightRadius: 0,
+                      borderBottomLeftRadius: 0,
+                    },
+                  ]}>
+                  <FontAwesome name={'phone'} size={28} color={'#030852'} />
+                  <Text style={[styles.text, {marginLeft: 5}]}>
+                    Change Phone Number
+                  </Text>
+                  <FontAwesome
+                    style={styles.angle}
+                    name={'angle-right'}
+                    size={32}
+                    color={'#030852'}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Email', {data});
+                }}>
+                <View
+                  style={[
+                    styles.item,
+                    {
+                      marginTop: -20,
+                      borderTopStartRadius: 0,
+                      borderTopRightRadius: 0,
+                    },
+                  ]}>
+                  <MaterialCommunityIcons
+                    name={'email'}
+                    size={28}
+                    color={'#030852'}
+                  />
+                  <Text style={styles.text}>Change Email Address</Text>
+                  <FontAwesome
+                    style={styles.angle}
+                    name={'angle-right'}
+                    size={32}
+                    color={'#030852'}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
+                Security
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('NewPass');
+                }}>
+                <View style={styles.item}>
+                  <FontAwesome name={'lock'} size={32} color={'#030852'} />
+                  <Text style={[styles.text, {marginLeft: 5}]}>
+                    Change Password
+                  </Text>
+                  <FontAwesome
+                    style={styles.angle}
+                    name={'angle-right'}
+                    size={32}
+                    color={'#030852'}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
+                Deactivate Account
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Deactivate', {data});
+                }}>
+                <View style={styles.item}>
+                  <FontAwesome name={'user'} size={28} color={'red'} />
+                  <Text style={[styles.text, {color: 'red', marginLeft: 5}]}>
+                    Deactivate My Account
+                  </Text>
+                  <FontAwesome
+                    style={styles.angle}
+                    name={'angle-right'}
+                    size={32}
+                    color={'red'}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </LinearGradient>
+    ) : (
+      <View style={[styles.container, CustomDarkTheme]}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.writeTaskWrapper}>
+          <ScrollView bounces={false} style={styles.scroll}>
+            <View style={styles.imageWrapper}>
+              <Image
+                style={styles.image}
+                source={require('../../images/profilepic/profile.jpg')}
+              />
+            </View>
+            <Text
+              style={[
+                styles.sectionTitle,
+                {color: CustomDarkTheme?.colors?.text},
+              ]}
+              onPress={() => {
+                setVisible(true);
+              }}>
+              Change profile photo
+            </Text>
+            {changePhoto()}
+            {modal()}
+            <View style={{paddingTop: 16}}>
+              <Text
+                style={{
+                  paddingBottom: 10,
+                  fontFamily: 'Sans-serif',
+                  color: CustomDarkTheme?.colors?.text,
+                }}>
+                Account Information
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Username', {data});
+                }}>
+                <View
+                  style={[
+                    styles.item,
+                    {borderBottomRightRadius: 0, borderBottomLeftRadius: 0},
+                  ]}>
+                  <Feather name={'user'} size={28} color={'#030852'} />
+                  <Text style={styles.text}>Change Username</Text>
+                  <FontAwesome
+                    style={styles.angle}
+                    name={'angle-right'}
+                    size={32}
+                    color={'#030852'}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Phone', {data});
+                }}>
+                <View
+                  style={[
+                    styles.item,
+                    {
+                      marginTop: -20,
+                      borderTopStartRadius: 0,
+                      borderTopRightRadius: 0,
+                      borderBottomRightRadius: 0,
+                      borderBottomLeftRadius: 0,
+                    },
+                  ]}>
+                  <FontAwesome name={'phone'} size={28} color={'#030852'} />
+                  <Text style={[styles.text, {marginLeft: 5}]}>
+                    Change Phone Number
+                  </Text>
+                  <FontAwesome
+                    style={styles.angle}
+                    name={'angle-right'}
+                    size={32}
+                    color={'#030852'}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Email', {data});
+                }}>
+                <View
+                  style={[
+                    styles.item,
+                    {
+                      marginTop: -20,
+                      borderTopStartRadius: 0,
+                      borderTopRightRadius: 0,
+                    },
+                  ]}>
+                  <MaterialCommunityIcons
+                    name={'email'}
+                    size={28}
+                    color={'#030852'}
+                  />
+                  <Text style={styles.text}>Change Email Address</Text>
+                  <FontAwesome
+                    style={styles.angle}
+                    name={'angle-right'}
+                    size={32}
+                    color={'#030852'}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text
+                style={{
+                  paddingBottom: 10,
+                  fontFamily: 'Sans-serif',
+                  color: CustomDarkTheme?.colors?.text,
+                }}>
+                Security
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('NewPass');
+                }}>
+                <View style={styles.item}>
+                  <FontAwesome name={'lock'} size={32} color={'#030852'} />
+                  <Text style={[styles.text, {marginLeft: 5}]}>
+                    Change Password
+                  </Text>
+                  <FontAwesome
+                    style={styles.angle}
+                    name={'angle-right'}
+                    size={32}
+                    color={'#030852'}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text
+                style={{
+                  paddingBottom: 10,
+                  fontFamily: 'Sans-serif',
+                  color: CustomDarkTheme?.colors?.text,
+                }}>
+                Deactivate Account
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Deactivate', {data});
+                }}>
+                <View style={styles.item}>
+                  <FontAwesome name={'user'} size={28} color={'red'} />
+                  <Text style={[styles.text, {color: 'red', marginLeft: 5}]}>
+                    Deactivate My Account
+                  </Text>
+                  <FontAwesome
+                    style={styles.angle}
+                    name={'angle-right'}
+                    size={32}
+                    color={'red'}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    );
   };
 
-  const submit = async hash => {
-    if (data?.name && data?.username) {
-      if (data?.confPass !== data?.password) {
-        setErrorMsg('Confirm Password and Password did not match');
-        setPopUp(true);
-        modal();
-        return;
-      }
-
-      const {id} = userContext;
-      const sendData = {
-        id: id,
-        email: data?.email,
-        password: hash,
-        name: data?.name,
-        address: data?.address,
-        phone_no: data?.phone_no,
-      };
-
-      try {
-        let res = await fetch(connector + '/updateProfile', {
-          method: 'post',
-          mode: 'no-cors',
-          body: JSON.stringify(sendData),
-          headers: {
-            Accept: 'application/json',
-            'Content-type': 'application/json',
-          },
-        });
-        if (res) {
-          let responseJSON = await res.json();
-          setPopUp(true);
-          setErrorMsg(responseJSON?.msg);
-          modal();
-        } else {
-          setErrorMsg('Error!');
-          modal();
-        }
-      } catch (e) {
-        setPopUp(true);
-        setErrorMsg(e);
-        modal();
-      }
-    } else {
-      setErrorMsg('Please fill in your profile information before submitting');
-      setPopUp(true);
-      modal();
-    }
-  };
-
-  return (
-    <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.writeTaskWrapper}>
-        <ScrollView bounces={false} style={styles.scroll}>
-          <View style={styles.imageWrapper}>
-            <Image
-              style={styles.image}
-              source={require('../../images/profilepic/profile.jpg')}
-            />
-          </View>
-          <Text
-            style={styles.sectionTitle}
-            onPress={() => {
-              setVisible(true);
-            }}>
-            Change profile photo
-          </Text>
-          {changePhoto()}
-          {modal()}
-          <View style={{paddingTop: 16}}>
-            <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
-              Account Information
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Username', {data});
-              }}>
-              <View
-                style={[
-                  styles.item,
-                  {borderBottomRightRadius: 0, borderBottomLeftRadius: 0},
-                ]}>
-                <Feather name={'user'} size={28} color={'#030852'} />
-                <Text style={styles.text}>Change Username</Text>
-                <FontAwesome
-                  style={styles.angle}
-                  name={'angle-right'}
-                  size={32}
-                  color={'#030852'}
-                />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Phone', {data});
-              }}>
-              <View
-                style={[
-                  styles.item,
-                  {
-                    marginTop: -20,
-                    borderTopStartRadius: 0,
-                    borderTopRightRadius: 0,
-                    borderBottomRightRadius: 0,
-                    borderBottomLeftRadius: 0,
-                  },
-                ]}>
-                <FontAwesome name={'phone'} size={28} color={'#030852'} />
-                <Text style={[styles.text, {marginLeft: 5}]}>
-                  Change Phone Number
-                </Text>
-                <FontAwesome
-                  style={styles.angle}
-                  name={'angle-right'}
-                  size={32}
-                  color={'#030852'}
-                />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Email', {data});
-              }}>
-              <View
-                style={[
-                  styles.item,
-                  {
-                    marginTop: -20,
-                    borderTopStartRadius: 0,
-                    borderTopRightRadius: 0,
-                  },
-                ]}>
-                <MaterialCommunityIcons
-                  name={'email'}
-                  size={28}
-                  color={'#030852'}
-                />
-                <Text style={styles.text}>Change Email Address</Text>
-                <FontAwesome
-                  style={styles.angle}
-                  name={'angle-right'}
-                  size={32}
-                  color={'#030852'}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
-              Security
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('NewPass');
-              }}>
-              <View style={styles.item}>
-                <FontAwesome name={'lock'} size={32} color={'#030852'} />
-                <Text style={[styles.text, {marginLeft: 5}]}>
-                  Change Password
-                </Text>
-                <FontAwesome
-                  style={styles.angle}
-                  name={'angle-right'}
-                  size={32}
-                  color={'#030852'}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
-              Deactivate Account
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Deactivate', {data});
-              }}>
-              <View style={styles.item}>
-                <FontAwesome name={'user'} size={28} color={'red'} />
-                <Text style={[styles.text, {color: 'red', marginLeft: 5}]}>
-                  Deactivate My Account
-                </Text>
-                <FontAwesome
-                  style={styles.angle}
-                  name={'angle-right'}
-                  size={32}
-                  color={'red'}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </LinearGradient>
-  );
+  return getTheme();
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
   },
   scroll: {
     flex: 1,

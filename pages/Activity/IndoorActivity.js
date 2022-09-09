@@ -13,6 +13,7 @@ import moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
 import Searchbar from '../../components/Searchbar';
 import {connector} from '../../constants/Connector';
+import {CustomDarkTheme} from '../../components/Route';
 
 export default function IndoorActivity({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
@@ -77,37 +78,64 @@ export default function IndoorActivity({navigation}) {
     getActivity();
   };
 
-  return (
-    <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <View style={styles.items}>
-        <Searchbar
-          item={taskItem}
-          setItem={setTaskItem}
-          filterItem={filterItem}
-        />
-        <Text style={styles.text}>
-          Today's Activities ({moment(new Date()).format('DD/MM/YYYY')})
-        </Text>
-        <FlatList
-          data={taskItem}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index}
-          refreshing={refresh}
-          onRefresh={handleRefresh}
-        />
-      </View>
+  const getTheme = () => {
+    return userContext?.dark_mode === 'F' ? (
+      <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
+        <View style={styles.items}>
+          <Searchbar
+            item={taskItem}
+            setItem={setTaskItem}
+            filterItem={filterItem}
+          />
+          <Text style={styles.text}>
+            Today's Activities ({moment(new Date()).format('DD/MM/YYYY')})
+          </Text>
+          <FlatList
+            data={taskItem}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index}
+            refreshing={refresh}
+            onRefresh={handleRefresh}
+          />
+        </View>
 
-      <TouchableOpacity style={styles.addWrapper} onPress={() => {}}>
-        <Text style={styles.addText}>+</Text>
-      </TouchableOpacity>
-    </LinearGradient>
-  );
+        <TouchableOpacity style={styles.addWrapper} onPress={() => {}}>
+          <Text style={styles.addText}>+</Text>
+        </TouchableOpacity>
+      </LinearGradient>
+    ) : (
+      <View style={[styles.container, {CustomDarkTheme}]}>
+        <View style={styles.items}>
+          <Searchbar
+            item={taskItem}
+            setItem={setTaskItem}
+            filterItem={filterItem}
+          />
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+            Today's Activities ({moment(new Date()).format('DD/MM/YYYY')})
+          </Text>
+          <FlatList
+            data={taskItem}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index}
+            refreshing={refresh}
+            onRefresh={handleRefresh}
+          />
+        </View>
+
+        <TouchableOpacity style={styles.addWrapper} onPress={() => {}}>
+          <Text style={styles.addText}>+</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  return getTheme();
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
   },
   sectionTitle: {
     fontSize: 24,

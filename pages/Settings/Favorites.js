@@ -1,54 +1,98 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {CustomDarkTheme} from '../../components/Route';
+import {AuthCont} from '../../constants/AuthContext';
 
 export default function Favorites() {
-  return (
-    <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <View style={{paddingHorizontal: 16}}>
-        <TouchableOpacity onPress={() => {}}>
-          <View style={styles.item}>
-            <MaterialCommunityIcons
-              name={'music-note'}
-              size={28}
-              color={'#030852'}
-            />
-            <Text style={styles.text}>Music</Text>
-            <FontAwesome
-              style={styles.angle}
-              name={'angle-right'}
-              size={32}
-              color={'#030852'}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
-          <View style={styles.secondItem}>
-            <MaterialCommunityIcons
-              name={'human-handsup'}
-              size={28}
-              color={'#030852'}
-            />
-            <Text style={styles.text}>Activity</Text>
-            <FontAwesome
-              style={styles.angle}
-              name={'angle-right'}
-              size={32}
-              color={'#030852'}
-            />
-          </View>
-        </TouchableOpacity>
+  const {userContext} = useContext(AuthCont);
+
+  const getTheme = () => {
+    return userContext?.dark_mode === 'F' ? (
+      <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
+        <View style={{paddingHorizontal: 16}}>
+          <TouchableOpacity onPress={() => {}}>
+            <View style={styles.item}>
+              <MaterialCommunityIcons
+                name={'music-note'}
+                size={28}
+                color={'#030852'}
+              />
+              <Text style={styles.text}>Music</Text>
+              <FontAwesome
+                style={styles.angle}
+                name={'angle-right'}
+                size={32}
+                color={'#030852'}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {}}>
+            <View style={styles.secondItem}>
+              <MaterialCommunityIcons
+                name={'human-handsup'}
+                size={28}
+                color={'#030852'}
+              />
+              <Text style={styles.text}>Activity</Text>
+              <FontAwesome
+                style={styles.angle}
+                name={'angle-right'}
+                size={32}
+                color={'#030852'}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    ) : (
+      <View style={[styles.container, CustomDarkTheme]}>
+        <View style={{paddingHorizontal: 16}}>
+          <TouchableOpacity onPress={() => {}}>
+            <View style={styles.item}>
+              <MaterialCommunityIcons
+                name={'music-note'}
+                size={28}
+                color={'#030852'}
+              />
+              <Text style={styles.text}>Music</Text>
+              <FontAwesome
+                style={styles.angle}
+                name={'angle-right'}
+                size={32}
+                color={'#030852'}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {}}>
+            <View style={styles.secondItem}>
+              <MaterialCommunityIcons
+                name={'human-handsup'}
+                size={28}
+                color={'#030852'}
+              />
+              <Text style={styles.text}>Activity</Text>
+              <FontAwesome
+                style={styles.angle}
+                name={'angle-right'}
+                size={32}
+                color={'#030852'}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
-    </LinearGradient>
-  );
+    );
+  };
+
+  return getTheme();
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
   },
   item: {
     backgroundColor: '#FFFFFF',

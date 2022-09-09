@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-export const UnorderedList = ({texts}) => {
+export const UnorderedList = ({texts, color}) => {
   return (
     <Column>
       {texts.map((t, index) => (
@@ -18,7 +18,7 @@ export const UnorderedList = ({texts}) => {
                 alignSelf: 'flex-start',
                 justifyContent: 'flex-start',
                 fontSize: 16,
-                color: '#030852',
+                color: color,
                 fontFamily: 'sans-serif',
               }}>
               {'\u2022'}
@@ -28,7 +28,7 @@ export const UnorderedList = ({texts}) => {
             <Text
               style={{
                 fontSize: 16,
-                color: '#030852',
+                color: color,
                 fontFamily: 'sans-serif',
               }}>
               {t}

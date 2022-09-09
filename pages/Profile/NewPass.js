@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   StyleSheet,
   View,
@@ -12,6 +12,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {connector} from '../../constants/Connector';
 import {sha256} from 'react-native-sha256';
+import { CustomDarkTheme } from '../../components/Route';
+import {AuthCont} from '../../constants/AuthContext';
 
 export default function NewPass({navigation}) {
   const [isFocus, setIsFocus] = useState('');
@@ -29,6 +31,7 @@ export default function NewPass({navigation}) {
   const [mod, setMod] = useState(false);
   const [valid, setValid] = useState(true);
   const [confValid, setConfValid] = useState(true);
+  const {userContext} = useContext(AuthCont);
 
   const hashPassword1 = pass => sha256(pass).then(hash => store1(hash));
   const hashPassword2 = pass => sha256(pass).then(hash => store2(hash));
@@ -48,7 +51,7 @@ export default function NewPass({navigation}) {
   };
 
   const changePass = async () => {
-    if(!currentPass || !newPass || !confirmPass){
+    if (!currentPass || !newPass || !confirmPass) {
       setPopUp(true);
       setErrorMsg('Please enter your new password');
       setMod(false);
@@ -72,7 +75,7 @@ export default function NewPass({navigation}) {
       return;
     }
 
-    if(newPass !== confirmPass){
+    if (newPass !== confirmPass) {
       setPopUp(true);
       setErrorMsg('New password and confirm password did not match');
       setMod(false);
@@ -144,129 +147,248 @@ export default function NewPass({navigation}) {
     );
   };
 
-  return (
-    <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-      <View style={{paddingHorizontal: 16}}>
-        {modal()}
-        <Text style={styles.text}>Current Password</Text>
-        <TextInput
-          style={[styles.input, isFocus === 'password' && styles.focus]}
-          placeholder={'Current Password'}
-          value={currentPass}
-          secureTextEntry={isCurrPasswordSecure}
-          onChangeText={pass => {
-            setCurrentPass(pass);
-            hashPassword1(pass);
-          }}
-          onFocus={() => setIsFocus('password')}
-          onBlur={() => setIsFocus('')}></TextInput>
-        <MaterialCommunityIcons
-          name={isCurrPasswordSecure ? 'eye-off' : 'eye'}
-          size={28}
-          color={'black'}
-          style={{
-            position: 'absolute',
-            right: 32,
-            top: 40,
-          }}
-          onPress={() => {
-            isCurrPasswordSecure
-              ? setIsCurrPasswordSecure(false)
-              : setIsCurrPasswordSecure(true);
-          }}
-        />
-        <Text style={styles.text}>New Password</Text>
-        <TextInput
-          style={[styles.input, isFocus === 'newPassword' && styles.focus]}
-          placeholder={'At least 8 characters'}
-          value={newPass}
-          secureTextEntry={isPasswordSecure}
-          onChangeText={pass => {
-            setNewPass(pass);
-            hashPassword3(pass);
-            setValid(validatePass(pass));
-          }}
-          onFocus={() => setIsFocus('newPassword')}
-          onBlur={() => setIsFocus('')}></TextInput>
-        {!valid && (
-          <Text style={{fontSize: 12, color: 'red', marginTop: -10}}>
-            Use 8 or more characters with a mix of letters, numbers &#38;
-            symbols
-          </Text>
-        )}
-        <MaterialCommunityIcons
-          name={isPasswordSecure ? 'eye-off' : 'eye'}
-          size={28}
-          color={'black'}
-          style={{
-            position: 'absolute',
-            right: 32,
-            top: 135,
-          }}
-          onPress={() => {
-            isPasswordSecure
-              ? setIsPasswordSecure(false)
-              : setIsPasswordSecure(true);
-          }}
-        />
-        <Text style={styles.text}>Confirm New Password</Text>
-        <TextInput
-          style={[styles.input, isFocus === 'confPassword' && styles.focus]}
-          placeholder={'At least 8 characters'}
-          value={confirmPass}
-          onChangeText={pass => {
-            setConfirmPass(pass);
-            hashPassword2(pass);
-            setConfValid(validatePass(pass));
-          }}
-          onFocus={() => setIsFocus('confPassword')}
-          secureTextEntry={isConfPasswordSecure}
-          onBlur={() => setIsFocus('')}></TextInput>
-        {!confValid && (
-          <Text
+  const getTheme = () => {
+    return userContext?.dark_mode === 'F' ? (
+      <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
+        <View style={{paddingHorizontal: 16}}>
+          {modal()}
+          <Text style={styles.text}>Current Password</Text>
+          <TextInput
+            style={[styles.input, isFocus === 'password' && styles.focus]}
+            placeholder={'Current Password'}
+            value={currentPass}
+            secureTextEntry={isCurrPasswordSecure}
+            onChangeText={pass => {
+              setCurrentPass(pass);
+              hashPassword1(pass);
+            }}
+            onFocus={() => setIsFocus('password')}
+            onBlur={() => setIsFocus('')}></TextInput>
+          <MaterialCommunityIcons
+            name={isCurrPasswordSecure ? 'eye-off' : 'eye'}
+            size={28}
+            color={'black'}
             style={{
-              fontSize: 12,
-              color: 'red',
-              marginTop: -10,
-              marginBottom: 8,
-            }}>
-            Use 8 or more characters with a mix of letters, numbers &#38;
-            symbols
-          </Text>
-        )}
-        <MaterialCommunityIcons
-          name={isConfPasswordSecure ? 'eye-off' : 'eye'}
-          size={28}
-          color={'black'}
-          style={{
-            position: 'absolute',
-            right: 32,
-            top: 230,
-          }}
-          onPress={() => {
-            isConfPasswordSecure
-              ? setIsConfPasswordSecure(false)
-              : setIsConfPasswordSecure(true);
-          }}
-        />
-        <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
-          <TouchableOpacity
-            style={styles.button}
+              position: 'absolute',
+              right: 32,
+              top: 40,
+            }}
             onPress={() => {
-              changePass();
-            }}>
-            <Text style={styles.loginText}>{'SAVE'}</Text>
-          </TouchableOpacity>
+              isCurrPasswordSecure
+                ? setIsCurrPasswordSecure(false)
+                : setIsCurrPasswordSecure(true);
+            }}
+          />
+          <Text style={styles.text}>New Password</Text>
+          <TextInput
+            style={[styles.input, isFocus === 'newPassword' && styles.focus]}
+            placeholder={'At least 8 characters'}
+            value={newPass}
+            secureTextEntry={isPasswordSecure}
+            onChangeText={pass => {
+              setNewPass(pass);
+              hashPassword3(pass);
+              setValid(validatePass(pass));
+            }}
+            onFocus={() => setIsFocus('newPassword')}
+            onBlur={() => setIsFocus('')}></TextInput>
+          {!valid && (
+            <Text style={{fontSize: 12, color: 'red', marginTop: -10}}>
+              Use 8 or more characters with a mix of letters, numbers &#38;
+              symbols
+            </Text>
+          )}
+          <MaterialCommunityIcons
+            name={isPasswordSecure ? 'eye-off' : 'eye'}
+            size={28}
+            color={'black'}
+            style={{
+              position: 'absolute',
+              right: 32,
+              top: 135,
+            }}
+            onPress={() => {
+              isPasswordSecure
+                ? setIsPasswordSecure(false)
+                : setIsPasswordSecure(true);
+            }}
+          />
+          <Text style={styles.text}>Confirm New Password</Text>
+          <TextInput
+            style={[styles.input, isFocus === 'confPassword' && styles.focus]}
+            placeholder={'At least 8 characters'}
+            value={confirmPass}
+            onChangeText={pass => {
+              setConfirmPass(pass);
+              hashPassword2(pass);
+              setConfValid(validatePass(pass));
+            }}
+            onFocus={() => setIsFocus('confPassword')}
+            secureTextEntry={isConfPasswordSecure}
+            onBlur={() => setIsFocus('')}></TextInput>
+          {!confValid && (
+            <Text
+              style={{
+                fontSize: 12,
+                color: 'red',
+                marginTop: -10,
+                marginBottom: 8,
+              }}>
+              Use 8 or more characters with a mix of letters, numbers &#38;
+              symbols
+            </Text>
+          )}
+          <MaterialCommunityIcons
+            name={isConfPasswordSecure ? 'eye-off' : 'eye'}
+            size={28}
+            color={'black'}
+            style={{
+              position: 'absolute',
+              right: 32,
+              top: 230,
+            }}
+            onPress={() => {
+              isConfPasswordSecure
+                ? setIsConfPasswordSecure(false)
+                : setIsConfPasswordSecure(true);
+            }}
+          />
+          <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                changePass();
+              }}>
+              <Text style={styles.loginText}>{'SAVE'}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </LinearGradient>
+    ) : (
+      <View style={[styles.container, CustomDarkTheme]}>
+        <View style={{paddingHorizontal: 16}}>
+          {modal()}
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>Current Password</Text>
+          <TextInput
+            style={[styles.input, isFocus === 'password' && styles.focus]}
+            placeholder={'Current Password'}
+            value={currentPass}
+            secureTextEntry={isCurrPasswordSecure}
+            onChangeText={pass => {
+              setCurrentPass(pass);
+              hashPassword1(pass);
+            }}
+            onFocus={() => setIsFocus('password')}
+            onBlur={() => setIsFocus('')}></TextInput>
+          <MaterialCommunityIcons
+            name={isCurrPasswordSecure ? 'eye-off' : 'eye'}
+            size={28}
+            color={'black'}
+            style={{
+              position: 'absolute',
+              right: 32,
+              top: 40,
+            }}
+            onPress={() => {
+              isCurrPasswordSecure
+                ? setIsCurrPasswordSecure(false)
+                : setIsCurrPasswordSecure(true);
+            }}
+          />
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>New Password</Text>
+          <TextInput
+            style={[styles.input, isFocus === 'newPassword' && styles.focus]}
+            placeholder={'At least 8 characters'}
+            value={newPass}
+            secureTextEntry={isPasswordSecure}
+            onChangeText={pass => {
+              setNewPass(pass);
+              hashPassword3(pass);
+              setValid(validatePass(pass));
+            }}
+            onFocus={() => setIsFocus('newPassword')}
+            onBlur={() => setIsFocus('')}></TextInput>
+          {!valid && (
+            <Text style={{fontSize: 12, color: 'red', marginTop: -10}}>
+              Use 8 or more characters with a mix of letters, numbers &#38;
+              symbols
+            </Text>
+          )}
+          <MaterialCommunityIcons
+            name={isPasswordSecure ? 'eye-off' : 'eye'}
+            size={28}
+            color={'black'}
+            style={{
+              position: 'absolute',
+              right: 32,
+              top: 135,
+            }}
+            onPress={() => {
+              isPasswordSecure
+                ? setIsPasswordSecure(false)
+                : setIsPasswordSecure(true);
+            }}
+          />
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>Confirm New Password</Text>
+          <TextInput
+            style={[styles.input, isFocus === 'confPassword' && styles.focus]}
+            placeholder={'At least 8 characters'}
+            value={confirmPass}
+            onChangeText={pass => {
+              setConfirmPass(pass);
+              hashPassword2(pass);
+              setConfValid(validatePass(pass));
+            }}
+            onFocus={() => setIsFocus('confPassword')}
+            secureTextEntry={isConfPasswordSecure}
+            onBlur={() => setIsFocus('')}></TextInput>
+          {!confValid && (
+            <Text
+              style={{
+                fontSize: 12,
+                color: 'red',
+                marginTop: -10,
+                marginBottom: 8,
+              }}>
+              Use 8 or more characters with a mix of letters, numbers &#38;
+              symbols
+            </Text>
+          )}
+          <MaterialCommunityIcons
+            name={isConfPasswordSecure ? 'eye-off' : 'eye'}
+            size={28}
+            color={'black'}
+            style={{
+              position: 'absolute',
+              right: 32,
+              top: 230,
+            }}
+            onPress={() => {
+              isConfPasswordSecure
+                ? setIsConfPasswordSecure(false)
+                : setIsConfPasswordSecure(true);
+            }}
+          />
+          <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                changePass();
+              }}>
+              <Text style={styles.loginText}>{'SAVE'}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </LinearGradient>
-  );
+    );
+  };
+
+  return getTheme();
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
   },
   text: {
     fontSize: 16,
