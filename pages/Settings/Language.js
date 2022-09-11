@@ -1,4 +1,5 @@
 import React, {useState, useContext} from 'react';
+import {useTranslation} from 'react-i18next';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -8,96 +9,81 @@ import {AuthCont} from '../../constants/AuthContext';
 export default function Language() {
   const [isSelected, setIsSelected] = useState('english');
   const {userContext} = useContext(AuthCont);
+  const {i18n} = useTranslation();
+
+  const changeLanguage = text => {
+    if (text === 'english') {
+      setIsSelected('english');
+    } else if (text === 'malay') {
+      setIsSelected('malay');
+    } else {
+      setIsSelected('chinese');
+    }
+  };
+
+  const test = () => (
+    <View style={{paddingHorizontal: 16}}>
+      <TouchableOpacity
+        onPress={() => {
+          i18n.changeLanguage('english');
+          changeLanguage('english');
+        }}>
+        <View style={styles.item}>
+          <Text style={styles.text}>English</Text>
+          {isSelected === 'english' && (
+            <FontAwesome
+              style={styles.angle}
+              name={'check'}
+              size={28}
+              color={'#030852'}
+            />
+          )}
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          i18n.changeLanguage('malay');
+          changeLanguage('malay');
+        }}>
+        <View style={[styles.item, styles.secondItem]}>
+          <Text style={styles.text}>Bahasa Melayu</Text>
+          {isSelected === 'malay' && (
+            <FontAwesome
+              style={styles.angle}
+              name={'check'}
+              size={28}
+              color={'#030852'}
+            />
+          )}
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          i18n.changeLanguage('chinese');
+          changeLanguage('chinese');
+        }}>
+        <View style={styles.secondItem}>
+          <Text style={styles.text}>中文</Text>
+          {isSelected === 'chinese' && (
+            <FontAwesome
+              style={styles.angle}
+              name={'check'}
+              size={28}
+              color={'#030852'}
+            />
+          )}
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
 
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-        <View style={{paddingHorizontal: 16}}>
-          <TouchableOpacity onPress={() => setIsSelected('english')}>
-            <View style={styles.item}>
-              <Text style={styles.text}>English</Text>
-              {isSelected === 'english' && (
-                <FontAwesome
-                  style={styles.angle}
-                  name={'check'}
-                  size={28}
-                  color={'#030852'}
-                />
-              )}
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsSelected('BM')}>
-            <View style={[styles.item, styles.secondItem]}>
-              <Text style={styles.text}>Bahasa Melayu</Text>
-              {isSelected === 'BM' && (
-                <FontAwesome
-                  style={styles.angle}
-                  name={'check'}
-                  size={28}
-                  color={'#030852'}
-                />
-              )}
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsSelected('chinese')}>
-            <View style={styles.secondItem}>
-              <Text style={styles.text}>中文</Text>
-              {isSelected === 'chinese' && (
-                <FontAwesome
-                  style={styles.angle}
-                  name={'check'}
-                  size={28}
-                  color={'#030852'}
-                />
-              )}
-            </View>
-          </TouchableOpacity>
-        </View>
+        {test()}
       </LinearGradient>
     ) : (
-      <View style={[styles.container, CustomDarkTheme]}>
-        <View style={{paddingHorizontal: 16}}>
-          <TouchableOpacity onPress={() => setIsSelected('english')}>
-            <View style={styles.item}>
-              <Text style={styles.text}>English</Text>
-              {isSelected === 'english' && (
-                <FontAwesome
-                  style={styles.angle}
-                  name={'check'}
-                  size={28}
-                  color={'#030852'}
-                />
-              )}
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsSelected('BM')}>
-            <View style={[styles.item, styles.secondItem]}>
-              <Text style={styles.text}>Bahasa Melayu</Text>
-              {isSelected === 'BM' && (
-                <FontAwesome
-                  style={styles.angle}
-                  name={'check'}
-                  size={28}
-                  color={'#030852'}
-                />
-              )}
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsSelected('chinese')}>
-            <View style={styles.secondItem}>
-              <Text style={styles.text}>中文</Text>
-              {isSelected === 'chinese' && (
-                <FontAwesome
-                  style={styles.angle}
-                  name={'check'}
-                  size={28}
-                  color={'#030852'}
-                />
-              )}
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <View style={[styles.container, CustomDarkTheme]}>{test()}</View>
     );
   };
 

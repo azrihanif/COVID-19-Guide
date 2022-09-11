@@ -14,6 +14,7 @@ import {connector} from '../../constants/Connector';
 import {sha256} from 'react-native-sha256';
 import { CustomDarkTheme } from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 export default function NewPass({navigation}) {
   const [isFocus, setIsFocus] = useState('');
@@ -32,6 +33,7 @@ export default function NewPass({navigation}) {
   const [valid, setValid] = useState(true);
   const [confValid, setConfValid] = useState(true);
   const {userContext} = useContext(AuthCont);
+  const {t} = useTranslation()
 
   const hashPassword1 = pass => sha256(pass).then(hash => store1(hash));
   const hashPassword2 = pass => sha256(pass).then(hash => store2(hash));
@@ -152,10 +154,10 @@ export default function NewPass({navigation}) {
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <View style={{paddingHorizontal: 16}}>
           {modal()}
-          <Text style={styles.text}>Current Password</Text>
+          <Text style={styles.text}>{t("current_pass")}</Text>
           <TextInput
             style={[styles.input, isFocus === 'password' && styles.focus]}
-            placeholder={'Current Password'}
+            placeholder={t("current_pass")}
             value={currentPass}
             secureTextEntry={isCurrPasswordSecure}
             onChangeText={pass => {
@@ -179,10 +181,10 @@ export default function NewPass({navigation}) {
                 : setIsCurrPasswordSecure(true);
             }}
           />
-          <Text style={styles.text}>New Password</Text>
+          <Text style={styles.text}>{t("new_pass")}</Text>
           <TextInput
             style={[styles.input, isFocus === 'newPassword' && styles.focus]}
-            placeholder={'At least 8 characters'}
+            placeholder={t("8chars")}
             value={newPass}
             secureTextEntry={isPasswordSecure}
             onChangeText={pass => {
@@ -194,8 +196,7 @@ export default function NewPass({navigation}) {
             onBlur={() => setIsFocus('')}></TextInput>
           {!valid && (
             <Text style={{fontSize: 12, color: 'red', marginTop: -10}}>
-              Use 8 or more characters with a mix of letters, numbers &#38;
-              symbols
+              {t("pass_error")}
             </Text>
           )}
           <MaterialCommunityIcons
@@ -213,10 +214,10 @@ export default function NewPass({navigation}) {
                 : setIsPasswordSecure(true);
             }}
           />
-          <Text style={styles.text}>Confirm New Password</Text>
+          <Text style={styles.text}>{t("conf_pass")}</Text>
           <TextInput
             style={[styles.input, isFocus === 'confPassword' && styles.focus]}
-            placeholder={'At least 8 characters'}
+            placeholder={t("8chars")}
             value={confirmPass}
             onChangeText={pass => {
               setConfirmPass(pass);
@@ -234,8 +235,7 @@ export default function NewPass({navigation}) {
                 marginTop: -10,
                 marginBottom: 8,
               }}>
-              Use 8 or more characters with a mix of letters, numbers &#38;
-              symbols
+             {t("pass_error")}
             </Text>
           )}
           <MaterialCommunityIcons
@@ -268,10 +268,10 @@ export default function NewPass({navigation}) {
       <View style={[styles.container, CustomDarkTheme]}>
         <View style={{paddingHorizontal: 16}}>
           {modal()}
-          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>Current Password</Text>
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>{t("current_pass")}</Text>
           <TextInput
             style={[styles.input, isFocus === 'password' && styles.focus]}
-            placeholder={'Current Password'}
+            placeholder={t("current_pass")}
             value={currentPass}
             secureTextEntry={isCurrPasswordSecure}
             onChangeText={pass => {
@@ -295,10 +295,10 @@ export default function NewPass({navigation}) {
                 : setIsCurrPasswordSecure(true);
             }}
           />
-          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>New Password</Text>
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>{t("new_pass")}</Text>
           <TextInput
             style={[styles.input, isFocus === 'newPassword' && styles.focus]}
-            placeholder={'At least 8 characters'}
+            placeholder={t("8chars")}
             value={newPass}
             secureTextEntry={isPasswordSecure}
             onChangeText={pass => {
@@ -310,8 +310,7 @@ export default function NewPass({navigation}) {
             onBlur={() => setIsFocus('')}></TextInput>
           {!valid && (
             <Text style={{fontSize: 12, color: 'red', marginTop: -10}}>
-              Use 8 or more characters with a mix of letters, numbers &#38;
-              symbols
+              {t("pass_error")}
             </Text>
           )}
           <MaterialCommunityIcons
@@ -329,10 +328,10 @@ export default function NewPass({navigation}) {
                 : setIsPasswordSecure(true);
             }}
           />
-          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>Confirm New Password</Text>
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>{t("conf_pass")}</Text>
           <TextInput
             style={[styles.input, isFocus === 'confPassword' && styles.focus]}
-            placeholder={'At least 8 characters'}
+            placeholder={t("8chars")}
             value={confirmPass}
             onChangeText={pass => {
               setConfirmPass(pass);
@@ -350,8 +349,7 @@ export default function NewPass({navigation}) {
                 marginTop: -10,
                 marginBottom: 8,
               }}>
-              Use 8 or more characters with a mix of letters, numbers &#38;
-              symbols
+             {t("pass_error")}
             </Text>
           )}
           <MaterialCommunityIcons
@@ -375,7 +373,7 @@ export default function NewPass({navigation}) {
               onPress={() => {
                 changePass();
               }}>
-              <Text style={styles.loginText}>{'SAVE'}</Text>
+              <Text style={styles.loginText}>{t("save")}</Text>
             </TouchableOpacity>
           </View>
         </View>

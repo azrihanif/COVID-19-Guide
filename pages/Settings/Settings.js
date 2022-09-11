@@ -14,14 +14,19 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import {connector} from '../constants/Connector';
 import {CustomDarkTheme} from '../../components/Route';
+import {useTranslation} from 'react-i18next';
 
 export default function Settings({navigation}) {
   const {userContext, setUserContext} = useContext(AuthCont);
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => {
     setIsEnabled(isEnabled => !isEnabled);
-    setUserContext({...userContext, dark_mode: userContext?.dark_mode === "T" ? 'F' : 'T'});
+    setUserContext({
+      ...userContext,
+      dark_mode: userContext?.dark_mode === 'T' ? 'F' : 'T',
+    });
   };
+  const {t} = useTranslation();
 
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
@@ -29,12 +34,12 @@ export default function Settings({navigation}) {
         <ScrollView bounces={false} style={styles.taskWrapper}>
           <View>
             <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
-              Content
+              {t('content')}
             </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
               <View style={styles.item}>
                 <FontAwesome name={'heart-o'} size={28} color={'#030852'} />
-                <Text style={styles.text}>Favorites</Text>
+                <Text style={styles.text}>{t('favorites')}</Text>
                 <FontAwesome
                   style={styles.angle}
                   name={'angle-right'}
@@ -46,7 +51,7 @@ export default function Settings({navigation}) {
           </View>
           <View>
             <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
-              Preferences
+              {t('preferences')}
             </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Language')}>
               <View
@@ -55,7 +60,9 @@ export default function Settings({navigation}) {
                   {borderBottomLeftRadius: 0, borderBottomRightRadius: 0},
                 ]}>
                 <FontAwesome name={'globe'} size={28} color={'#030852'} />
-                <Text style={[styles.text, {marginLeft: 5}]}>Language</Text>
+                <Text style={[styles.text, {marginLeft: 5}]}>
+                  {t('language')}
+                </Text>
                 <Text style={styles.Langtext}>English</Text>
                 <FontAwesome
                   style={styles.angle}
@@ -67,7 +74,7 @@ export default function Settings({navigation}) {
             </TouchableOpacity>
             <View style={[styles.item, styles.secondItem]}>
               <Ionicons name={'moon'} size={28} color={'#030852'} />
-              <Text style={styles.text}>Dark Mode</Text>
+              <Text style={styles.text}>{t('dark_mode')}</Text>
               <Switch
                 trackColor={{false: '#767577', true: 'blue'}}
                 thumbColor={isEnabled ? 'blue' : '#f4f3f4'}
@@ -83,7 +90,7 @@ export default function Settings({navigation}) {
           </View>
           <View>
             <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
-              Contact Us
+              {t('contact_us')}
             </Text>
             <TouchableOpacity onPress={() => navigation.navigate('FAQ')}>
               <View
@@ -92,7 +99,7 @@ export default function Settings({navigation}) {
                   {borderBottomLeftRadius: 0, borderBottomRightRadius: 0},
                 ]}>
                 <Feather name={'user'} size={28} color={'#030852'} />
-                <Text style={styles.text}>FAQ</Text>
+                <Text style={styles.text}>{t('faq')}</Text>
                 <FontAwesome
                   style={styles.angle}
                   name={'angle-right'}
@@ -104,7 +111,9 @@ export default function Settings({navigation}) {
             <TouchableOpacity onPress={() => navigation.navigate('Contact Us')}>
               <View style={[styles.item, styles.secondItem]}>
                 <FontAwesome name={'phone'} size={28} color={'#030852'} />
-                <Text style={[styles.text, {marginLeft: 5}]}>Contact Us</Text>
+                <Text style={[styles.text, {marginLeft: 5}]}>
+                  {t('contact_us')}
+                </Text>
                 <FontAwesome
                   style={styles.angle}
                   name={'angle-right'}
@@ -126,12 +135,12 @@ export default function Settings({navigation}) {
                 fontFamily: 'Sans-serif',
                 color: CustomDarkTheme?.colors?.text,
               }}>
-              Content
+              {t('content')}
             </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
               <View style={styles.item}>
                 <FontAwesome name={'heart-o'} size={28} color={'#030852'} />
-                <Text style={styles.text}>Favorites</Text>
+                <Text style={styles.text}>{t('favorites')}</Text>
                 <FontAwesome
                   style={styles.angle}
                   name={'angle-right'}
@@ -148,7 +157,7 @@ export default function Settings({navigation}) {
                 fontFamily: 'Sans-serif',
                 color: CustomDarkTheme?.colors?.text,
               }}>
-              Preferences
+              {t('preferences')}
             </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Language')}>
               <View
@@ -157,7 +166,7 @@ export default function Settings({navigation}) {
                   {borderBottomLeftRadius: 0, borderBottomRightRadius: 0},
                 ]}>
                 <FontAwesome name={'globe'} size={28} color={'#030852'} />
-                <Text style={[styles.text, {marginLeft: 5}]}>Language</Text>
+                <Text style={[styles.text, {marginLeft: 5}]}>{t('language')}</Text>
                 <Text style={styles.Langtext}>English</Text>
                 <FontAwesome
                   style={styles.angle}
@@ -169,7 +178,7 @@ export default function Settings({navigation}) {
             </TouchableOpacity>
             <View style={[styles.item, styles.secondItem]}>
               <Ionicons name={'moon'} size={28} color={'#030852'} />
-              <Text style={styles.text}>Dark Mode</Text>
+              <Text style={styles.text}>{t('dark_mode')}</Text>
               <Switch
                 trackColor={{false: '#767577', true: 'blue'}}
                 thumbColor={isEnabled ? 'blue' : '#f4f3f4'}
@@ -190,7 +199,7 @@ export default function Settings({navigation}) {
                 fontFamily: 'Sans-serif',
                 color: CustomDarkTheme?.colors?.text,
               }}>
-              Contact Us
+              {t('contact_us')}
             </Text>
             <TouchableOpacity onPress={() => navigation.navigate('FAQ')}>
               <View
@@ -199,7 +208,7 @@ export default function Settings({navigation}) {
                   {borderBottomLeftRadius: 0, borderBottomRightRadius: 0},
                 ]}>
                 <Feather name={'user'} size={28} color={'#030852'} />
-                <Text style={styles.text}>FAQ</Text>
+                <Text style={styles.text}>{t('faq')}</Text>
                 <FontAwesome
                   style={styles.angle}
                   name={'angle-right'}
@@ -211,7 +220,7 @@ export default function Settings({navigation}) {
             <TouchableOpacity onPress={() => navigation.navigate('Contact Us')}>
               <View style={[styles.item, styles.secondItem]}>
                 <FontAwesome name={'phone'} size={28} color={'#030852'} />
-                <Text style={[styles.text, {marginLeft: 5}]}>Contact Us</Text>
+                <Text style={[styles.text, {marginLeft: 5}]}>{t('contact_us')}</Text>
                 <FontAwesome
                   style={styles.angle}
                   name={'angle-right'}

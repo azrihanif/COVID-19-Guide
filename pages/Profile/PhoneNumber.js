@@ -12,6 +12,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {connector} from '../../constants/Connector';
 import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
+import {useTranslation} from 'react-i18next';
 
 export default function PhoneNumber({navigation, route}) {
   const [isFocus, setIsFocus] = useState('');
@@ -21,6 +22,7 @@ export default function PhoneNumber({navigation, route}) {
   const [errorMsg, setErrorMsg] = useState('');
   const [flag, setFlag] = useState(false);
   const {userContext} = useContext(AuthCont);
+  const {t} = useTranslation();
 
   const changePhone = async () => {
     if (data?.phone_no === newPhone || !newPhone) {
@@ -97,16 +99,16 @@ export default function PhoneNumber({navigation, route}) {
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <View style={{paddingHorizontal: 16}}>
           {modal()}
-          <Text style={styles.text}>Current Phone Number</Text>
+          <Text style={styles.text}>{t('current_number')}</Text>
           <TextInput
             editable={false}
             style={styles.input}
-            placeholder={'Current Phone Number'}
+            placeholder={t('current_number')}
             value={data?.phone_no}></TextInput>
-          <Text style={styles.text}>New Phone Number</Text>
+          <Text style={styles.text}>{t('new_number')}</Text>
           <TextInput
             style={[styles.input, isFocus === 'phone' && styles.focus]}
-            placeholder={'New Phone Number'}
+            placeholder={t('new_number')}
             value={newPhone}
             maxLength={11}
             keyboardType={'phone-pad'}
@@ -115,7 +117,7 @@ export default function PhoneNumber({navigation, route}) {
             onBlur={() => setIsFocus('')}></TextInput>
           <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
             <TouchableOpacity style={styles.button} onPress={changePhone}>
-              <Text style={styles.loginText}>{'SAVE'}</Text>
+              <Text style={styles.loginText}>{t('save')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -124,16 +126,20 @@ export default function PhoneNumber({navigation, route}) {
       <View style={[styles.container, CustomDarkTheme]}>
         <View style={{paddingHorizontal: 16}}>
           {modal()}
-          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>Current Phone Number</Text>
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+            {t('current_number')}
+          </Text>
           <TextInput
             editable={false}
             style={styles.input}
-            placeholder={'Current Phone Number'}
+            placeholder={t('current_number')}
             value={data?.phone_no}></TextInput>
-          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>New Phone Number</Text>
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+            {t('new_number')}
+          </Text>
           <TextInput
             style={[styles.input, isFocus === 'phone' && styles.focus]}
-            placeholder={'New Phone Number'}
+            placeholder={t('new_number')}
             value={newPhone}
             maxLength={11}
             keyboardType={'phone-pad'}
@@ -142,7 +148,7 @@ export default function PhoneNumber({navigation, route}) {
             onBlur={() => setIsFocus('')}></TextInput>
           <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
             <TouchableOpacity style={styles.button} onPress={changePhone}>
-              <Text style={styles.loginText}>{'SAVE'}</Text>
+              <Text style={styles.loginText}>{t('save')}</Text>
             </TouchableOpacity>
           </View>
         </View>

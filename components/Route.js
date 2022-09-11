@@ -40,6 +40,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {Text, StyleSheet, Alert} from 'react-native';
 import AuthCont from '../constants/AuthContext';
 import Deactivate from '../pages/Profile/Deactivate';
+import {useTranslation} from 'react-i18next';
 
 export const CustomDefaultTheme = {
   ...DefaultTheme,
@@ -53,7 +54,7 @@ export const CustomDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    background: '#333333',
+    background: '#182533',
     text: '#ffffff',
   },
 };
@@ -63,6 +64,7 @@ const Route = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createStackNavigator();
   const Drawer = createDrawerNavigator();
+  const {t} = useTranslation();
 
   const getTheme =
     userContext?.dark_mode === 'T' ? CustomDarkTheme : CustomDefaultTheme;
@@ -88,16 +90,16 @@ const Route = () => {
   );
 
   const logOut = navigation => {
-    return Alert.alert('Confirmation', 'Are you sure, you want to logout?', [
+    return Alert.alert(t("confirmation"), t("logout_message"), [
       {
-        text: 'Yes',
+        text: t("yes"),
         onPress: () => {
           setUserContext(null);
           navigation.navigate('Covid-19 Guide');
         },
       },
       {
-        text: 'No',
+        text: t("no"),
       },
     ]);
   };
@@ -119,14 +121,14 @@ const Route = () => {
       screenOptions={{
         headerStyle: {
           backgroundColor:
-            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#333333',
+            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#182533',
         },
         headerTitleAlign: 'center',
         headerShadowVisible: false,
         headerTintColor: userContext?.dark_mode === 'F' ? 'blue' : '#FFF',
       }}>
       <Stack.Screen
-        name="Advice from Expert"
+        name={t('advice_expert')}
         component={ExpertAdvice}
         options={({navigation}) => ({
           headerLeft: () => drawerIcon(navigation),
@@ -199,7 +201,7 @@ const Route = () => {
       screenOptions={{
         headerStyle: {
           backgroundColor:
-            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#333333',
+            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#182533',
         },
         headerTitleAlign: 'center',
         headerTintColor: userContext?.dark_mode === 'F' ? 'blue' : '#FFF',
@@ -208,7 +210,7 @@ const Route = () => {
         name="Home"
         component={Home}
         options={({navigation}) => ({
-          headerTitle: 'Covid-19 Guide',
+          headerTitle: t('covid19_guide'),
           headerShadowVisible: false,
           headerLeft: () => drawerIcon(navigation),
           headerRight: () => logOutIcon(navigation),
@@ -230,7 +232,7 @@ const Route = () => {
       screenOptions={{
         headerStyle: {
           backgroundColor:
-            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#333333',
+            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#182533',
         },
         headerTitleAlign: 'center',
         headerTintColor: userContext?.dark_mode === 'F' ? 'blue' : '#FFF',
@@ -240,8 +242,7 @@ const Route = () => {
         name="Activity Recommendation"
         component={IndoorActivity}
         options={({navigation}) => ({
-          headerTitle: 'Activity Recommendation',
-
+          headerTitle: t('activity_recommendation'),
           headerLeft: () => drawerIcon(navigation),
           headerRight: () => logOutIcon(navigation),
         })}
@@ -261,7 +262,7 @@ const Route = () => {
       screenOptions={{
         headerStyle: {
           backgroundColor:
-            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#333333',
+            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#182533',
         },
         headerTitleAlign: 'center',
         headerShadowVisible: false,
@@ -271,15 +272,15 @@ const Route = () => {
         name="SETTINGS Screen"
         component={Settings}
         options={({navigation}) => ({
-          headerTitle: 'Settings',
+          headerTitle: t('settings'),
           headerLeft: () => goBackIcon(navigation),
           headerRight: () => logOutIcon(navigation),
         })}
       />
-      <Stack.Screen name="Favorites" component={Favorites} />
-      <Stack.Screen name="Language" component={Language} />
-      <Stack.Screen name="FAQ" component={FAQ} />
-      <Stack.Screen name="Contact Us" component={ContactUs} />
+      <Stack.Screen name="Favorites" component={Favorites} options={{headerTitle: t("favorites")}}/>
+      <Stack.Screen name="Language" component={Language} options={{headerTitle: t("language")}}/>
+      <Stack.Screen name="FAQ" component={FAQ} options={{headerTitle: t("faq")}}/>
+      <Stack.Screen name="Contact Us" component={ContactUs} options={{headerTitle: t("contact_us")}}/>
     </Stack.Navigator>
   );
 
@@ -288,7 +289,7 @@ const Route = () => {
       screenOptions={{
         headerStyle: {
           backgroundColor:
-            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#333333',
+            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#182533',
         },
         headerTitleAlign: 'center',
         headerShadowVisible: false,
@@ -298,6 +299,7 @@ const Route = () => {
         name="Music Playlist"
         component={MusicPlaylist}
         options={({navigation}) => ({
+          headerTitle: t('music_playlist'),
           headerLeft: () => drawerIcon(navigation),
           headerRight: () => logOutIcon(navigation),
         })}
@@ -306,7 +308,7 @@ const Route = () => {
         name="Music Play"
         component={MusicPlay}
         options={({route}) => ({
-          headerTitle: 'Music',
+          headerTitle: t('music'),
         })}
       />
     </Stack.Navigator>
@@ -317,7 +319,7 @@ const Route = () => {
       screenOptions={{
         headerStyle: {
           backgroundColor:
-            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#333333',
+            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#182533',
         },
         headerTitleAlign: 'center',
         headerShadowVisible: false,
@@ -327,6 +329,7 @@ const Route = () => {
         name="Quran Playlist"
         component={QuranPlaylist}
         options={({navigation}) => ({
+          headerTitle: t('quran_playlist'),
           headerLeft: () => drawerIcon(navigation),
           headerRight: () => logOutIcon(navigation),
         })}
@@ -335,7 +338,7 @@ const Route = () => {
         name="Quran Play"
         component={QuranPlay}
         options={({route}) => ({
-          headerTitle: 'Quran',
+          headerTitle: t('Quran'),
         })}
       />
     </Stack.Navigator>
@@ -346,16 +349,17 @@ const Route = () => {
       screenOptions={{
         headerStyle: {
           backgroundColor:
-            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#333333',
+            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#182533',
         },
         headerTitleAlign: 'center',
         headerShadowVisible: false,
         headerTintColor: userContext?.dark_mode === 'F' ? 'blue' : '#FFF',
       }}>
       <Stack.Screen
-        name="Profile"
+        name="Profiles"
         component={Profile}
         options={({navigation}) => ({
+          headerTitle: t("profile"),
           headerLeft: () => goBackIcon(navigation),
           headerRight: () => logOutIcon(navigation),
         })}
@@ -364,35 +368,35 @@ const Route = () => {
         name="Username"
         component={Username}
         options={({route}) => ({
-          headerTitle: 'Profile',
+          headerTitle: t("profile"),
         })}
       />
       <Stack.Screen
         name="Phone"
         component={PhoneNumber}
         options={({route}) => ({
-          headerTitle: 'Profile',
+          headerTitle: t("profile"),
         })}
       />
       <Stack.Screen
         name="Email"
         component={Email}
         options={({route}) => ({
-          headerTitle: 'Profile',
+          headerTitle: t("profile"),
         })}
       />
       <Stack.Screen
         name="NewPass"
         component={NewPass}
         options={({route}) => ({
-          headerTitle: 'Profile',
+          headerTitle: t("profile"),
         })}
       />
       <Stack.Screen
         name="Deactivate"
         component={Deactivate}
         options={({route}) => ({
-          headerTitle: 'Profile',
+          headerTitle: t("profile"),
         })}
       />
     </Stack.Navigator>
@@ -434,24 +438,24 @@ const Route = () => {
           let getColor =
             userContext?.dark_mode === 'F' ? styles.text : styles.darkText;
           if (rn === 'Music') {
-            return focused ? <Text style={getColor}>Music</Text> : null;
+            return focused ? <Text style={getColor}>{t("music")}</Text> : null;
           } else if (rn === 'Covid-19 Guide') {
-            return focused ? <Text style={getColor}>Home</Text> : null;
+            return focused ? <Text style={getColor}>{t("home")}</Text> : null;
           } else if (rn === 'Indoor Activity') {
             return focused ? (
-              <Text style={getColor}>Indoor Activity</Text>
+              <Text style={getColor}>{t("indoor_activity")}</Text>
             ) : null;
           } else if (rn === 'Expert Advices') {
-            return focused ? <Text style={getColor}>Expert Advice</Text> : null;
+            return focused ? <Text style={getColor}>{t("expert_advice")}</Text> : null;
           } else if (rn === 'Quran Playlists') {
             return focused ? (
-              <Text style={getColor}>Quran Playlists</Text>
+              <Text style={getColor}>{t("Quran")}</Text>
             ) : null;
           }
         },
         headerStyle: {
           backgroundColor:
-            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#333333',
+            userContext?.dark_mode === 'F' ? '#DFF6FF' : '#182533',
         },
         headerTintColor: 'blue',
         headerTitleAlign: 'center',
@@ -487,7 +491,7 @@ const Route = () => {
 
   const Drawers = () => (
     <Drawer.Navigator
-      initialRouteName="HOME"
+      initialRouteName={t('home')}
       screenOptions={{
         headerStyle: {
           backgroundColor: '#DFF6FF',
@@ -502,7 +506,7 @@ const Route = () => {
         },
       }}>
       <Drawer.Screen
-        name="HOME"
+        name={t('home')}
         component={TabNav}
         options={{
           headerShown: false,
@@ -516,7 +520,7 @@ const Route = () => {
         }}
       />
       <Drawer.Screen
-        name="PROFILE"
+        name={t('profile')}
         component={ProfileStack}
         options={{
           headerShown: false,
@@ -526,7 +530,7 @@ const Route = () => {
         }}
       />
       <Drawer.Screen
-        name="SETTINGS"
+        name={t('settings')}
         component={SettingsStack}
         options={{
           drawerIcon: ({color}) => (

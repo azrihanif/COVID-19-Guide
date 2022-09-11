@@ -14,12 +14,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import Searchbar from '../../components/Searchbar';
 import {connector} from '../../constants/Connector';
 import {CustomDarkTheme} from '../../components/Route';
+import { useTranslation } from 'react-i18next';
 
 export default function IndoorActivity({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
   const [filterItem, setFilterItem] = useState([]);
   const {userContext} = useContext(AuthCont);
   const [refresh, setRefresh] = useState(false);
+  const {t} = useTranslation()
 
   useEffect(() => {
     getActivity();
@@ -88,7 +90,7 @@ export default function IndoorActivity({navigation}) {
             filterItem={filterItem}
           />
           <Text style={styles.text}>
-            Today's Activities ({moment(new Date()).format('DD/MM/YYYY')})
+            {t("today_activity")} ({moment(new Date()).format('DD/MM/YYYY')})
           </Text>
           <FlatList
             data={taskItem}
@@ -112,7 +114,7 @@ export default function IndoorActivity({navigation}) {
             filterItem={filterItem}
           />
           <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
-            Today's Activities ({moment(new Date()).format('DD/MM/YYYY')})
+          {t("today_activity")} ({moment(new Date()).format('DD/MM/YYYY')})
           </Text>
           <FlatList
             data={taskItem}

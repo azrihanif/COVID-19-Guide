@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
   TextInput,
@@ -14,6 +15,7 @@ const deviceWidth = Dimensions.get('window').width;
 
 export default function Searchbar({item, setItem, filterItem}) {
   const [text, setText] = useState(undefined);
+  const {t} = useTranslation()
 
   const filterData = text => {
     if (text) {
@@ -39,7 +41,7 @@ export default function Searchbar({item, setItem, filterItem}) {
           style={[styles.search, {marginLeft: 1}]}
         />
         <TextInput
-          placeholder="Search"
+          placeholder={t("search")}
           style={styles.formField}
           placeholderTextColor={'#888888'}
           value={text}

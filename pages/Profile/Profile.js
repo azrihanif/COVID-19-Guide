@@ -18,6 +18,7 @@ import {AuthCont} from '../../constants/AuthContext';
 import LinearGradient from 'react-native-linear-gradient';
 import {connector} from '../../constants/Connector';
 import {CustomDarkTheme} from '../../components/Route';
+import {useTranslation} from 'react-i18next';
 
 export default function Profile({navigation, route}) {
   const {userContext} = useContext(AuthCont);
@@ -25,6 +26,7 @@ export default function Profile({navigation, route}) {
   const [visible, setVisible] = useState(false);
   const [popUp, setPopUp] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const {t} = useTranslation();
 
   useEffect(() => {
     getData();
@@ -146,7 +148,7 @@ export default function Profile({navigation, route}) {
             </View>
             <View style={{paddingBottom: 16}}>
               <Button
-                title="Upload Image"
+                title={t("upload_image")}
                 onPress={() => {
                   openLibrary('imageUpload');
                   setVisible(false);
@@ -154,7 +156,7 @@ export default function Profile({navigation, route}) {
               />
             </View>
             <Button
-              title="Open Camera"
+              title={t("open_camera")}
               onPress={() => {
                 openLibrary('openCamera');
                 setVisible(false);
@@ -184,13 +186,13 @@ export default function Profile({navigation, route}) {
               onPress={() => {
                 setVisible(true);
               }}>
-              Change profile photo
+              {t('change_photo')}
             </Text>
             {changePhoto()}
             {modal()}
             <View style={{paddingTop: 16}}>
               <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
-                Account Information
+                {t('account_info')}
               </Text>
               <TouchableOpacity
                 onPress={() => {
@@ -202,7 +204,7 @@ export default function Profile({navigation, route}) {
                     {borderBottomRightRadius: 0, borderBottomLeftRadius: 0},
                   ]}>
                   <Feather name={'user'} size={28} color={'#030852'} />
-                  <Text style={styles.text}>Change Username</Text>
+                  <Text style={styles.text}>{t('change_username')}</Text>
                   <FontAwesome
                     style={styles.angle}
                     name={'angle-right'}
@@ -228,7 +230,7 @@ export default function Profile({navigation, route}) {
                   ]}>
                   <FontAwesome name={'phone'} size={28} color={'#030852'} />
                   <Text style={[styles.text, {marginLeft: 5}]}>
-                    Change Phone Number
+                    {t('change_number')}
                   </Text>
                   <FontAwesome
                     style={styles.angle}
@@ -256,7 +258,7 @@ export default function Profile({navigation, route}) {
                     size={28}
                     color={'#030852'}
                   />
-                  <Text style={styles.text}>Change Email Address</Text>
+                  <Text style={styles.text}>{t('change_email')}</Text>
                   <FontAwesome
                     style={styles.angle}
                     name={'angle-right'}
@@ -268,7 +270,7 @@ export default function Profile({navigation, route}) {
             </View>
             <View>
               <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
-                Security
+                {t('security')}
               </Text>
               <TouchableOpacity
                 onPress={() => {
@@ -277,7 +279,7 @@ export default function Profile({navigation, route}) {
                 <View style={styles.item}>
                   <FontAwesome name={'lock'} size={32} color={'#030852'} />
                   <Text style={[styles.text, {marginLeft: 5}]}>
-                    Change Password
+                    {t('change_pass')}
                   </Text>
                   <FontAwesome
                     style={styles.angle}
@@ -290,7 +292,7 @@ export default function Profile({navigation, route}) {
             </View>
             <View>
               <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
-                Deactivate Account
+                {t('deactivate_account')}
               </Text>
               <TouchableOpacity
                 onPress={() => {
@@ -299,7 +301,7 @@ export default function Profile({navigation, route}) {
                 <View style={styles.item}>
                   <FontAwesome name={'user'} size={28} color={'red'} />
                   <Text style={[styles.text, {color: 'red', marginLeft: 5}]}>
-                    Deactivate My Account
+                    {t('deactivate')}
                   </Text>
                   <FontAwesome
                     style={styles.angle}
@@ -333,7 +335,7 @@ export default function Profile({navigation, route}) {
               onPress={() => {
                 setVisible(true);
               }}>
-              Change profile photo
+              {t('change_photo')}
             </Text>
             {changePhoto()}
             {modal()}
@@ -344,7 +346,7 @@ export default function Profile({navigation, route}) {
                   fontFamily: 'Sans-serif',
                   color: CustomDarkTheme?.colors?.text,
                 }}>
-                Account Information
+                {t('account_info')}
               </Text>
               <TouchableOpacity
                 onPress={() => {
@@ -356,7 +358,7 @@ export default function Profile({navigation, route}) {
                     {borderBottomRightRadius: 0, borderBottomLeftRadius: 0},
                   ]}>
                   <Feather name={'user'} size={28} color={'#030852'} />
-                  <Text style={styles.text}>Change Username</Text>
+                  <Text style={styles.text}>{t('change_username')}</Text>
                   <FontAwesome
                     style={styles.angle}
                     name={'angle-right'}
@@ -382,7 +384,7 @@ export default function Profile({navigation, route}) {
                   ]}>
                   <FontAwesome name={'phone'} size={28} color={'#030852'} />
                   <Text style={[styles.text, {marginLeft: 5}]}>
-                    Change Phone Number
+                    {t('change_number')}
                   </Text>
                   <FontAwesome
                     style={styles.angle}
@@ -410,7 +412,7 @@ export default function Profile({navigation, route}) {
                     size={28}
                     color={'#030852'}
                   />
-                  <Text style={styles.text}>Change Email Address</Text>
+                  <Text style={styles.text}>{t('change_email')}</Text>
                   <FontAwesome
                     style={styles.angle}
                     name={'angle-right'}
@@ -427,7 +429,7 @@ export default function Profile({navigation, route}) {
                   fontFamily: 'Sans-serif',
                   color: CustomDarkTheme?.colors?.text,
                 }}>
-                Security
+                {t('security')}
               </Text>
               <TouchableOpacity
                 onPress={() => {
@@ -436,7 +438,7 @@ export default function Profile({navigation, route}) {
                 <View style={styles.item}>
                   <FontAwesome name={'lock'} size={32} color={'#030852'} />
                   <Text style={[styles.text, {marginLeft: 5}]}>
-                    Change Password
+                    {t('change_pass')}
                   </Text>
                   <FontAwesome
                     style={styles.angle}
@@ -454,7 +456,7 @@ export default function Profile({navigation, route}) {
                   fontFamily: 'Sans-serif',
                   color: CustomDarkTheme?.colors?.text,
                 }}>
-                Deactivate Account
+                {t('deactivate_account')}
               </Text>
               <TouchableOpacity
                 onPress={() => {
@@ -463,7 +465,7 @@ export default function Profile({navigation, route}) {
                 <View style={styles.item}>
                   <FontAwesome name={'user'} size={28} color={'red'} />
                   <Text style={[styles.text, {color: 'red', marginLeft: 5}]}>
-                    Deactivate My Account
+                    {t('deactivate')}
                   </Text>
                   <FontAwesome
                     style={styles.angle}
