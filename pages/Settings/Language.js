@@ -7,17 +7,16 @@ import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
 
 export default function Language() {
-  const [isSelected, setIsSelected] = useState('english');
-  const {userContext} = useContext(AuthCont);
+  const {userContext, setUserContext} = useContext(AuthCont);
   const {i18n} = useTranslation();
 
   const changeLanguage = text => {
     if (text === 'english') {
-      setIsSelected('english');
+      setUserContext({...userContext, language: 'english'});
     } else if (text === 'malay') {
-      setIsSelected('malay');
+      setUserContext({...userContext, language: 'malay'});
     } else {
-      setIsSelected('chinese');
+      setUserContext({...userContext, language: 'chinese'});
     }
   };
 
@@ -30,7 +29,7 @@ export default function Language() {
         }}>
         <View style={styles.item}>
           <Text style={styles.text}>English</Text>
-          {isSelected === 'english' && (
+          {userContext?.language === 'english' && (
             <FontAwesome
               style={styles.angle}
               name={'check'}
@@ -47,7 +46,7 @@ export default function Language() {
         }}>
         <View style={[styles.item, styles.secondItem]}>
           <Text style={styles.text}>Bahasa Melayu</Text>
-          {isSelected === 'malay' && (
+          {userContext?.language === 'malay' && (
             <FontAwesome
               style={styles.angle}
               name={'check'}
@@ -64,7 +63,7 @@ export default function Language() {
         }}>
         <View style={styles.secondItem}>
           <Text style={styles.text}>中文</Text>
-          {isSelected === 'chinese' && (
+          {userContext?.language === 'chinese' && (
             <FontAwesome
               style={styles.angle}
               name={'check'}

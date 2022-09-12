@@ -28,6 +28,16 @@ export default function Settings({navigation}) {
   };
   const {t} = useTranslation();
 
+  const getLang = () => {
+    if (userContext?.language === 'english') {
+      return 'English';
+    } else if (userContext?.language === 'malay') {
+      return 'Bahasa Melayu';
+    } else {
+      return '中文';
+    }
+  };
+
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
@@ -63,7 +73,7 @@ export default function Settings({navigation}) {
                 <Text style={[styles.text, {marginLeft: 5}]}>
                   {t('language')}
                 </Text>
-                <Text style={styles.Langtext}>English</Text>
+                <Text style={styles.Langtext}>{getLang()}</Text>
                 <FontAwesome
                   style={styles.angle}
                   name={'angle-right'}
@@ -166,8 +176,10 @@ export default function Settings({navigation}) {
                   {borderBottomLeftRadius: 0, borderBottomRightRadius: 0},
                 ]}>
                 <FontAwesome name={'globe'} size={28} color={'#030852'} />
-                <Text style={[styles.text, {marginLeft: 5}]}>{t('language')}</Text>
-                <Text style={styles.Langtext}>English</Text>
+                <Text style={[styles.text, {marginLeft: 5}]}>
+                  {t('language')}
+                </Text>
+                <Text style={styles.Langtext}>{getLang()}</Text>
                 <FontAwesome
                   style={styles.angle}
                   name={'angle-right'}
@@ -220,7 +232,9 @@ export default function Settings({navigation}) {
             <TouchableOpacity onPress={() => navigation.navigate('Contact Us')}>
               <View style={[styles.item, styles.secondItem]}>
                 <FontAwesome name={'phone'} size={28} color={'#030852'} />
-                <Text style={[styles.text, {marginLeft: 5}]}>{t('contact_us')}</Text>
+                <Text style={[styles.text, {marginLeft: 5}]}>
+                  {t('contact_us')}
+                </Text>
                 <FontAwesome
                   style={styles.angle}
                   name={'angle-right'}

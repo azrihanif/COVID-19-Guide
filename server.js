@@ -201,7 +201,7 @@ app.post(
         const query = await db
           .promise()
           .query(
-            `SELECT a.id, a.name, b.dark_mode FROM user a INNER JOIN miscellaneous b ON a.id = b.user_id WHERE username = '${username}' AND password = '${password}'`,
+            `SELECT a.id, a.name, b.dark_mode, b.language FROM user a INNER JOIN miscellaneous b ON a.id = b.user_id WHERE username = '${username}' AND password = '${password}'`,
           );
 
         if (query[0][0]) {
