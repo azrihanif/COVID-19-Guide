@@ -12,19 +12,47 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-import {connector} from '../constants/Connector';
+import {connector} from '../../constants/Connector';
 import {CustomDarkTheme} from '../../components/Route';
 import {useTranslation} from 'react-i18next';
 
 export default function Settings({navigation}) {
   const {userContext, setUserContext} = useContext(AuthCont);
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => {
+
+  const toggleSwitch = async() => {
     setIsEnabled(isEnabled => !isEnabled);
     setUserContext({
       ...userContext,
       dark_mode: userContext?.dark_mode === 'T' ? 'F' : 'T',
     });
+
+    const data = {
+      id: userContext?.id,
+      darkMode: userContext?.dark_mode === 'T' ? 'F' : 'T',
+    };
+
+    try {
+      let res = await fetch(connector + '/changeDarkMode', {
+        method: 'post',
+        mode: 'no-cors',
+        body: JSON.stringify(data),
+        headers: {
+          Accept: 'application/json',
+          'Content-type': 'application/json',
+        },
+      });
+      if (res) {
+        let responseJSON = await res.json();
+        if(responseJSON?.error){
+          alert(responseJSON?.msg);
+        }
+      } else {
+        console.log('Error!');
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
   const {t} = useTranslation();
 

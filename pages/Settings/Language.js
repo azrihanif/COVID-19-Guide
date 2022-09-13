@@ -5,18 +5,49 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
+import {connector} from '../../constants/Connector';
 
 export default function Language() {
   const {userContext, setUserContext} = useContext(AuthCont);
   const {i18n} = useTranslation();
 
+  const changeLng = async lang => {
+    const data = {
+      id: userContext?.id,
+      language: lang,
+    };
+
+    try {
+      let res = await fetch(connector + '/changeLanguage', {
+        method: 'post',
+        mode: 'no-cors',
+        body: JSON.stringify(data),
+        headers: {
+          Accept: 'application/json',
+          'Content-type': 'application/json',
+        },
+      });
+      if (res) {
+        let responseJSON = await res.json();
+        alert(responseJSON?.msg);
+      } else {
+        console.log('Error!');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const changeLanguage = text => {
     if (text === 'english') {
       setUserContext({...userContext, language: 'english'});
+      changeLng('english')
     } else if (text === 'malay') {
       setUserContext({...userContext, language: 'malay'});
+      changeLng('malay')
     } else {
       setUserContext({...userContext, language: 'chinese'});
+      changeLng('chinese')
     }
   };
 

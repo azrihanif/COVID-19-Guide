@@ -5,6 +5,7 @@ import {AuthCont} from '../../constants/AuthContext';
 import LinearGradient from 'react-native-linear-gradient';
 import {connector} from '../../constants/Connector';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useTranslation } from 'react-i18next';
 
 const Login = ({navigation}) => {
   const [username, setUsername] = useState(null);
@@ -12,6 +13,7 @@ const Login = ({navigation}) => {
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [isFocus, setIsFocus] = useState('');
   const {setUserContext} = useContext(AuthCont);
+  const {i18n} = useTranslation()
 
   const hashPassword = pass => {
     sha256(pass).then(hash => {
@@ -40,6 +42,7 @@ const Login = ({navigation}) => {
         if (responseJSON?.error) {
           alert(responseJSON?.msg);
         } else {
+          i18n.changeLanguage(responseJSON?.msg?.language)
           setUserContext(responseJSON?.msg);
         }
       } else {

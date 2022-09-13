@@ -421,6 +421,48 @@ app.post('/changePass', async (req, res) => {
   }
 });
 
+app.post('/changeLanguage', async (req, res) => {
+  const {id, language} = req.body;
+
+  if (!id || !language) {
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+    return;
+  }
+
+  const query = await db
+    .promise()
+    .query(
+      `UPDATE miscellaneous SET language='${language}' WHERE user_id = ${id}`,
+    );
+
+  if (!!query[0]?.changedRows) {
+    res.status(200).send({msg: 'Successfully updated', error: null});
+  } else {
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+  }
+});
+
+app.post('/changeDarkMode', async (req, res) => {
+  const {id, darkMode} = req.body;
+
+  if (!id || !darkMode) {
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+    return;
+  }
+
+  const query = await db
+    .promise()
+    .query(
+      `UPDATE miscellaneous SET dark_mode='${darkMode}' WHERE user_id = ${id}`,
+    );
+
+  if (!!query[0]?.changedRows) {
+    res.status(200).send({msg: 'Successfully updated', error: null});
+  } else {
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+  }
+});
+
 app.get('/cart', (req, _res) => {
   const {cart} = req.session;
   if (!cart) {
