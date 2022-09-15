@@ -14,14 +14,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import Searchbar from '../../components/Searchbar';
 import {connector} from '../../constants/Connector';
 import {CustomDarkTheme} from '../../components/Route';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 export default function IndoorActivity({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
   const [filterItem, setFilterItem] = useState([]);
   const {userContext} = useContext(AuthCont);
   const [refresh, setRefresh] = useState(false);
-  const {t} = useTranslation()
+  const {t} = useTranslation();
 
   useEffect(() => {
     getActivity();
@@ -47,6 +47,11 @@ export default function IndoorActivity({navigation}) {
           if (responseJSON?.error) {
             Alert.alert('System Error', responseJSON?.msg);
           } else {
+            if (responseJSON?.msg === 'No available task') {
+              setTaskItem([]);
+              setFilterItem([]);
+              return;
+            }
             setTaskItem(responseJSON?.msg);
             setFilterItem(responseJSON?.msg);
           }
@@ -90,15 +95,18 @@ export default function IndoorActivity({navigation}) {
             filterItem={filterItem}
           />
           <Text style={styles.text}>
-            {t("today_activity")} ({moment(new Date()).format('DD/MM/YYYY')})
+            {t('today_activity')} ({moment(new Date()).format('DD/MM/YYYY')})
           </Text>
-          <FlatList
-            data={taskItem}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index}
-            refreshing={refresh}
-            onRefresh={handleRefresh}
-          />
+          {!!taskItem?.length && (
+            <FlatList
+              data={taskItem}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index}
+              refreshing={refresh}
+              onRefresh={handleRefresh}
+            />
+          )}
+          {!taskItem?.length && <Text style={styles.text}>No available task</Text>}
         </View>
 
         <TouchableOpacity style={styles.addWrapper} onPress={() => {}}>
@@ -114,15 +122,22 @@ export default function IndoorActivity({navigation}) {
             filterItem={filterItem}
           />
           <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
-          {t("today_activity")} ({moment(new Date()).format('DD/MM/YYYY')})
+            {t('today_activity')} ({moment(new Date()).format('DD/MM/YYYY')})
           </Text>
-          <FlatList
-            data={taskItem}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index}
-            refreshing={refresh}
-            onRefresh={handleRefresh}
-          />
+          {!!taskItem?.length && (
+            <FlatList
+              data={taskItem}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index}
+              refreshing={refresh}
+              onRefresh={handleRefresh}
+            />
+          )}
+          {!taskItem?.length && (
+            <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+              No available task
+            </Text>
+          )}
         </View>
 
         <TouchableOpacity style={styles.addWrapper} onPress={() => {}}>

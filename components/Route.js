@@ -32,6 +32,7 @@ import Username from '../pages/Profile/Username';
 import PhoneNumber from '../pages/Profile/PhoneNumber';
 import Email from '../pages/Profile/Email';
 import NewPass from '../pages/Profile/NewPass';
+import EmailNoScreen from '../pages/Login/EmailNoScreen';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -90,16 +91,16 @@ const Route = () => {
   );
 
   const logOut = navigation => {
-    return Alert.alert(t("confirmation"), t("logout_message"), [
+    return Alert.alert(t('confirmation'), t('logout_message'), [
       {
-        text: t("yes"),
+        text: t('yes'),
         onPress: () => {
           setUserContext(null);
           navigation.navigate('Covid-19 Guide');
         },
       },
       {
-        text: t("no"),
+        text: t('no'),
       },
     ]);
   };
@@ -193,6 +194,15 @@ const Route = () => {
         name={'Next'}
         component={NextScreen}
       />
+      <Stack.Screen
+        options={{
+          tabBarStyle: {display: 'none'},
+          tabBarItemStyle: {display: 'none'},
+          headerTitle: 'Sign Up',
+        }}
+        name={'EmailPhone'}
+        component={EmailNoScreen}
+      />
     </Stack.Navigator>
   );
 
@@ -277,10 +287,26 @@ const Route = () => {
           headerRight: () => logOutIcon(navigation),
         })}
       />
-      <Stack.Screen name="Favorites" component={Favorites} options={{headerTitle: t("favorites")}}/>
-      <Stack.Screen name="Language" component={Language} options={{headerTitle: t("language")}}/>
-      <Stack.Screen name="FAQ" component={FAQ} options={{headerTitle: t("faq")}}/>
-      <Stack.Screen name="Contact Us" component={ContactUs} options={{headerTitle: t("contact_us")}}/>
+      <Stack.Screen
+        name="Favorites"
+        component={Favorites}
+        options={{headerTitle: t('favorites')}}
+      />
+      <Stack.Screen
+        name="Language"
+        component={Language}
+        options={{headerTitle: t('language')}}
+      />
+      <Stack.Screen
+        name="FAQ"
+        component={FAQ}
+        options={{headerTitle: t('faq')}}
+      />
+      <Stack.Screen
+        name="Contact Us"
+        component={ContactUs}
+        options={{headerTitle: t('contact_us')}}
+      />
     </Stack.Navigator>
   );
 
@@ -359,7 +385,7 @@ const Route = () => {
         name="Profiles"
         component={Profile}
         options={({navigation}) => ({
-          headerTitle: t("profile"),
+          headerTitle: t('profile'),
           headerLeft: () => goBackIcon(navigation),
           headerRight: () => logOutIcon(navigation),
         })}
@@ -368,35 +394,35 @@ const Route = () => {
         name="Username"
         component={Username}
         options={({route}) => ({
-          headerTitle: t("profile"),
+          headerTitle: t('profile'),
         })}
       />
       <Stack.Screen
         name="Phone"
         component={PhoneNumber}
         options={({route}) => ({
-          headerTitle: t("profile"),
+          headerTitle: t('profile'),
         })}
       />
       <Stack.Screen
         name="Email"
         component={Email}
         options={({route}) => ({
-          headerTitle: t("profile"),
+          headerTitle: t('profile'),
         })}
       />
       <Stack.Screen
         name="NewPass"
         component={NewPass}
         options={({route}) => ({
-          headerTitle: t("profile"),
+          headerTitle: t('profile'),
         })}
       />
       <Stack.Screen
         name="Deactivate"
         component={Deactivate}
         options={({route}) => ({
-          headerTitle: t("profile"),
+          headerTitle: t('profile'),
         })}
       />
     </Stack.Navigator>
@@ -438,19 +464,19 @@ const Route = () => {
           let getColor =
             userContext?.dark_mode === 'F' ? styles.text : styles.darkText;
           if (rn === 'Music') {
-            return focused ? <Text style={getColor}>{t("music")}</Text> : null;
+            return focused ? <Text style={getColor}>{t('music')}</Text> : null;
           } else if (rn === 'Covid-19 Guide') {
-            return focused ? <Text style={getColor}>{t("home")}</Text> : null;
+            return focused ? <Text style={getColor}>{t('home')}</Text> : null;
           } else if (rn === 'Indoor Activity') {
             return focused ? (
-              <Text style={getColor}>{t("indoor_activity")}</Text>
+              <Text style={getColor}>{t('indoor_activity')}</Text>
             ) : null;
           } else if (rn === 'Expert Advices') {
-            return focused ? <Text style={getColor}>{t("expert_advice")}</Text> : null;
-          } else if (rn === 'Quran Playlists') {
             return focused ? (
-              <Text style={getColor}>{t("Quran")}</Text>
+              <Text style={getColor}>{t('expert_advice')}</Text>
             ) : null;
+          } else if (rn === 'Quran Playlists') {
+            return focused ? <Text style={getColor}>{t('Quran')}</Text> : null;
           }
         },
         headerStyle: {

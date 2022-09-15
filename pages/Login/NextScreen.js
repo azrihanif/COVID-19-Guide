@@ -9,38 +9,56 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {sha256} from 'react-native-sha256';
 
-export default function NextScreen() {
+export default function NextScreen({navigation, route}) {
+  const {username} = route?.params;
   const [password, setPassword] = useState('');
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [isConfPasswordSecure, setIsConfPasswordSecure] = useState(true);
   const [confPass, setConfPassword] = useState('');
+  const [storeHash1, setStoreHash1] = useState([]);
+  const [valid, setValid] = useState(true);
   const [isFocus, setIsFocus] = useState('');
-  const [correctEmail, setCorrectEmail] = useState(false);
 
-  const validateEmail = mail => {
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    if (reg.test(mail) === false) {
-      console.log('Email is Not Correct');
-      setCorrectEmail(false);
+  const store1 = hash => setStoreHash1(hash);
+
+  const hashPassword1 = pass => sha256(pass).then(hash => store1(hash));
+
+  const validatePass = pass => {
+    let reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,256}$/;
+    if (!reg.test(pass)) {
+      return false;
     } else {
-      console.log('Email is Correct');
-      setCorrectEmail(true);
+      return true;
     }
   };
 
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.text}>Sign Up for COVID-19 Guide</Text>
+        <Text style={[styles.text, {textAlign: 'center'}]}>
+          Sign Up for COVID-19 Guide
+        </Text>
         <TextInput
           style={[styles.input, isFocus === 'password' && styles.focus]}
           placeholder={'Password'}
           value={password}
           secureTextEntry={isPasswordSecure}
-          onChangeText={pass => setPassword(pass)}
+          onChangeText={pass => {
+            setPassword(pass);
+            hashPassword1(pass);
+            setValid(validatePass(pass));
+          }}
           onFocus={() => setIsFocus('password')}
           onBlur={() => setIsFocus('')}></TextInput>
+        {!valid && (
+          <Text style={{fontSize: 12, color: 'red', marginTop: -10}}>
+            {
+              'Use 8 or more characters with a mix of letters, numbers & symbols'
+            }
+          </Text>
+        )}
         <MaterialCommunityIcons
           name={isPasswordSecure ? 'eye-off' : 'eye'}
           size={28}
@@ -79,8 +97,24 @@ export default function NextScreen() {
               : setIsConfPasswordSecure(true);
           }}
         />
-        <TouchableOpacity style={styles.next}>
-          <Text style={styles.smallText}>Sign Up</Text>
+        <TouchableOpacity
+          style={styles.next}
+          onPress={() => {
+            if (!confPass || !password) {
+              alert(
+                'Please enter your password and confirm password before proceed',
+              );
+              return;
+            }
+
+            if (confPass !== password) {
+              alert('Password and Confirm Password did not match');
+              return;
+            }
+            
+            navigation.navigate('EmailPhone', {username, password: storeHash1});
+          }}>
+          <Text style={styles.smallText}>Next</Text>
           <FontAwesome name={'angle-right'} size={32} color={'#030852'} />
         </TouchableOpacity>
       </View>
@@ -92,10 +126,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    justifyContent: 'center',
     alignItems: 'center',
   },
   card: {
+    width: '90%',
     backgroundColor: '#fff',
     padding: 16,
     borderRadius: 20,
@@ -116,7 +150,7 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     borderColor: '#C0C0C0',
     borderWidth: 1,
-    width: 250,
+    width: '100%',
     marginBottom: 16,
   },
   focus: {

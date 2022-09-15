@@ -12,9 +12,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {connector} from '../../constants/Connector';
 import {sha256} from 'react-native-sha256';
-import { CustomDarkTheme } from '../../components/Route';
+import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 export default function NewPass({navigation}) {
   const [isFocus, setIsFocus] = useState('');
@@ -33,15 +33,15 @@ export default function NewPass({navigation}) {
   const [valid, setValid] = useState(true);
   const [confValid, setConfValid] = useState(true);
   const {userContext} = useContext(AuthCont);
-  const {t} = useTranslation()
-
-  const hashPassword1 = pass => sha256(pass).then(hash => store1(hash));
-  const hashPassword2 = pass => sha256(pass).then(hash => store2(hash));
-  const hashPassword3 = pass => sha256(pass).then(hash => store3(hash));
+  const {t} = useTranslation();
 
   const store1 = hash => setStoreHash1(hash);
   const store2 = hash => setStoreHash2(hash);
   const store3 = hash => setStoreHash3(hash);
+  
+  const hashPassword1 = pass => sha256(pass).then(hash => store1(hash));
+  const hashPassword2 = pass => sha256(pass).then(hash => store2(hash));
+  const hashPassword3 = pass => sha256(pass).then(hash => store3(hash));
 
   const validatePass = pass => {
     let reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,256}$/;
@@ -105,12 +105,10 @@ export default function NewPass({navigation}) {
         let responseJSON = await res.json();
 
         if (responseJSON?.error) {
-          console.log('sii');
           setPopUp(true);
           setErrorMsg(responseJSON?.msg);
           setMod(false);
         } else {
-          console.log('siiaaa');
           setPopUp(true);
           setErrorMsg(responseJSON?.msg);
           setMod(true);
@@ -154,10 +152,10 @@ export default function NewPass({navigation}) {
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <View style={{paddingHorizontal: 16}}>
           {modal()}
-          <Text style={styles.text}>{t("current_pass")}</Text>
+          <Text style={styles.text}>{t('current_pass')}</Text>
           <TextInput
             style={[styles.input, isFocus === 'password' && styles.focus]}
-            placeholder={t("current_pass")}
+            placeholder={t('current_pass')}
             value={currentPass}
             secureTextEntry={isCurrPasswordSecure}
             onChangeText={pass => {
@@ -181,10 +179,10 @@ export default function NewPass({navigation}) {
                 : setIsCurrPasswordSecure(true);
             }}
           />
-          <Text style={styles.text}>{t("new_pass")}</Text>
+          <Text style={styles.text}>{t('new_pass')}</Text>
           <TextInput
             style={[styles.input, isFocus === 'newPassword' && styles.focus]}
-            placeholder={t("8chars")}
+            placeholder={t('8chars')}
             value={newPass}
             secureTextEntry={isPasswordSecure}
             onChangeText={pass => {
@@ -196,7 +194,7 @@ export default function NewPass({navigation}) {
             onBlur={() => setIsFocus('')}></TextInput>
           {!valid && (
             <Text style={{fontSize: 12, color: 'red', marginTop: -10}}>
-              {t("pass_error")}
+              {t('pass_error')}
             </Text>
           )}
           <MaterialCommunityIcons
@@ -214,10 +212,10 @@ export default function NewPass({navigation}) {
                 : setIsPasswordSecure(true);
             }}
           />
-          <Text style={styles.text}>{t("conf_pass")}</Text>
+          <Text style={styles.text}>{t('conf_pass')}</Text>
           <TextInput
             style={[styles.input, isFocus === 'confPassword' && styles.focus]}
-            placeholder={t("8chars")}
+            placeholder={t('8chars')}
             value={confirmPass}
             onChangeText={pass => {
               setConfirmPass(pass);
@@ -235,7 +233,7 @@ export default function NewPass({navigation}) {
                 marginTop: -10,
                 marginBottom: 8,
               }}>
-             {t("pass_error")}
+              {t('pass_error')}
             </Text>
           )}
           <MaterialCommunityIcons
@@ -268,10 +266,12 @@ export default function NewPass({navigation}) {
       <View style={[styles.container, CustomDarkTheme]}>
         <View style={{paddingHorizontal: 16}}>
           {modal()}
-          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>{t("current_pass")}</Text>
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+            {t('current_pass')}
+          </Text>
           <TextInput
             style={[styles.input, isFocus === 'password' && styles.focus]}
-            placeholder={t("current_pass")}
+            placeholder={t('current_pass')}
             value={currentPass}
             secureTextEntry={isCurrPasswordSecure}
             onChangeText={pass => {
@@ -295,10 +295,12 @@ export default function NewPass({navigation}) {
                 : setIsCurrPasswordSecure(true);
             }}
           />
-          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>{t("new_pass")}</Text>
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+            {t('new_pass')}
+          </Text>
           <TextInput
             style={[styles.input, isFocus === 'newPassword' && styles.focus]}
-            placeholder={t("8chars")}
+            placeholder={t('8chars')}
             value={newPass}
             secureTextEntry={isPasswordSecure}
             onChangeText={pass => {
@@ -310,7 +312,7 @@ export default function NewPass({navigation}) {
             onBlur={() => setIsFocus('')}></TextInput>
           {!valid && (
             <Text style={{fontSize: 12, color: 'red', marginTop: -10}}>
-              {t("pass_error")}
+              {t('pass_error')}
             </Text>
           )}
           <MaterialCommunityIcons
@@ -328,10 +330,12 @@ export default function NewPass({navigation}) {
                 : setIsPasswordSecure(true);
             }}
           />
-          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>{t("conf_pass")}</Text>
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+            {t('conf_pass')}
+          </Text>
           <TextInput
             style={[styles.input, isFocus === 'confPassword' && styles.focus]}
-            placeholder={t("8chars")}
+            placeholder={t('8chars')}
             value={confirmPass}
             onChangeText={pass => {
               setConfirmPass(pass);
@@ -349,7 +353,7 @@ export default function NewPass({navigation}) {
                 marginTop: -10,
                 marginBottom: 8,
               }}>
-             {t("pass_error")}
+              {t('pass_error')}
             </Text>
           )}
           <MaterialCommunityIcons
@@ -373,7 +377,7 @@ export default function NewPass({navigation}) {
               onPress={() => {
                 changePass();
               }}>
-              <Text style={styles.loginText}>{t("save")}</Text>
+              <Text style={styles.loginText}>{t('save')}</Text>
             </TouchableOpacity>
           </View>
         </View>

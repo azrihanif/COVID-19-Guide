@@ -116,7 +116,7 @@ app.post(
       const query = await db
         .promise()
         .query(
-          `SELECT b.like_id, a.id, a.advice_title, a.advice_picture, a.advice, a.advice_contact, a.advice_date, a.advice_email FROM advice_list a LEFT JOIN expert_advice b ON b.advice_id = a.id ORDER BY a.advice_date DESC`,
+          `SELECT b.like_id, a.id, a.advice_title, a.advice_picture, a.advice, a.advice_contact, a.advice_date, a.advice_email FROM advice_list a LEFT JOIN expert_advice b ON b.advice_id = a.id AND b.user_id = '${id}'ORDER BY a.advice_date DESC`,
         );
 
       if (query[0]) {
@@ -318,13 +318,16 @@ app.post(
       .query(
         `SELECT activity, picture, video_name, video_data FROM indoor_activity WHERE user_id = ${id}`,
       );
-
-    if (query[0][0]) {
+    console.log(!query[0][0]);
+    if (!!query[0][0]) {
       result.status(200).send({msg: query[0], error: null});
+      return;
     } else if (!query[0][0]) {
       result.status(200).send({msg: 'No available task', error: null});
+      return;
     } else {
       result.status(400).send({msg: 'Error Occured', error: '400'});
+      return;
     }
   },
 );
@@ -458,6 +461,39 @@ app.post('/changeDarkMode', async (req, res) => {
 
   if (!!query[0]?.changedRows) {
     res.status(200).send({msg: 'Successfully updated', error: null});
+  } else {
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+  }
+});
+
+app.post('/signUp', async (req, res) => {
+  const {username, password} = req.body;
+
+  if (!username || !password) {
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+    return;
+  }
+
+  const query1 = await db
+    .promise()
+    .query(
+      `INSERT INTO user(name, username, password) VALUES ('${username}','${username}','${password}');`,
+    );
+
+  const query2 = await db
+    .promise()
+    .query(
+      `INSERT INTO profile(user_id,phone_no, email) VALUES ((SELECT id FROM user WHERE name = '${username}' AND username = '${username}'),'${req?.body?.phoneNo}','${req?.body?.email}');`,
+    );
+
+  const query3 = await db
+    .promise()
+    .query(
+      `INSERT INTO miscellaneous(user_id, dark_mode, language) VALUES ((SELECT id FROM user WHERE name = '${username}' AND username = '${username}'),'F','english');`,
+    );
+
+  if (!!query1[0]?.affectedRows && !!query2[0]?.affectedRows && !!query3[0]?.affectedRows) {
+    res.status(200).send({msg: 'Successfully sign up', error: null});
   } else {
     res.status(400).send({msg: 'Error Occured', error: '400'});
   }
