@@ -318,7 +318,7 @@ app.post(
       .query(
         `SELECT activity, picture, video_name, video_data FROM indoor_activity WHERE user_id = ${id}`,
       );
-    console.log(!query[0][0]);
+    
     if (!!query[0][0]) {
       result.status(200).send({msg: query[0], error: null});
       return;
