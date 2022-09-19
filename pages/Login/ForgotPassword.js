@@ -9,24 +9,31 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-export default function ForgotPassword() {
-  const [email, setEmail] = useState('');
+export default function ForgotPassword({navigation}) {
+  const [username, setUsername] = useState('');
   const [isFocus, setIsFocus] = useState('');
+
+  const next = () => {
+    if (!username) {
+      alert('Please enter the username before proceeding');
+      return;
+    }
+
+    navigation.navigate('Next Forgot');
+  };
 
   return (
     <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.text}>
-          Enter your phone number or email address
-        </Text>
+        <Text style={styles.text}>Enter your username</Text>
         <TextInput
-          style={[styles.input, isFocus === 'email' && styles.focus]}
-          placeholder={'Email or Phone number'}
-          value={email}
-          onChangeText={mail => setEmail(mail)}
-          onFocus={() => setIsFocus('email')}
+          style={[styles.input, isFocus === 'username' && styles.focus]}
+          placeholder={'Username'}
+          value={username}
+          onChangeText={user => setUsername(user)}
+          onFocus={() => setIsFocus('username')}
           onBlur={() => setIsFocus('')}></TextInput>
-        <TouchableOpacity style={styles.next} onPress={() => {}}>
+        <TouchableOpacity style={styles.next} onPress={next}>
           <Text style={styles.smallText}>Next</Text>
           <FontAwesome name={'angle-right'} size={32} color={'#030852'} />
         </TouchableOpacity>
@@ -38,7 +45,6 @@ export default function ForgotPassword() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
   },
   card: {
@@ -48,6 +54,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 20,
     flexDirection: 'column',
+    width: '90%',
   },
   text: {
     fontSize: 20,

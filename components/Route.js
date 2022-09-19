@@ -33,6 +33,9 @@ import PhoneNumber from '../pages/Profile/PhoneNumber';
 import Email from '../pages/Profile/Email';
 import NewPass from '../pages/Profile/NewPass';
 import EmailNoScreen from '../pages/Login/EmailNoScreen';
+import NextForgot from '../pages/Login/NextForgot';
+import VerifyOTP from '../pages/Login/VerifyOTP';
+import ChangePass from '../pages/Login/ChangePass';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -176,6 +179,33 @@ const Route = () => {
         }}
         name={'Forgot Password'}
         component={ForgotPassword}
+      />
+      <Stack.Screen
+        options={{
+          tabBarStyle: {display: 'none'},
+          tabBarItemStyle: {display: 'none'},
+          headerTitle: "Forgot Password"
+        }}
+        name={'Next Forgot'}
+        component={NextForgot}
+      />
+      <Stack.Screen
+        options={{
+          tabBarStyle: {display: 'none'},
+          tabBarItemStyle: {display: 'none'},
+          headerTitle: "Forgot Password"
+        }}
+        name={'Verify OTP'}
+        component={VerifyOTP}
+      />
+      <Stack.Screen
+        options={{
+          tabBarStyle: {display: 'none'},
+          tabBarItemStyle: {display: 'none'},
+          headerTitle: "Forgot Password"
+        }}
+        name={'Change Password'}
+        component={ChangePass}
       />
       <Stack.Screen
         options={{
