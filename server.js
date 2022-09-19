@@ -4,6 +4,9 @@ const path = require('path');
 const app = express();
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const nodemailer = require('nodemailer');
+const axios = require('axios');
+const FormData = require('form-data');
 const session = require('express-session');
 const {check, validationResult} = require('express-validator');
 const details = require('./routes/details');
@@ -318,7 +321,7 @@ app.post(
       .query(
         `SELECT activity, picture, video_name, video_data FROM indoor_activity WHERE user_id = ${id}`,
       );
-    
+
     if (!!query[0][0]) {
       result.status(200).send({msg: query[0], error: null});
       return;
@@ -492,10 +495,110 @@ app.post('/signUp', async (req, res) => {
       `INSERT INTO miscellaneous(user_id, dark_mode, language) VALUES ((SELECT id FROM user WHERE name = '${username}' AND username = '${username}'),'F','english');`,
     );
 
-  if (!!query1[0]?.affectedRows && !!query2[0]?.affectedRows && !!query3[0]?.affectedRows) {
+  if (
+    !!query1[0]?.affectedRows &&
+    !!query2[0]?.affectedRows &&
+    !!query3[0]?.affectedRows
+  ) {
     res.status(200).send({msg: 'Successfully sign up', error: null});
   } else {
     res.status(400).send({msg: 'Error Occured', error: '400'});
+  }
+});
+
+app.post('/forgot', async (req, res) => {
+  const output = `
+  <p>You requested for a One-Time PIN (OTP) for changing your password account</p>
+  <p>Enter your 6-digit OTP shown below to proceed</p>
+  <h3>OTP</h3>
+  <p>This OTP is valid for 2 minutes and usable only once.</p>
+  <p><strong>Thank you</strong></p>
+  `;
+
+  let transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    auth: {
+      user: 'wif190029@siswa.um.edu.my',
+      pass: 'mroibmsiwdudvzti',
+    },
+  });
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"COVID-19 Guide" <wif190029@siswa.um.edu.my>', // sender address
+    to: `${req?.body?.email}`, // list of receivers
+    subject: 'Reset Password Request', // Subject line
+    html: output, // html body
+  });
+
+  console.log('Message sent: %s', info.messageId);
+  console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+});
+
+app.post('/sendSMS', async (req, res) => {
+  try {
+    const data = new FormData();
+    data.append('mobile', `+6${req?.body?.phoneNo}`);
+    data.append('sender_id', 'D7VERIFY');
+    data.append('message', 'Your OTP code is {code}');
+    data.append('expiry', '900');
+
+    const response = await axios({
+      method: 'POST',
+      url: 'https://d7networks.com/api/verifier/send',
+      headers: {
+        Authorization: 'Token 8f90fe54ad714883186dac8641ab97b95880dd14',
+        ...data.getHeaders(),
+      },
+      data: data,
+    });
+
+    const query = await db
+      .promise()
+      .query(
+        `UPDATE user SET otp_id = '${response?.data?.otp_id}' WHERE username = '${req?.body?.username}'`,
+      );
+
+    if (!!query[0]?.affectedRows) {
+      res.status(200).send({
+        msg: `We have send the OTP code to your ${req?.body?.method}`,
+        error: null,
+      });
+    } else {
+      res.status(400).send({msg: 'Error Occured', error: '400'});
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post('/verifyOTP', async (req, res) => {
+  const query = await db
+    .promise()
+    .query(`SELECT otp_id FROM user WHERE username = '${req?.body?.username}'`);
+
+  try {
+    const data = new FormData();
+    data.append('otp_id', query[0][0]?.otp_id);
+    data.append('otp_code', req?.body?.OTPCode);
+
+    const response = await axios({
+      method: 'POST',
+      url: 'https://d7networks.com/api/verifier/verify',
+      headers: {
+        Authorization: 'Token 8f90fe54ad714883186dac8641ab97b95880dd14',
+        ...data.getHeaders(),
+      },
+      data: data,
+    });
+    console.log('data=> ', response?.data);
+    if (response?.data?.status === 'success') {
+      res.status(200).send({msg: 'success', error: null});
+    } else {
+      res.status(400).send({msg: 'Invalid OTP', error: '400'});
+    }
+  } catch (err) {
+    console.log(err);
   }
 });
 
