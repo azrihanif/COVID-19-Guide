@@ -13,7 +13,7 @@ import SwitchSelector from 'react-native-switch-selector';
 import {connector} from '../../constants/Connector';
 
 export default function NextForgot({navigation, route}) {
-//   const {username, password} = route?.params;
+  const {username} = route?.params;
   const [phoneNo, setPhoneNo] = useState('');
   const [email, setEmail] = useState('');
   const [isFocus, setIsFocus] = useState('');
@@ -48,39 +48,40 @@ export default function NextForgot({navigation, route}) {
     }
   };
 
-  const signUp = async () => {
-    navigation.navigate('Verify OTP', {method: !!email ? 'email address' : 'phone number'})
-    // const data = {
-    // //   username: username,
-    // //   password: password,
-    //   email: email,
-    //   phoneNo: phoneNo,
-    // };
+  const sendOTP = async () => {
+    let data = {
+      username: username,
+      email: email,
+      phoneNo: phoneNo,
+    };
 
-    // try {
-    //   let res = await fetch(connector + '/signUp', {
-    //     method: 'post',
-    //     mode: 'no-cors',
-    //     body: JSON.stringify(data),
-    //     headers: {
-    //       Accept: 'application/json',
-    //       'Content-type': 'application/json',
-    //     },
-    //   });
-    //   if (res) {
-    //     let responseJSON = await res.json();
-    //     if (responseJSON?.error) {
-    //       alert(responseJSON?.msg);
-    //     } else {
-    //       alert(responseJSON?.msg);
-    //       navigation.navigate('Covid-19 Guide')
-    //     }
-    //   } else {
-    //     console.log('Error!');
-    //   }
-    // } catch (e) {
-    //   console.error(e);
-    // }
+    try {
+      let res = await fetch(connector + (!!email ? '/sendEmail' : '/sendSMS'), {
+        method: 'post',
+        mode: 'no-cors',
+        body: JSON.stringify(data),
+        headers: {
+          Accept: 'application/json',
+          'Content-type': 'application/json',
+        },
+      });
+      if (res) {
+        let responseJSON = await res.json();
+        if (responseJSON?.error) {
+          alert(responseJSON?.msg);
+        } else {
+          alert(responseJSON?.msg);
+          navigation.navigate('Verify OTP', {
+            method: !!email ? 'email address' : 'phone number',
+            username: username,
+          });
+        }
+      } else {
+        console.log('Error!');
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -166,10 +167,10 @@ export default function NextForgot({navigation, route}) {
               alert('Please enter correct email address');
               return;
             }
-            
-            signUp()
+
+            sendOTP();
           }}>
-          <Text style={styles.smallText}>Next</Text>
+          <Text style={styles.smallText}>Send OTP</Text>
           <FontAwesome name={'angle-right'} size={32} color={'#030852'} />
         </TouchableOpacity>
       </View>

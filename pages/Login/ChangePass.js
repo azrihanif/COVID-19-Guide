@@ -13,7 +13,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {connector} from '../../constants/Connector';
 import {sha256} from 'react-native-sha256';
 
-export default function ChangePass({navigation}) {
+export default function ChangePass({navigation, route}) {
+  const {username} = route?.params;
   const [isFocus, setIsFocus] = useState('');
   const [newPass, setNewPass] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
@@ -27,11 +28,9 @@ export default function ChangePass({navigation}) {
   const [valid, setValid] = useState(true);
   const [confValid, setConfValid] = useState(true);
 
-  
   const store2 = hash => setStoreHash2(hash);
   const store3 = hash => setStoreHash3(hash);
 
-  
   const hashPassword2 = pass => sha256(pass).then(hash => store2(hash));
   const hashPassword3 = pass => sha256(pass).then(hash => store3(hash));
 
@@ -69,43 +68,43 @@ export default function ChangePass({navigation}) {
       return;
     }
 
-    // const params = {
-    //   currentPass: storeHash1,
-    //   confirmPass: storeHash2,
-    //   newPass: storeHash3,
-    // };
+    const params = {
+      confPass: storeHash2,
+      password: storeHash3,
+      username: username
+    };
+    
+    try {
+      let res = await fetch(connector + '/forgotPass', {
+        method: 'post',
+        mode: 'no-cors',
+        body: JSON.stringify(params),
+        headers: {
+          Accept: 'application/json',
+          'Content-type': 'application/json',
+        },
+      });
+      if (res) {
+        let responseJSON = await res.json();
 
-    // try {
-    //   let res = await fetch(connector + '/changePass', {
-    //     method: 'post',
-    //     mode: 'no-cors',
-    //     body: JSON.stringify(params),
-    //     headers: {
-    //       Accept: 'application/json',
-    //       'Content-type': 'application/json',
-    //     },
-    //   });
-    //   if (res) {
-    //     let responseJSON = await res.json();
-
-    //     if (responseJSON?.error) {
-    //       setPopUp(true);
-    //       setErrorMsg(responseJSON?.msg);
-    //       setMod(false);
-    //     } else {
-    //       setPopUp(true);
-    //       setErrorMsg(responseJSON?.msg);
-    //       setMod(true);
-    //     }
-    //   } else {
-    //     setErrorMsg('Error!');
-    //     setMod(false);
-    //   }
-    // } catch (e) {
-    //   setPopUp(true);
-    //   setErrorMsg(e);
-    //   setMod(false);
-    // }
+        if (responseJSON?.error) {
+          setPopUp(true);
+          setErrorMsg(responseJSON?.msg);
+          setMod(false);
+        } else {
+          setPopUp(true);
+          setErrorMsg(responseJSON?.msg);
+          setMod(true);
+        }
+      } else {
+        setErrorMsg('Error!');
+        setMod(false);
+      }
+    } catch (e) {
+      setPopUp(true);
+      setErrorMsg(e);
+      setMod(false);
+    }
   };
 
   const modal = () => {
@@ -117,7 +116,7 @@ export default function ChangePass({navigation}) {
               <TouchableOpacity
                 onPress={() => {
                   setPopUp(false);
-                  mod && navigation.navigate({name: 'Profile'});
+                  mod && navigation.navigate({name: 'Covid-19 Guide'});
                 }}>
                 <FontAwesome name="close" color={'#000'} size={25} />
               </TouchableOpacity>
@@ -151,7 +150,9 @@ export default function ChangePass({navigation}) {
             onBlur={() => setIsFocus('')}></TextInput>
           {!valid && (
             <Text style={{fontSize: 12, color: 'red', marginTop: -10}}>
-              {"Use 8 or more characters with a mix of letters, numbers & symbols"}
+              {
+                'Use 8 or more characters with a mix of letters, numbers & symbols'
+              }
             </Text>
           )}
           <MaterialCommunityIcons
@@ -190,7 +191,9 @@ export default function ChangePass({navigation}) {
                 marginTop: -10,
                 marginBottom: 8,
               }}>
-              {"Use 8 or more characters with a mix of letters, numbers & symbols"}
+              {
+                'Use 8 or more characters with a mix of letters, numbers & symbols'
+              }
             </Text>
           )}
           <MaterialCommunityIcons

@@ -7,9 +7,11 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
+import {connector} from '../../constants/Connector';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function VerifyOTP({navigation, route}) {
-  const {method} = route?.params;
+  const {method, username} = route?.params;
   let textInput = useRef(null);
   const lengthInput = 6;
   let clockCall = null;
@@ -37,16 +39,75 @@ export default function VerifyOTP({navigation, route}) {
     }
   };
 
-  const onChangeText = val => {
+  const onChangeText = async val => {
     setInternalVal(val);
-    if(val?.length === lengthInput){
-      navigation.navigate('Change Password')
+    if (val?.length === lengthInput) {
+      if (method === 'email address') {
+        const data = {
+          username: username,
+          OTPCode: val,
+        };
+        try {
+          let res = await fetch(connector + '/verifyOTPEmail', {
+            method: 'post',
+            mode: 'no-cors',
+            body: JSON.stringify(data),
+            headers: {
+              Accept: 'application/json',
+              'Content-type': 'application/json',
+            },
+          });
+          if (res) {
+            let responseJSON = await res.json();
+            if (responseJSON?.error) {
+              alert(responseJSON?.msg);
+            } else {
+              alert(responseJSON?.msg);
+              navigation.navigate('Change Password', {username: username});
+            }
+          } else {
+            console.log('Error!');
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    } else if (method === 'phone number') {
+      const data = {
+        username: username,
+        OTPCode: val,
+      };
+      try {
+        let res = await fetch(connector + '/verifyOTPSMS', {
+          method: 'post',
+          mode: 'no-cors',
+          body: JSON.stringify(data),
+          headers: {
+            Accept: 'application/json',
+            'Content-type': 'application/json',
+          },
+        });
+        if (res) {
+          let responseJSON = await res.json();
+          if (responseJSON?.error) {
+            alert(responseJSON?.msg);
+          } else {
+            alert(responseJSON?.msg);
+            navigation.navigate('Change Password', {username: username});
+          }
+        } else {
+          console.log('Error!');
+        }
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
   const onChangeNumber = () => {
     navigation.goBack();
   };
+
   const onResendOTP = () => {
     if (enableResend) {
       setCountdown(defaultTimer);
@@ -63,7 +124,7 @@ export default function VerifyOTP({navigation, route}) {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
       <KeyboardAvoidingView
         keyboardVerticalOffset={50}
         behavior={'padding'}
@@ -124,7 +185,7 @@ export default function VerifyOTP({navigation, route}) {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </View>
+    </LinearGradient>
   );
 }
 

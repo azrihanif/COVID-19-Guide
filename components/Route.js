@@ -184,7 +184,7 @@ const Route = () => {
         options={{
           tabBarStyle: {display: 'none'},
           tabBarItemStyle: {display: 'none'},
-          headerTitle: "Forgot Password"
+          headerTitle: 'Forgot Password',
         }}
         name={'Next Forgot'}
         component={NextForgot}
@@ -193,7 +193,7 @@ const Route = () => {
         options={{
           tabBarStyle: {display: 'none'},
           tabBarItemStyle: {display: 'none'},
-          headerTitle: "Forgot Password"
+          headerTitle: 'Forgot Password',
         }}
         name={'Verify OTP'}
         component={VerifyOTP}
@@ -202,7 +202,10 @@ const Route = () => {
         options={{
           tabBarStyle: {display: 'none'},
           tabBarItemStyle: {display: 'none'},
-          headerTitle: "Forgot Password"
+          headerTitle: 'Forgot Password',
+          // headerLeft: () => {
+          //   return null;
+          // },
         }}
         name={'Change Password'}
         component={ChangePass}

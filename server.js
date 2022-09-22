@@ -506,11 +506,44 @@ app.post('/signUp', async (req, res) => {
   }
 });
 
-app.post('/forgot', async (req, res) => {
+app.post('/sendEmail', async (req, res) => {
+  if (!req?.body?.email) {
+    res.status(400).send({
+      msg: 'Please enter your email address to receive OTP',
+      error: '400',
+    });
+    return;
+  }
+
+  const query = await db
+    .promise()
+    .query(
+      `SELECT username FROM user WHERE username = '${req?.body?.username}'`,
+    );
+
+  if (!query[0][0]) {
+    res
+      .status(400)
+      .send({msg: 'No user was found with the username', error: '400'});
+    return;
+  }
+
+  const otp_code = Math.floor(100000 + Math.random() * 900000);
+  const query2 = await db
+    .promise()
+    .query(
+      `UPDATE user SET otp_code = '${otp_code}' WHERE username = '${req?.body?.username}'`,
+    );
+
+  if (!query2[0]?.affectedRows) {
+    res.status(400).send({msg: 'Error Occured', error: '400'});
+    return;
+  }
+
   const output = `
   <p>You requested for a One-Time PIN (OTP) for changing your password account</p>
   <p>Enter your 6-digit OTP shown below to proceed</p>
-  <h3>OTP</h3>
+  <h3>${otp_code}</h3>
   <p>This OTP is valid for 2 minutes and usable only once.</p>
   <p><strong>Thank you</strong></p>
   `;
@@ -523,12 +556,16 @@ app.post('/forgot', async (req, res) => {
     },
   });
 
-  // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"COVID-19 Guide" <wif190029@siswa.um.edu.my>', // sender address
-    to: `${req?.body?.email}`, // list of receivers
-    subject: 'Reset Password Request', // Subject line
-    html: output, // html body
+    from: '"COVID-19 Guide" <wif190029@siswa.um.edu.my>',
+    to: `${req?.body?.email}`,
+    subject: 'Reset Password Request',
+    html: output,
+  });
+
+  res.status(200).send({
+    msg: 'We have send the OTP code to your email address',
+    error: null,
   });
 
   console.log('Message sent: %s', info.messageId);
@@ -561,7 +598,7 @@ app.post('/sendSMS', async (req, res) => {
 
     if (!!query[0]?.affectedRows) {
       res.status(200).send({
-        msg: `We have send the OTP code to your ${req?.body?.method}`,
+        msg: `We have send the OTP code to your phone number`,
         error: null,
       });
     } else {
@@ -572,7 +609,7 @@ app.post('/sendSMS', async (req, res) => {
   }
 });
 
-app.post('/verifyOTP', async (req, res) => {
+app.post('/verifyOTPSMS', async (req, res) => {
   const query = await db
     .promise()
     .query(`SELECT otp_id FROM user WHERE username = '${req?.body?.username}'`);
@@ -599,6 +636,46 @@ app.post('/verifyOTP', async (req, res) => {
     }
   } catch (err) {
     console.log(err);
+  }
+});
+
+app.post('/verifyOTPEmail', async (req, res) => {
+  const query = await db
+    .promise()
+    .query(
+      `SELECT otp_code FROM user WHERE username = '${req?.body?.username}'`,
+    );
+  if (req?.body?.OTPCode !== query[0][0]?.otp_code) {
+    res.status(400).send({msg: 'Invalid OTP Code', error: '400'});
+    return;
+  }
+
+  res.status(200).send({msg: 'Success', error: null});
+});
+
+app.post('/forgotPass', async (req, res) => {
+  if (!req?.body?.password || !req?.body?.confPass) {
+    res.status(400).send({msg: 'Please enter your new password', error: '400'});
+    return;
+  }
+
+  if (req?.body?.password !== req?.body?.confPass) {
+    res
+      .status(400)
+      .send({msg: 'Password and Confirm Password did not match', error: '400'});
+    return;
+  }
+
+  const query = await db
+    .promise()
+    .query(
+      `UPDATE user SET password = '${req?.body?.password}' WHERE username = '${req?.body?.username}'`,
+    );
+
+  if (!!query[0]?.affectedRows) {
+    res.status(200).send({msg: 'Successfully changed password', error: null});
+  } else {
+    res.status(400).send({msg: 'Error occured', error: '400'});
   }
 });
 

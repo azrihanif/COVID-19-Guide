@@ -19,7 +19,7 @@ export default function ForgotPassword({navigation}) {
       return;
     }
 
-    navigation.navigate('Next Forgot');
+    navigation.navigate('Next Forgot', {username});
   };
 
   return (
