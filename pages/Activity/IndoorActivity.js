@@ -1,4 +1,11 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import {
   View,
   StyleSheet,
@@ -15,6 +22,8 @@ import Searchbar from '../../components/Searchbar';
 import {connector} from '../../constants/Connector';
 import {CustomDarkTheme} from '../../components/Route';
 import {useTranslation} from 'react-i18next';
+import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
+import AddActivity from './AddActivity';
 
 export default function IndoorActivity({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
@@ -22,6 +31,9 @@ export default function IndoorActivity({navigation}) {
   const {userContext} = useContext(AuthCont);
   const [refresh, setRefresh] = useState(false);
   const {t} = useTranslation();
+  const bottomSheetRef = useRef(null);
+  const snapPoints = ['50%'];
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   useEffect(() => {
     getActivity();
@@ -85,37 +97,58 @@ export default function IndoorActivity({navigation}) {
     getActivity();
   };
 
+  const handleSnapPress = useCallback(index => {
+    bottomSheetRef.current?.snapToIndex(index);
+    setSheetOpen(true);
+  }, []);
+
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-        <View style={styles.items}>
-          <Searchbar
-            item={taskItem}
-            setItem={setTaskItem}
-            filterItem={filterItem}
-          />
-          <Text style={styles.text}>
-            {t('today_activity')} ({moment(new Date()).format('DD/MM/YYYY')})
-          </Text>
-          {!!taskItem?.length && (
-            <FlatList
-              data={taskItem}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => index}
-              refreshing={refresh}
-              onRefresh={handleRefresh}
+        <View style={[styles.container, {opacity: sheetOpen ? 0.5 : 1}]}>
+          <View style={styles.items}>
+            <Searchbar
+              item={taskItem}
+              setItem={setTaskItem}
+              filterItem={filterItem}
             />
-          )}
-          {!taskItem?.length && <Text style={styles.text}>No available task</Text>}
-        </View>
+            <Text style={styles.text}>
+              {t('today_activity')} ({moment(new Date()).format('DD/MM/YYYY')})
+            </Text>
+            {!!taskItem?.length && (
+              <FlatList
+                data={taskItem}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index}
+                refreshing={refresh}
+                onRefresh={handleRefresh}
+              />
+            )}
+            {!taskItem?.length && (
+              <Text style={styles.text}>No available task</Text>
+            )}
+          </View>
 
-        <TouchableOpacity style={styles.addWrapper} onPress={() => {}}>
-          <Text style={styles.addText}>+</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.addWrapper}
+            onPress={() => handleSnapPress(0)}>
+            <Text style={styles.addText}>+</Text>
+          </TouchableOpacity>
+        </View>
+        <BottomSheet
+          ref={bottomSheetRef}
+          snapPoints={snapPoints}
+          index={-1}
+          enablePanDownToClose={true}
+          onClose={() => setSheetOpen(false)}>
+          <BottomSheetView >
+            <AddActivity />
+          </BottomSheetView>
+        </BottomSheet>
       </LinearGradient>
     ) : (
       <View style={[styles.container, {CustomDarkTheme}]}>
-        <View style={styles.items}>
+        <View style={[styles.items, {opacity: sheetOpen ? 0.4 : 1}]}>
           <Searchbar
             item={taskItem}
             setItem={setTaskItem}
@@ -140,9 +173,21 @@ export default function IndoorActivity({navigation}) {
           )}
         </View>
 
-        <TouchableOpacity style={styles.addWrapper} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.addWrapper}
+          onPress={() => handleSnapPress(0)}>
           <Text style={styles.addText}>+</Text>
         </TouchableOpacity>
+        <BottomSheet
+          ref={bottomSheetRef}
+          snapPoints={snapPoints}
+          enablePanDownToClose={true}
+          index={-1}
+          onClose={() => setSheetOpen(false)}>
+          <BottomSheetView>
+            <AddActivity />
+          </BottomSheetView>
+        </BottomSheet>
       </View>
     );
   };
