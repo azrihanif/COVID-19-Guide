@@ -1,4 +1,10 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from 'react';
 import {
   Image,
   Text,
@@ -8,8 +14,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Modal,
-  Button,
+  Pressable,
 } from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
@@ -19,18 +26,27 @@ import LinearGradient from 'react-native-linear-gradient';
 import {connector} from '../../constants/Connector';
 import {CustomDarkTheme} from '../../components/Route';
 import {useTranslation} from 'react-i18next';
+import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
 
 export default function Profile({navigation, route}) {
   const {userContext} = useContext(AuthCont);
   const [data, setData] = useState();
-  const [visible, setVisible] = useState(false);
   const [popUp, setPopUp] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const {t} = useTranslation();
+  const bottomSheetRef = useRef(null);
+  const snapPoints = ['25%'];
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   useEffect(() => {
     getData();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => bottomSheetRef.current?.close();
+    }, []),
+  );
 
   useEffect(() => {
     if (route?.params?.data) {
@@ -83,6 +99,7 @@ export default function Profile({navigation, route}) {
       if (res) {
         let responseJSON = await res.json();
         console.log('responseJSON', responseJSON);
+        bottomSheetRef.current?.close();
       } else {
         console.log('Error!');
       }
@@ -117,6 +134,11 @@ export default function Profile({navigation, route}) {
     }
   };
 
+  const handleSnapPress = useCallback(index => {
+    bottomSheetRef.current?.snapToIndex(index);
+    setSheetOpen(true);
+  }, []);
+
   const modal = () => {
     return (
       <Modal transparent visible={popUp} animationType="fade">
@@ -136,35 +158,28 @@ export default function Profile({navigation, route}) {
     );
   };
 
-  const changePhoto = () => {
+  const change = () => {
     return (
-      <Modal transparent visible={visible} animationType="fade">
-        <View style={styles.modalBackGround}>
-          <View style={styles.modalContainer}>
-            <View style={styles.header}>
-              <TouchableOpacity onPress={() => setVisible(false)}>
-                <FontAwesome name="close" color={'#000'} size={25} />
-              </TouchableOpacity>
-            </View>
-            <View style={{paddingBottom: 16}}>
-              <Button
-                title={t("upload_image")}
-                onPress={() => {
-                  openLibrary('imageUpload');
-                  setVisible(false);
-                }}
-              />
-            </View>
-            <Button
-              title={t("open_camera")}
-              onPress={() => {
-                openLibrary('openCamera');
-                setVisible(false);
-              }}
-            />
-          </View>
+      <View style={{padding: 16}}>
+        <View style={{paddingBottom: 16}}>
+          <Pressable
+            style={styles.button1}
+            onPress={() => {
+              openLibrary('imageUpload');
+            }}>
+            <Text style={styles.loginText}>{t('upload_image')}</Text>
+          </Pressable>
         </View>
-      </Modal>
+        <View>
+          <Pressable
+            style={styles.button1}
+            onPress={() => {
+              openLibrary('openCamera');
+            }}>
+            <Text style={styles.loginText}>{t('open_camera')}</Text>
+          </Pressable>
+        </View>
+      </View>
     );
   };
 
@@ -173,7 +188,7 @@ export default function Profile({navigation, route}) {
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.writeTaskWrapper}>
+          style={[styles.writeTaskWrapper, , {opacity: sheetOpen ? 0.5 : 1}]}>
           <ScrollView bounces={false} style={styles.scroll}>
             <View style={styles.imageWrapper}>
               <Image
@@ -184,12 +199,10 @@ export default function Profile({navigation, route}) {
             <Text
               style={styles.sectionTitle}
               onPress={() => {
-                setVisible(true);
+                handleSnapPress(0);
               }}>
               {t('change_photo')}
             </Text>
-            {changePhoto()}
-            {modal()}
             <View style={{paddingTop: 16}}>
               <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
                 {t('account_info')}
@@ -314,12 +327,20 @@ export default function Profile({navigation, route}) {
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
+        <BottomSheet
+          ref={bottomSheetRef}
+          snapPoints={snapPoints}
+          index={-1}
+          enablePanDownToClose={true}
+          onClose={() => setSheetOpen(false)}>
+          <BottomSheetView>{change()}</BottomSheetView>
+        </BottomSheet>
       </LinearGradient>
     ) : (
       <View style={[styles.container, CustomDarkTheme]}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.writeTaskWrapper}>
+          style={[styles.writeTaskWrapper, {opacity: sheetOpen ? 0.5 : 1}]}>
           <ScrollView bounces={false} style={styles.scroll}>
             <View style={styles.imageWrapper}>
               <Image
@@ -333,12 +354,10 @@ export default function Profile({navigation, route}) {
                 {color: CustomDarkTheme?.colors?.text},
               ]}
               onPress={() => {
-                setVisible(true);
+                handleSnapPress(0);
               }}>
               {t('change_photo')}
             </Text>
-            {changePhoto()}
-            {modal()}
             <View style={{paddingTop: 16}}>
               <Text
                 style={{
@@ -478,6 +497,14 @@ export default function Profile({navigation, route}) {
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
+        <BottomSheet
+          ref={bottomSheetRef}
+          snapPoints={snapPoints}
+          index={-1}
+          enablePanDownToClose={true}
+          onClose={() => setSheetOpen(false)}>
+          <BottomSheetView>{change()}</BottomSheetView>
+        </BottomSheet>
       </View>
     );
   };
@@ -621,5 +648,21 @@ const styles = StyleSheet.create({
   },
   button: {
     fontSize: 16,
+  },
+  button1: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: '#030852',
+  },
+  loginText: {
+    fontSize: 16,
+    lineHeight: 21,
+    letterSpacing: 0.25,
+    color: 'white',
+    fontFamily: 'Sans-serif',
   },
 });

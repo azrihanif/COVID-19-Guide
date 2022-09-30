@@ -3,7 +3,6 @@ import React, {
   useEffect,
   useState,
   useCallback,
-  useMemo,
   useRef,
 } from 'react';
 import {
@@ -24,6 +23,7 @@ import {CustomDarkTheme} from '../../components/Route';
 import {useTranslation} from 'react-i18next';
 import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
 import AddActivity from './AddActivity';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function IndoorActivity({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
@@ -38,6 +38,12 @@ export default function IndoorActivity({navigation}) {
   useEffect(() => {
     getActivity();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => bottomSheetRef.current?.close();
+    }, []),
+  );
 
   const getActivity = async () => {
     const {id} = userContext;
@@ -141,7 +147,7 @@ export default function IndoorActivity({navigation}) {
           index={-1}
           enablePanDownToClose={true}
           onClose={() => setSheetOpen(false)}>
-          <BottomSheetView >
+          <BottomSheetView>
             <AddActivity />
           </BottomSheetView>
         </BottomSheet>
