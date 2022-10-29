@@ -39,10 +39,14 @@ export default function AddActivity() {
         dropDownContainerStyle={{
           borderColor: 'gray',
         }}
-        onOpen={() => setIsFocus("dropdown")}
+        onOpen={() => setIsFocus('dropdown')}
         onClose={() => setIsFocus('')}
       />
-      <View style={{position: 'absolute', bottom: 16, right: 16}}>
+      <View
+        style={[
+          {position: 'absolute', bottom: 16, right: 16},
+          isFocus === 'username' && {display: 'none'},
+        ]}>
         <Pressable style={styles.button} onPress={() => {}}>
           <Text style={styles.loginText}>{'Add New Activity'}</Text>
         </Pressable>

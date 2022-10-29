@@ -12,6 +12,7 @@ import {
   ScrollView,
   Text,
   FlatList,
+  Keyboard,
 } from 'react-native';
 import Activity from '../../components/Activity';
 import AuthCont from '../../constants/AuthContext';
@@ -146,7 +147,10 @@ export default function IndoorActivity({navigation}) {
           snapPoints={snapPoints}
           index={-1}
           enablePanDownToClose={true}
-          onClose={() => setSheetOpen(false)}>
+          onClose={() => {
+            setSheetOpen(false);
+            Keyboard.dismiss();
+          }}>
           <BottomSheetView>
             <AddActivity />
           </BottomSheetView>
@@ -189,7 +193,10 @@ export default function IndoorActivity({navigation}) {
           snapPoints={snapPoints}
           enablePanDownToClose={true}
           index={-1}
-          onClose={() => setSheetOpen(false)}>
+          onClose={() => {
+            setSheetOpen(false);
+            Keyboard.dismiss();
+          }}>
           <BottomSheetView>
             <AddActivity />
           </BottomSheetView>

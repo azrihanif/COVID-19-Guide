@@ -316,21 +316,23 @@ app.post(
       return result.status(400).json(errors);
     }
     const {id} = req.body;
-    const query = await db
-      .promise()
-      .query(
-        `SELECT activity, picture, video_name, video_data FROM indoor_activity WHERE user_id = ${id}`,
-      );
+    if (!!id) {
+      const query = await db
+        .promise()
+        .query(
+          `SELECT activity, picture, video_name, video_data FROM activity_list`,
+        );
 
-    if (!!query[0][0]) {
-      result.status(200).send({msg: query[0], error: null});
-      return;
-    } else if (!query[0][0]) {
-      result.status(200).send({msg: 'No available task', error: null});
-      return;
-    } else {
-      result.status(400).send({msg: 'Error Occured', error: '400'});
-      return;
+      if (!!query[0][0]) {
+        result.status(200).send({msg: query[0], error: null});
+        return;
+      } else if (!query[0][0]) {
+        result.status(200).send({msg: 'No available task', error: null});
+        return;
+      } else {
+        result.status(400).send({msg: 'Error Occured', error: '400'});
+        return;
+      }
     }
   },
 );

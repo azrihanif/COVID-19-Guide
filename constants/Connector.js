@@ -1,1 +1,2 @@
-export const connector = "http://192.168.0.103:3005";
+const portNum = ':3005';
+export const connector = 'http://10.167.80.153' + portNum;
