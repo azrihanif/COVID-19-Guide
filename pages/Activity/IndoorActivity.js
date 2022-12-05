@@ -28,6 +28,7 @@ import {useFocusEffect} from '@react-navigation/native';
 
 export default function IndoorActivity({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
+  const [userActivity, setUserActivity] = useState([]);
   const [filterItem, setFilterItem] = useState([]);
   const {userContext} = useContext(AuthCont);
   const [refresh, setRefresh] = useState(false);
@@ -71,8 +72,11 @@ export default function IndoorActivity({navigation}) {
               setFilterItem([]);
               return;
             }
-            setTaskItem(responseJSON?.msg);
-            setFilterItem(responseJSON?.msg);
+
+            console.log(responseJSON.msg);
+            setTaskItem(responseJSON?.msg?.activity);
+            setUserActivity(responseJSON?.msg?.user_activity);
+            setFilterItem(responseJSON?.msg?.activity);
           }
         } else {
           console.log('Error!');
@@ -119,10 +123,10 @@ export default function IndoorActivity({navigation}) {
               setItem={setTaskItem}
               filterItem={filterItem}
             />
-            <Text style={styles.text}>
+            <Text style={[styles.text, {fontSize: 22}]}>
               {t('today_activity')} ({moment(new Date()).format('DD/MM/YYYY')})
             </Text>
-            {!!taskItem?.length && (
+            {!taskItem.includes('No available task') && (
               <FlatList
                 data={taskItem}
                 renderItem={renderItem}
@@ -131,8 +135,35 @@ export default function IndoorActivity({navigation}) {
                 onRefresh={handleRefresh}
               />
             )}
-            {!taskItem?.length && (
-              <Text style={styles.text}>No available task</Text>
+            {taskItem.includes('No available task') && (
+              <Text
+                style={[styles.text]}>
+                No available task
+              </Text>
+            )}
+          </View>
+          <View style={[styles.items, {opacity: sheetOpen ? 0.4 : 1}]}>
+            <Text
+              style={[
+                styles.text,
+                {fontSize: 22},
+              ]}>
+              My task
+            </Text>
+            {!userActivity.includes('No available task') && (
+              <FlatList
+                data={userActivity}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index}
+                refreshing={refresh}
+                onRefresh={handleRefresh}
+              />
+            )}
+            {userActivity.includes('No available task') && (
+              <Text
+                style={[styles.text]}>
+                No available task
+              </Text>
             )}
           </View>
 
@@ -152,7 +183,7 @@ export default function IndoorActivity({navigation}) {
             Keyboard.dismiss();
           }}>
           <BottomSheetView>
-            <AddActivity />
+            <AddActivity getActivity={getActivity} />
           </BottomSheetView>
         </BottomSheet>
       </LinearGradient>
@@ -164,10 +195,14 @@ export default function IndoorActivity({navigation}) {
             setItem={setTaskItem}
             filterItem={filterItem}
           />
-          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+          <Text
+            style={[
+              styles.text,
+              {color: CustomDarkTheme?.colors?.text, fontSize: 22},
+            ]}>
             {t('today_activity')} ({moment(new Date()).format('DD/MM/YYYY')})
           </Text>
-          {!!taskItem?.length && (
+          {!taskItem.includes('No available task') && (
             <FlatList
               data={taskItem}
               renderItem={renderItem}
@@ -176,7 +211,30 @@ export default function IndoorActivity({navigation}) {
               onRefresh={handleRefresh}
             />
           )}
-          {!taskItem?.length && (
+          {taskItem.includes('No available task') && (
+            <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+              No available task
+            </Text>
+          )}
+        </View>
+        <View style={[styles.items, {opacity: sheetOpen ? 0.4 : 1}]}>
+          <Text
+            style={[
+              styles.text,
+              {color: CustomDarkTheme?.colors?.text, fontSize: 22},
+            ]}>
+            My task
+          </Text>
+          {!userActivity.includes('No available task') && (
+            <FlatList
+              data={userActivity}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index}
+              refreshing={refresh}
+              onRefresh={handleRefresh}
+            />
+          )}
+          {userActivity.includes('No available task') && (
             <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
               No available task
             </Text>
@@ -198,7 +256,7 @@ export default function IndoorActivity({navigation}) {
             Keyboard.dismiss();
           }}>
           <BottomSheetView>
-            <AddActivity />
+            <AddActivity getActivity={getActivity} />
           </BottomSheetView>
         </BottomSheet>
       </View>

@@ -323,11 +323,32 @@ app.post(
           `SELECT activity, picture, video_name, video_data FROM activity_list`,
         );
 
+      const query2 = await db
+        .promise()
+        .query(
+          `SELECT activity, frequency FROM user_activity WHERE user_id = ${id}`,
+        );
+
       if (!!query[0][0]) {
-        result.status(200).send({msg: query[0], error: null});
+        result.status(200).send({
+          msg: {activity: query[0], user_activity: query2[0]},
+          error: null,
+        });
         return;
-      } else if (!query[0][0]) {
+      } else if (!query[0][0] && !query2[0][0]) {
         result.status(200).send({msg: 'No available task', error: null});
+        return;
+      } else if (!query[0][0] && !!query2[0][0]) {
+        result.status(200).send({
+          msg: {activity: 'No available task', user_activity: query2[0]},
+          error: null,
+        });
+        return;
+      } else if (query[0][0] && !query2[0][0]) {
+        result.status(200).send({
+          msg: {activity: query[0], user_activity: 'No available task'},
+          error: null,
+        });
         return;
       } else {
         result.status(400).send({msg: 'Error Occured', error: '400'});
@@ -336,6 +357,24 @@ app.post(
     }
   },
 );
+
+app.post('/addActivity', async (req, res) => {
+  const {id, activity, frequency} = req.body;
+
+  if (id && activity && frequency) {
+    const query = await db
+      .promise()
+      .query(
+        `INSERT INTO user_activity(user_id, activity, frequency) VALUES ('${id}','${activity}','${frequency}')`,
+      );
+
+    if (!!query[0]?.affectedRows) {
+      res.status(200).send({msg: 'Successfully added', error: null});
+    } else {
+      res.status(400).send({msg: 'Error Occured', error: '400'});
+    }
+  }
+});
 
 app.post('/changeUsername', async (req, res) => {
   const {oldUsername, newUsername} = req.body;

@@ -1,9 +1,19 @@
-import React, {useState} from 'react';
-import {StyleSheet, TextInput, View, Pressable, Text} from 'react-native';
+import React, {useState, useContext} from 'react';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  Pressable,
+  Text,
+  Alert,
+} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import DropDownPicker from 'react-native-dropdown-picker';
+import AuthCont from '../../constants/AuthContext';
+import {connector} from '../../constants/Connector';
 
-export default function AddActivity() {
+export default function AddActivity({getActivity}) {
+  const {userContext} = useContext(AuthCont);
   const [text, setText] = useState('');
   const {t} = useTranslation();
   const [isFocus, setIsFocus] = useState(false);
@@ -13,6 +23,46 @@ export default function AddActivity() {
     {label: 'Everyday', value: 'Everyday'},
     {label: 'Once', value: 'Once'},
   ]);
+
+  const addNewActivity = async () => {
+    const {id} = userContext;
+    const params = {
+      id,
+      activity: text,
+      frequency: value,
+    };
+
+    if (id && text && value) {
+      try {
+        let res = await fetch(connector + '/addActivity', {
+          method: 'post',
+          mode: 'no-cors',
+          body: JSON.stringify(params),
+          headers: {
+            Accept: 'application/json',
+            'Content-type': 'application/json',
+          },
+        });
+
+        if (res) {
+          let responseJSON = await res.json();
+          if (responseJSON?.error) {
+            Alert.alert('System Error', responseJSON?.msg);
+          } else {
+            getActivity();
+            Alert.alert('Success', responseJSON?.msg);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      Alert.alert(
+        'Invalid Input',
+        'The Activity Name and Frequency of the Activity cannot be empty',
+      );
+    }
+  };
 
   return (
     <View style={{padding: 16, height: '100%'}}>
@@ -47,7 +97,7 @@ export default function AddActivity() {
           {position: 'absolute', bottom: 16, right: 16},
           isFocus === 'username' && {display: 'none'},
         ]}>
-        <Pressable style={styles.button} onPress={() => {}}>
+        <Pressable style={styles.button} onPress={() => addNewActivity()}>
           <Text style={styles.loginText}>{'Add New Activity'}</Text>
         </Pressable>
       </View>
