@@ -20,7 +20,7 @@ export default function Settings({navigation}) {
   const {userContext, setUserContext} = useContext(AuthCont);
   const [isEnabled, setIsEnabled] = useState(false);
 
-  const toggleSwitch = async() => {
+  const toggleSwitch = async () => {
     setIsEnabled(isEnabled => !isEnabled);
     setUserContext({
       ...userContext,
@@ -44,7 +44,7 @@ export default function Settings({navigation}) {
       });
       if (res) {
         let responseJSON = await res.json();
-        if(responseJSON?.error){
+        if (responseJSON?.error) {
           alert(responseJSON?.msg);
         }
       } else {
@@ -70,23 +70,6 @@ export default function Settings({navigation}) {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <ScrollView bounces={false} style={styles.taskWrapper}>
-          <View>
-            <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
-              {t('content')}
-            </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
-              <View style={styles.item}>
-                <FontAwesome name={'heart-o'} size={28} color={'#030852'} />
-                <Text style={styles.text}>{t('favorites')}</Text>
-                <FontAwesome
-                  style={styles.angle}
-                  name={'angle-right'}
-                  size={32}
-                  color={'#030852'}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
           <View>
             <Text style={{paddingBottom: 10, fontFamily: 'Sans-serif'}}>
               {t('preferences')}
@@ -166,28 +149,6 @@ export default function Settings({navigation}) {
     ) : (
       <View style={[styles.container, CustomDarkTheme]}>
         <ScrollView bounces={false} style={styles.taskWrapper}>
-          <View>
-            <Text
-              style={{
-                paddingBottom: 10,
-                fontFamily: 'Sans-serif',
-                color: CustomDarkTheme?.colors?.text,
-              }}>
-              {t('content')}
-            </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
-              <View style={styles.item}>
-                <FontAwesome name={'heart-o'} size={28} color={'#030852'} />
-                <Text style={styles.text}>{t('favorites')}</Text>
-                <FontAwesome
-                  style={styles.angle}
-                  name={'angle-right'}
-                  size={32}
-                  color={'#030852'}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
           <View>
             <Text
               style={{

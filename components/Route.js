@@ -36,6 +36,8 @@ import EmailNoScreen from '../pages/Login/EmailNoScreen';
 import NextForgot from '../pages/Login/NextForgot';
 import VerifyOTP from '../pages/Login/VerifyOTP';
 import ChangePass from '../pages/Login/ChangePass';
+import FrontPage from '../pages/Music/FrontPage';
+import Playlists from '../pages/Music/Playlists';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -356,7 +358,7 @@ const Route = () => {
       }}>
       <Stack.Screen
         name="Music Playlist"
-        component={MusicPlaylist}
+        component={FrontPage}
         options={({navigation}) => ({
           headerTitle: t('music_playlist'),
           headerLeft: () => drawerIcon(navigation),
@@ -366,6 +368,20 @@ const Route = () => {
       <Stack.Screen
         name="Music Play"
         component={MusicPlay}
+        options={({route}) => ({
+          headerTitle: t('music'),
+        })}
+      />
+      <Stack.Screen
+        name="Front Page"
+        component={MusicPlaylist}
+        options={({route}) => ({
+          headerTitle: t('music'),
+        })}
+      />
+      <Stack.Screen
+        name="Playlists"
+        component={Playlists}
         options={({route}) => ({
           headerTitle: t('music'),
         })}
