@@ -42,11 +42,30 @@ export default function FrontPage({navigation}) {
             justifyContent: 'space-between',
             flexWrap: 'wrap',
           }}>
-          <GenreContainer />
-          <GenreContainer />
-        </View>
-        <View style={styles.musicPlayer}>
-          <MusicPlayer />
+          <GenreContainer
+            title={'My Playlists'}
+            color="#C0EEE4"
+            name={'list-ul'}
+            onPress={() => navigation.navigate('Playlists')}
+          />
+          <GenreContainer
+            title={'Songs'}
+            color="#FED049"
+            name={'music'}
+            onPress={() => navigation.navigate('Front Page')}
+          />
+          <GenreContainer
+            title={'My Favourites'}
+            color="#68B984"
+            name={'heart'}
+            onPress={() => navigation.navigate('Front Page')}
+          />
+          <GenreContainer
+            title={'Genre'}
+            color="#F06292"
+            name={'cogs'}
+            onPress={() => navigation.navigate('Playlists')}
+          />
         </View>
       </LinearGradient>
     ) : (
@@ -84,9 +103,6 @@ export default function FrontPage({navigation}) {
             onPress={() => navigation.navigate('Playlists')}
           />
         </View>
-        {/* <View style={styles.musicPlayer}>
-          <MusicPlayer />
-        </View> */}
       </View>
     );
   };

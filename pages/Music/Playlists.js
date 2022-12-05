@@ -35,7 +35,13 @@ export default function Playlists({navigation}) {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <View style={{paddingLeft: 16, paddingRight: 16}}>
-          <PlaylistsContainer />
+          <PlaylistsContainer
+            title={'Test123'}
+            noOfSongs="10"
+            onPress={() => navigation.navigate('Front Page')}
+          />
+          <PlaylistsContainer title={'Test123'} noOfSongs="10" />
+          <PlaylistsContainer title={'Test123'} noOfSongs="10" />
         </View>
         <View style={styles.musicPlayer}>
           <MusicPlayer />
