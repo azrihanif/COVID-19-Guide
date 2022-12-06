@@ -10,24 +10,9 @@ export default function MusicPlaylist({navigation}) {
   const {userContext} = useContext(AuthCont);
   const data = [
     {
-      name: 'Charlie Puth',
-      title: 'Light Switch',
-      time: '3:13',
-    },
-    {
-      name: 'Joji',
-      title: 'Glimpse of Us',
-      time: '3:53',
-    },
-    {
-      name: 'Charlie Puth & Jong Kook',
-      title: 'Left and Right',
-      time: '2:34',
-    },
-    {
-      name: 'Ed Sheeran',
-      title: 'Shivers',
-      time: '3:13',
+      name: 'Harry Styles',
+      title: 'As it was',
+      time: '2:46',
     },
   ];
 
