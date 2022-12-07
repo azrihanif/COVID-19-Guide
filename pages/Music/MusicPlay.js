@@ -13,15 +13,29 @@ export default function MusicPlay({route}) {
   const {userContext} = useContext(AuthCont);
   const [music, setMusic] = useState();
   const [pause, setPause] = useState(false);
-  const [duration, setDuration] = useState(0);
+  const [seconds, setSeconds] = useState();
+  const [get, setGet] = useState(0);
+  const [timer, setTimer] = useState({s: 0, m: 0});
+  var updatedS = timer.s,
+    updatedM = timer.m;
 
-  useEffect(() => {
-    !!music &&
-      music.getCurrentTime(seconds => {
-        setDuration((seconds / music.getDuration()) * 100);
-        console.log('at ' + seconds);
-      });
-  }, [music]);
+  const start = () => {
+    setSeconds(setInterval(run, 1000));
+  };
+
+  const stop = () => {
+    clearInterval(seconds);
+  };
+
+  const run = () => {
+    if (updatedS === 60) {
+      updatedM++;
+      updatedS = 0;
+    }
+    updatedS++;
+    setGet(get => get + 1);
+    return setTimer({s: updatedS, m: updatedM});
+  };
 
   const play = () => {
     let harryStyles = new Sound('harry_styles.mp3', Sound.MAIN_BUNDLE, err => {
@@ -33,6 +47,7 @@ export default function MusicPlay({route}) {
       harryStyles.play(success => {
         console.log(success);
       });
+      
     });
 
     setMusic(harryStyles);
@@ -55,10 +70,12 @@ export default function MusicPlay({route}) {
             <Text style={[styles.text, {fontSize: 16}]}>{name}</Text>
           </View>
           <View style={{flexDirection: 'row', paddingTop: 16}}>
-            <Text style={styles.text}>{(Number(duration / 60).toFixed(2)).toString().replace('.', ':')}</Text>
+            <Text style={styles.text}>{`${timer.m}:${
+              timer.s < 10 ? '0' + timer.s : timer.s
+            }`}</Text>
             <Slider
               style={styles.progress}
-              value={duration}
+              value={get}
               minimumValue={0}
               maximumValue={100}
               thumbTintColor={'#030852'}
@@ -89,10 +106,7 @@ export default function MusicPlay({route}) {
                     setPlaying(playing => !playing);
                     setPause(true);
                     music.pause();
-                    music.getCurrentTime(seconds => {
-                      setDuration((seconds / music.getDuration()) * 100);
-                      console.log('at ' + seconds);
-                    });
+                    stop();
                   }}
                 />
               ) : (
@@ -103,6 +117,7 @@ export default function MusicPlay({route}) {
                   onPress={() => {
                     setPlaying(playing => !playing);
                     pause ? music.play() : play();
+                    start();
                   }}
                 />
               )}
@@ -146,11 +161,11 @@ export default function MusicPlay({route}) {
           </View>
           <View style={{flexDirection: 'row', paddingTop: 16}}>
             <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
-              0:00
+              {`${timer.m}:${timer.s < 10 ? '0' + timer.s : timer.s}`}
             </Text>
             <Slider
               style={styles.progress}
-              value={10}
+              value={get}
               minimumValue={0}
               maximumValue={100}
               thumbTintColor={CustomDarkTheme?.colors?.text}
@@ -179,21 +194,29 @@ export default function MusicPlay({route}) {
                 size={50}
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setPlaying(playing => !playing);
-              }}>
+            <TouchableOpacity>
               {playing ? (
                 <Ionicons
                   name="pause-circle-outline"
                   color={CustomDarkTheme?.colors?.text}
                   size={100}
+                  onPress={() => {
+                    setPlaying(playing => !playing);
+                    setPause(true);
+                    music.pause();
+                    stop();
+                  }}
                 />
               ) : (
                 <Ionicons
                   name="play-circle-outline"
                   color={CustomDarkTheme?.colors?.text}
                   size={100}
+                  onPress={() => {
+                    setPlaying(playing => !playing);
+                    pause ? music.play() : play();
+                    start();
+                  }}
                 />
               )}
             </TouchableOpacity>
@@ -236,7 +259,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Sans-serif',
   },
   progress: {
-    width: 300,
+    width: 320,
     height: 40,
     marginTop: -8,
     flexDirection: 'row',
