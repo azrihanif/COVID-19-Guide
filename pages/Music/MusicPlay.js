@@ -1,16 +1,42 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
 import Slider from '@react-native-community/slider';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {CustomDarkTheme, CustomDefaultTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
-import {get} from '../../routes/details';
+import Sound from 'react-native-sound';
 
 export default function MusicPlay({route}) {
   const {title, name, time, picture} = route?.params;
   const [playing, setPlaying] = useState(false);
   const {userContext} = useContext(AuthCont);
+  const [music, setMusic] = useState();
+  const [pause, setPause] = useState(false);
+  const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    !!music &&
+      music.getCurrentTime(seconds => {
+        setDuration((seconds / music.getDuration()) * 100);
+        console.log('at ' + seconds);
+      });
+  }, [music]);
+
+  const play = () => {
+    let harryStyles = new Sound('harry_styles.mp3', Sound.MAIN_BUNDLE, err => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+
+      harryStyles.play(success => {
+        console.log(success);
+      });
+    });
+
+    setMusic(harryStyles);
+  };
 
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
@@ -29,10 +55,10 @@ export default function MusicPlay({route}) {
             <Text style={[styles.text, {fontSize: 16}]}>{name}</Text>
           </View>
           <View style={{flexDirection: 'row', paddingTop: 16}}>
-            <Text style={styles.text}>0:00</Text>
+            <Text style={styles.text}>{(Number(duration / 60).toFixed(2)).toString().replace('.', ':')}</Text>
             <Slider
               style={styles.progress}
-              value={10}
+              value={duration}
               minimumValue={0}
               maximumValue={100}
               thumbTintColor={'#030852'}
@@ -53,21 +79,31 @@ export default function MusicPlay({route}) {
                 size={50}
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setPlaying(playing => !playing);
-              }}>
+            <TouchableOpacity>
               {playing ? (
                 <Ionicons
                   name="pause-circle-outline"
                   color="#030852"
                   size={100}
+                  onPress={() => {
+                    setPlaying(playing => !playing);
+                    setPause(true);
+                    music.pause();
+                    music.getCurrentTime(seconds => {
+                      setDuration((seconds / music.getDuration()) * 100);
+                      console.log('at ' + seconds);
+                    });
+                  }}
                 />
               ) : (
                 <Ionicons
                   name="play-circle-outline"
                   color={'#030852'}
                   size={100}
+                  onPress={() => {
+                    setPlaying(playing => !playing);
+                    pause ? music.play() : play();
+                  }}
                 />
               )}
             </TouchableOpacity>
@@ -93,11 +129,25 @@ export default function MusicPlay({route}) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={[styles.text, {fontSize: 22, color: CustomDarkTheme?.colors?.text}]}>{title}</Text>
-            <Text style={[styles.text, {fontSize: 16, color: CustomDarkTheme?.colors?.text}]}>{name}</Text>
+            <Text
+              style={[
+                styles.text,
+                {fontSize: 22, color: CustomDarkTheme?.colors?.text},
+              ]}>
+              {title}
+            </Text>
+            <Text
+              style={[
+                styles.text,
+                {fontSize: 16, color: CustomDarkTheme?.colors?.text},
+              ]}>
+              {name}
+            </Text>
           </View>
           <View style={{flexDirection: 'row', paddingTop: 16}}>
-            <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>0:00</Text>
+            <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+              0:00
+            </Text>
             <Slider
               style={styles.progress}
               value={10}
@@ -109,7 +159,15 @@ export default function MusicPlay({route}) {
               onSlidingComplete={() => {}}
             />
             <Text
-              style={[styles.text, {position: 'absolute', right: 0, top: 16, color: CustomDarkTheme?.colors?.text}]}>
+              style={[
+                styles.text,
+                {
+                  position: 'absolute',
+                  right: 0,
+                  top: 16,
+                  color: CustomDarkTheme?.colors?.text,
+                },
+              ]}>
               {time}
             </Text>
           </View>
