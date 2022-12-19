@@ -16,6 +16,15 @@ export default function MusicPlay({route}) {
   const [seconds, setSeconds] = useState();
   const [get, setGet] = useState(0);
   const [timer, setTimer] = useState({s: 0, m: 0});
+  const [currentSong, setCurrentSong] = useState({title: 'As it was'});
+  const songs = [
+    {
+      name: 'Harry Styles',
+      title: 'As it was',
+      time: '2:46',
+      picture: require('../../images/music/asitwas.jpg')
+    },
+  ];
   var updatedS = timer.s,
     updatedM = timer.m;
 
@@ -38,19 +47,42 @@ export default function MusicPlay({route}) {
   };
 
   const play = () => {
-    let harryStyles = new Sound('harry_styles.mp3', Sound.MAIN_BUNDLE, err => {
-      if (err) {
-        console.log(err);
-        return;
-      }
+    if (currentSong.title == 'As it was') {
+      let harryStyles = new Sound(
+        'harry_styles.mp3',
+        Sound.MAIN_BUNDLE,
+        err => {
+          if (err) {
+            console.log(err);
+            return;
+          }
 
-      harryStyles.play(success => {
-        console.log(success);
-      });
-      
-    });
+          harryStyles.play(success => {
+            console.log(success);
+          });
+        },
+      );
+      setCurrentSong({title: 'As it was'});
+      setMusic(harryStyles);
+    }
+  };
 
-    setMusic(harryStyles);
+  const skipBack = () => {
+    const index = songs.findIndex(x => x.title == currentSong.title);
+    if (index == 0) {
+      setCurrentSong(songs[songs.length - 1]);
+    } else {
+      setCurrentSong(songs[index - 1]);
+    }
+  };
+
+  const skipNext = () => {
+    const index = songs.findIndex(x => x.title == currentSong.title);
+    if (index == songs.length - 1) {
+      setCurrentSong(songs[0]);
+    } else {
+      setCurrentSong(songs[index + 1]);
+    }
   };
 
   const getTheme = () => {
@@ -187,7 +219,14 @@ export default function MusicPlay({route}) {
             </Text>
           </View>
           <View style={styles.player}>
-            <TouchableOpacity style={{paddingLeft: 32}} onPress={() => {}}>
+            <TouchableOpacity
+              style={{paddingLeft: 32}}
+              onPress={() => {
+                skipBack();
+                setPlaying(playing => !playing);
+                pause ? music.play() : play();
+                start();
+              }}>
               <Ionicons
                 name="play-skip-back-circle-outline"
                 color={CustomDarkTheme?.colors?.text}
@@ -220,7 +259,14 @@ export default function MusicPlay({route}) {
                 />
               )}
             </TouchableOpacity>
-            <TouchableOpacity style={{paddingRight: 32}} onPress={() => {}}>
+            <TouchableOpacity
+              style={{paddingRight: 32}}
+              onPress={() => {
+                skipNext();
+                setPlaying(playing => !playing);
+                pause ? music.play() : play();
+                start();
+              }}>
               <Ionicons
                 name="play-skip-forward-circle-outline"
                 color={CustomDarkTheme?.colors?.text}

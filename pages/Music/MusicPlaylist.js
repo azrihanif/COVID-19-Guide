@@ -13,6 +13,7 @@ export default function MusicPlaylist({navigation}) {
       name: 'Harry Styles',
       title: 'As it was',
       time: '2:46',
+      picture: require('../../images/music/asitwas.jpg')
     },
   ];
 
@@ -20,7 +21,7 @@ export default function MusicPlaylist({navigation}) {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <View style={{paddingLeft: 16, paddingRight: 16}}>
-          {data?.map(({name, title, time}, index) => (
+          {data?.map(({name, title, time, picture}, index) => (
             <MusicContainer
               key={index}
               title={title}
@@ -31,7 +32,7 @@ export default function MusicPlaylist({navigation}) {
                   title,
                   name,
                   time,
-                  picture: require('../../images/profilepic/profile.jpg'),
+                  picture: picture,
                 })
               }
             />
@@ -44,7 +45,7 @@ export default function MusicPlaylist({navigation}) {
     ) : (
       <View style={[styles.container, CustomDarkTheme]}>
         <View style={{paddingLeft: 16, paddingRight: 16}}>
-          {data?.map(({name, title, time}, index) => (
+          {data?.map(({name, title, time, picture}, index) => (
             <MusicContainer
               key={index}
               title={title}
@@ -55,7 +56,7 @@ export default function MusicPlaylist({navigation}) {
                   title,
                   name,
                   time,
-                  picture: require('../../images/profilepic/profile.jpg'),
+                  picture: picture,
                 })
               }
             />
