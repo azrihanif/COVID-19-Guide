@@ -78,7 +78,7 @@ export default function PhoneNumber({navigation, route}) {
                   setPopUp(false);
                   flag &&
                     navigation.navigate({
-                      name: 'Profile',
+                      name: 'Profiles',
                       params: {data: {...data, phone_no: newPhone}},
                     });
                 }}>

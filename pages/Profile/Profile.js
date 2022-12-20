@@ -16,7 +16,7 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
@@ -28,7 +28,8 @@ import {CustomDarkTheme} from '../../components/Route';
 import {useTranslation} from 'react-i18next';
 import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
 
-export default function Profile({navigation, route}) {
+export default function Profile({route}) {
+  const navigation = useNavigation();
   const {userContext} = useContext(AuthCont);
   const [data, setData] = useState();
   const [popUp, setPopUp] = useState(false);

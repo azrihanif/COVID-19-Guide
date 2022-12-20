@@ -98,7 +98,7 @@ export default function Email({navigation, route}) {
                   setPopUp(false);
                   flag &&
                     navigation.navigate({
-                      name: 'Profile',
+                      name: 'Profiles',
                       params: {data: {...data, email: newEmail}},
                     });
                 }}>

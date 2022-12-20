@@ -65,9 +65,10 @@ app.post('/uploadFile', upload.single('profilepic'), async (req, result) => {
   if (req?.file?.filename && id) {
     const query = await db
       .promise()
-      .query(
-        `UPDATE profile SET profilepic = '${req.file.filename}' WHERE id = ${id}`,
-      );
+      .query('UPDATE profile SET profilepic = ? WHERE id = ?', [
+        req.file.filename,
+        id,
+      ]);
     if (query) {
       return result
         .status(200)
@@ -93,7 +94,7 @@ app.post(
     if (id) {
       const query = await db
         .promise()
-        .query(`DELETE FROM user WHERE id = ${id}`);
+        .query(`DELETE FROM user WHERE id = ?`, [id]);
       if (query) {
         result.status(200).send({msg: 'Successfully deleted', error: null});
       } else {
@@ -119,7 +120,8 @@ app.post(
       const query = await db
         .promise()
         .query(
-          `SELECT b.like_id, a.id, a.advice_title, a.advice_picture, a.advice, a.advice_contact, a.advice_date, a.advice_email FROM advice_list a LEFT JOIN expert_advice b ON b.advice_id = a.id AND b.user_id = '${id}'ORDER BY a.advice_date DESC`,
+          `SELECT b.like_id, a.id, a.advice_title, a.advice_picture, a.advice, a.advice_contact, a.advice_date, a.advice_email FROM advice_list a LEFT JOIN expert_advice b ON b.advice_id = a.id AND b.user_id = ? ORDER BY a.advice_date DESC`,
+          [id],
         );
 
       if (query[0]) {
@@ -142,11 +144,9 @@ app.post('/updateLike', async (req, result) => {
   const {advice_id, like, user_id} = req.body;
 
   if (advice_id) {
-    const query = await db
-      .promise()
-      .query(
-        `INSERT INTO expert_advice (user_id, advice_id, like_id) VALUES (${user_id}, ${advice_id}, '${like}')ON DUPLICATE KEY UPDATE like_id = '${like}'`,
-      );
+    const stmt = `INSERT INTO expert_advice (user_id, advice_id, like_id) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE like_id = ?`;
+    const values = [user_id, advice_id, like, like];
+    const query = await db.promise().query(stmt, values);
     if (query) {
       result.status(400).send({msg: 'Successfully update', error: null});
     } else {
@@ -168,7 +168,7 @@ app.post(
     try {
       const query = await db
         .promise()
-        .query(`SELECT profilepic FROM details WHERE id = ${id}`);
+        .query(`SELECT profilepic FROM details WHERE id = ?`, [id]);
       if (query) {
         return result.status(200).send(JSON.stringify(query[0]));
       } else {
@@ -179,15 +179,6 @@ app.post(
     }
   },
 );
-
-app.get('/login', async (req, result) => {
-  if (req.user) {
-    const query = await db.promise().query('SELECT * FROM details');
-    result.status(200).send(query[0]);
-  } else {
-    result.status(403).send({msg: 'Forbidden'});
-  }
-});
 
 app.post(
   '/login',
@@ -204,7 +195,8 @@ app.post(
         const query = await db
           .promise()
           .query(
-            `SELECT a.id, a.name, b.dark_mode, b.language FROM user a INNER JOIN miscellaneous b ON a.id = b.user_id WHERE username = '${username}' AND password = '${password}'`,
+            `SELECT a.id, a.name, b.dark_mode, b.language FROM user a INNER JOIN miscellaneous b ON a.id = b.user_id WHERE username = ? AND password = ?`,
+            [username, password],
           );
 
         if (query[0][0]) {
@@ -233,11 +225,9 @@ app.post(
     const {id} = req.body;
 
     if (id) {
-      const query = await db
-        .promise()
-        .query(
-          `SELECT a.name, a.username, b.email, b.address, b.phone_no, b.profilepic FROM user a INNER JOIN profile b ON a.id = b.user_id WHERE a.id = '${id}' AND b.user_id = '${id}'`,
-        );
+      const stmt = `SELECT a.name, a.username, b.email, b.address, b.phone_no, b.profilepic FROM user a INNER JOIN profile b ON a.id = b.user_id WHERE a.id = ? AND b.user_id = ?`;
+      const values = [id, id];
+      const query = await db.promise().query(stmt, values);
 
       if (query[0][0]) {
         result.status(200).send({msg: query[0][0], error: null});
@@ -261,11 +251,9 @@ app.post(
     const {email, name, password, phone_no, address, id} = req.body;
 
     if (email && name && password && phone_no && address) {
-      const query = await db
-        .promise()
-        .query(
-          `UPDATE user a, profile b SET a.name = '${name}', b.email = '${email}', a.password = '${password}', b.address = '${address}', phone_no = '${phone_no}' WHERE a.id = '${id}' AND b.user_id = '${id}' `,
-        );
+      const stmt = `UPDATE user a, profile b SET a.name = ?, b.email = ?, a.password = ?, b.address = ?, phone_no = ? WHERE a.id = ? AND b.user_id = ?`;
+      const values = [name, email, password, address, phone_no, id, id];
+      const query = await db.promise().query(stmt, values);
       if (query) {
         result.status(200).send({msg: 'Successfully updated', error: null});
       } else {
@@ -362,11 +350,9 @@ app.post('/addActivity', async (req, res) => {
   const {id, activity, frequency} = req.body;
 
   if (id && activity && frequency) {
-    const query = await db
-      .promise()
-      .query(
-        `INSERT INTO user_activity(user_id, activity, frequency) VALUES ('${id}','${activity}','${frequency}')`,
-      );
+    const stmt = `INSERT INTO user_activity(user_id, activity, frequency) VALUES (?,?,?)`;
+    const values = [id, activity, frequency];
+    const query = await db.promise().query(stmt, values);
 
     if (!!query[0]?.affectedRows) {
       res.status(200).send({msg: 'Successfully added', error: null});
@@ -381,11 +367,9 @@ app.post('/changeUsername', async (req, res) => {
 
   if (!oldUsername || !newUsername)
     res.status(400).send({msg: 'Error Occured', error: '400'});
-  const query = await db
-    .promise()
-    .query(
-      `UPDATE user SET username= '${newUsername}' WHERE username = '${oldUsername}'`,
-    );
+  const stmt = `UPDATE user SET username= ? WHERE username = ?`;
+  const values = [newUsername, oldUsername];
+  const query = await db.promise().query(stmt, values);
 
   if (!!query[0]?.changedRows) {
     res.status(200).send({msg: 'Successfully updated', error: null});
@@ -401,11 +385,9 @@ app.post('/changePhone', async (req, res) => {
     res.status(400).send({msg: 'Error Occured', error: '400'});
     return;
   }
-  const query = await db
-    .promise()
-    .query(
-      `UPDATE profile SET phone_no = '${newPhone}' WHERE phone_no = '${oldPhone}'`,
-    );
+  const stmt = `UPDATE profile SET phone_no = ? WHERE phone_no = ?`;
+  const values = [newPhone, oldPhone];
+  const query = await db.promise().query(stmt, values);
 
   if (!!query[0]?.changedRows) {
     res.status(200).send({msg: 'Successfully updated', error: null});
@@ -419,11 +401,10 @@ app.post('/changeEmail', async (req, res) => {
 
   if (!oldEmail || !newEmail)
     res.status(400).send({msg: 'Error Occured', error: '400'});
-  const query = await db
-    .promise()
-    .query(
-      `UPDATE profile SET email = '${newEmail}' WHERE email = '${oldEmail}'`,
-    );
+
+  const stmt = `UPDATE profile SET email = ? WHERE email = ?`;
+  const values = [newEmail, oldEmail];
+  const query = await db.promise().query(stmt, values);
 
   if (!!query[0]?.changedRows) {
     res.status(200).send({msg: 'Successfully updated', error: null});
@@ -448,7 +429,7 @@ app.post('/changePass', async (req, res) => {
 
   const passQuery = await db
     .promise()
-    .query(`SELECT password FROM user WHERE password = '${currentPass}'`);
+    .query(`SELECT password FROM user WHERE password = ?`, [currentPass]);
 
   if (!passQuery[0]?.length) {
     res.status(400).send({msg: 'Wrong current password!', error: '400'});
@@ -457,9 +438,10 @@ app.post('/changePass', async (req, res) => {
 
   const query = await db
     .promise()
-    .query(
-      `UPDATE user SET password = '${newPass}' WHERE password = '${currentPass}'`,
-    );
+    .query(`UPDATE user SET password = ? WHERE password = ?`, [
+      newPass,
+      currentPass,
+    ]);
 
   if (!!query[0]?.changedRows) {
     res.status(200).send({msg: 'Successfully updated', error: null});
@@ -478,9 +460,10 @@ app.post('/changeLanguage', async (req, res) => {
 
   const query = await db
     .promise()
-    .query(
-      `UPDATE miscellaneous SET language='${language}' WHERE user_id = ${id}`,
-    );
+    .query(`UPDATE miscellaneous SET language = ? WHERE user_id = ?`, [
+      language,
+      id,
+    ]);
 
   if (!!query[0]?.changedRows) {
     res.status(200).send({msg: 'Successfully updated', error: null});
@@ -499,9 +482,10 @@ app.post('/changeDarkMode', async (req, res) => {
 
   const query = await db
     .promise()
-    .query(
-      `UPDATE miscellaneous SET dark_mode='${darkMode}' WHERE user_id = ${id}`,
-    );
+    .query(`UPDATE miscellaneous SET dark_mode = ? WHERE user_id = ?`, [
+      darkMode,
+      id,
+    ]);
 
   if (!!query[0]?.changedRows) {
     res.status(200).send({msg: 'Successfully updated', error: null});
@@ -520,20 +504,24 @@ app.post('/signUp', async (req, res) => {
 
   const query1 = await db
     .promise()
-    .query(
-      `INSERT INTO user(name, username, password) VALUES ('${username}','${username}','${password}');`,
-    );
+    .query(`INSERT INTO user(name, username, password) VALUES (?,?,?);`, [
+      username,
+      username,
+      password,
+    ]);
 
   const query2 = await db
     .promise()
     .query(
-      `INSERT INTO profile(user_id,phone_no, email) VALUES ((SELECT id FROM user WHERE name = '${username}' AND username = '${username}'),'${req?.body?.phoneNo}','${req?.body?.email}');`,
+      `INSERT INTO profile(user_id,phone_no, email) VALUES ((SELECT id FROM user WHERE name = ? AND username = ?),?,?);`,
+      [username, username, req?.body?.phoneNo, req?.body?.email],
     );
 
   const query3 = await db
     .promise()
     .query(
-      `INSERT INTO miscellaneous(user_id, dark_mode, language) VALUES ((SELECT id FROM user WHERE name = '${username}' AND username = '${username}'),'F','english');`,
+      `INSERT INTO miscellaneous(user_id, dark_mode, language) VALUES ((SELECT id FROM user WHERE name = ? AND username = ?),'F','english');`,
+      [username, username],
     );
 
   if (
@@ -558,9 +546,9 @@ app.post('/sendEmail', async (req, res) => {
 
   const query = await db
     .promise()
-    .query(
-      `SELECT username FROM user WHERE username = '${req?.body?.username}'`,
-    );
+    .query(`SELECT username FROM user WHERE username = ?`, [
+      req?.body?.username,
+    ]);
 
   if (!query[0][0]) {
     res
@@ -572,9 +560,10 @@ app.post('/sendEmail', async (req, res) => {
   const otp_code = Math.floor(100000 + Math.random() * 900000);
   const query2 = await db
     .promise()
-    .query(
-      `UPDATE user SET otp_code = '${otp_code}' WHERE username = '${req?.body?.username}'`,
-    );
+    .query(`UPDATE user SET otp_code = ? WHERE username = ?`, [
+      otp_code,
+      req?.body?.username,
+    ]);
 
   if (!query2[0]?.affectedRows) {
     res.status(400).send({msg: 'Error Occured', error: '400'});
@@ -633,9 +622,10 @@ app.post('/sendSMS', async (req, res) => {
 
     const query = await db
       .promise()
-      .query(
-        `UPDATE user SET otp_id = '${response?.data?.otp_id}' WHERE username = '${req?.body?.username}'`,
-      );
+      .query(`UPDATE user SET otp_id = ? WHERE username = ?`, [
+        response?.data?.otp_id,
+        req?.body?.username,
+      ]);
 
     if (!!query[0]?.affectedRows) {
       res.status(200).send({
@@ -653,7 +643,7 @@ app.post('/sendSMS', async (req, res) => {
 app.post('/verifyOTPSMS', async (req, res) => {
   const query = await db
     .promise()
-    .query(`SELECT otp_id FROM user WHERE username = '${req?.body?.username}'`);
+    .query(`SELECT otp_id FROM user WHERE username = ?`, [req?.body?.username]);
 
   try {
     const data = new FormData();
@@ -683,9 +673,9 @@ app.post('/verifyOTPSMS', async (req, res) => {
 app.post('/verifyOTPEmail', async (req, res) => {
   const query = await db
     .promise()
-    .query(
-      `SELECT otp_code FROM user WHERE username = '${req?.body?.username}'`,
-    );
+    .query(`SELECT otp_code FROM user WHERE username = ?`, [
+      req?.body?.username,
+    ]);
   if (req?.body?.OTPCode !== query[0][0]?.otp_code) {
     res.status(400).send({msg: 'Invalid OTP Code', error: '400'});
     return;
@@ -710,7 +700,7 @@ app.post('/forgotPass', async (req, res) => {
   const query = await db
     .promise()
     .query(
-      `UPDATE user SET password = '${req?.body?.password}' WHERE username = '${req?.body?.username}'`,
+      `UPDATE user SET password = ? WHERE username = ?`,[req?.body?.password, req?.body?.username]
     );
 
   if (!!query[0]?.affectedRows) {
@@ -718,27 +708,4 @@ app.post('/forgotPass', async (req, res) => {
   } else {
     res.status(400).send({msg: 'Error occured', error: '400'});
   }
-});
-
-app.get('/cart', (req, _res) => {
-  const {cart} = req.session;
-  if (!cart) {
-    res.send('You have no cart');
-  } else {
-    res.send(cart);
-  }
-});
-
-app.post('/cart/item', (req, _res) => {
-  const {item, quantity} = req.body;
-  const cartItem = {item, quantity};
-  const {cart} = req.session;
-  if (cart) {
-    req.session.cart.items.push(cartItem);
-  } else {
-    req.session.cart = {
-      items: [cartItem],
-    };
-  }
-  res.send(201);
 });

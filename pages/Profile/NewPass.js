@@ -133,7 +133,7 @@ export default function NewPass({navigation}) {
               <TouchableOpacity
                 onPress={() => {
                   setPopUp(false);
-                  mod && navigation.navigate({name: 'Profile'});
+                  mod && navigation.navigate({name: 'Profiles'});
                 }}>
                 <FontAwesome name="close" color={'#000'} size={25} />
               </TouchableOpacity>

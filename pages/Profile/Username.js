@@ -12,7 +12,7 @@ import {connector} from '../../constants/Connector';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 export default function Username({navigation, route}) {
   const [isFocus, setIsFocus] = useState('');
@@ -22,7 +22,7 @@ export default function Username({navigation, route}) {
   const [errorMsg, setErrorMsg] = useState('');
   const [flag, setFlag] = useState(false);
   const {userContext} = useContext(AuthCont);
-  const {t} = useTranslation()
+  const {t} = useTranslation();
 
   const changeUsername = async () => {
     if (!newUsername || newUsername === data?.username) {
@@ -46,7 +46,6 @@ export default function Username({navigation, route}) {
       });
       if (res) {
         let responseJSON = await res.json();
-
         if (responseJSON) {
           setPopUp(true);
           setErrorMsg(responseJSON?.msg);
@@ -77,7 +76,7 @@ export default function Username({navigation, route}) {
                   setPopUp(false);
                   flag &&
                     navigation.navigate({
-                      name: 'Profile',
+                      name: 'Profiles',
                       params: {data: {...data, username: newUsername}},
                     });
                 }}>
@@ -98,16 +97,16 @@ export default function Username({navigation, route}) {
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <View style={{paddingHorizontal: 16}}>
           {modal()}
-          <Text style={styles.text}>{t("current_username")}</Text>
+          <Text style={styles.text}>{t('current_username')}</Text>
           <TextInput
             editable={false}
             style={styles.input}
-            placeholder={t("current_username")}
+            placeholder={t('current_username')}
             value={data?.username}></TextInput>
-          <Text style={styles.text}>{t("new_username")}</Text>
+          <Text style={styles.text}>{t('new_username')}</Text>
           <TextInput
             style={[styles.input, isFocus === 'username' && styles.focus]}
-            placeholder={t("new_username")}
+            placeholder={t('new_username')}
             value={newUsername}
             maxLength={256}
             onChangeText={name => setNewUsername(name)}
@@ -115,7 +114,7 @@ export default function Username({navigation, route}) {
             onBlur={() => setIsFocus('')}></TextInput>
           <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
             <TouchableOpacity style={styles.button} onPress={changeUsername}>
-              <Text style={styles.loginText}>{t("save")}</Text>
+              <Text style={styles.loginText}>{t('save')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -124,16 +123,20 @@ export default function Username({navigation, route}) {
       <View style={[styles.container, CustomDarkTheme]}>
         <View style={{paddingHorizontal: 16}}>
           {modal()}
-          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>{t("current_username")}</Text>
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+            {t('current_username')}
+          </Text>
           <TextInput
             editable={false}
             style={styles.input}
-            placeholder={t("current_username")}
+            placeholder={t('current_username')}
             value={data?.username}></TextInput>
-          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>{t("new_username")}</Text>
+          <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
+            {t('new_username')}
+          </Text>
           <TextInput
             style={[styles.input, isFocus === 'username' && styles.focus]}
-            placeholder={t("new_username")}
+            placeholder={t('new_username')}
             value={newUsername}
             maxLength={256}
             onChangeText={name => setNewUsername(name)}
@@ -141,7 +144,7 @@ export default function Username({navigation, route}) {
             onBlur={() => setIsFocus('')}></TextInput>
           <View style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
             <TouchableOpacity style={styles.button} onPress={changeUsername}>
-              <Text style={styles.loginText}>{t("save")}</Text>
+              <Text style={styles.loginText}>{t('save')}</Text>
             </TouchableOpacity>
           </View>
         </View>
