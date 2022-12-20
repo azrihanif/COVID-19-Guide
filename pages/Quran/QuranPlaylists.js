@@ -11,19 +11,8 @@ export default function QuranPlaylist({navigation}) {
   const data = [
     {
       title: 'Al-Fatiha',
-      time: '3:13',
-    },
-    {
-      title: 'Al-Baqarah',
-      time: '3:53',
-    },
-    {
-      title: 'Al-Imran',
-      time: '2:34',
-    },
-    {
-      title: 'Al-Nisa',
-      time: '3:13',
+      time: '1:25',
+      picture: require('../../images/quran/alfatiha.jpg'),
     },
   ];
 
@@ -31,7 +20,7 @@ export default function QuranPlaylist({navigation}) {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <View style={{paddingLeft: 16, paddingRight: 16}}>
-          {data?.map(({title, time}, index) => (
+          {data?.map(({title, time, picture}, index) => (
             <QuranContainer
               key={index}
               title={title}
@@ -40,7 +29,7 @@ export default function QuranPlaylist({navigation}) {
                 navigation.navigate('Quran Play', {
                   title,
                   time,
-                  picture: require('../../images/profilepic/profile.jpg'),
+                  picture,
                 })
               }
             />
@@ -55,7 +44,7 @@ export default function QuranPlaylist({navigation}) {
         colors={['#DFF6FF', '#FFFFFF']}
         style={[styles.container, CustomDarkTheme]}>
         <View style={{paddingLeft: 16, paddingRight: 16}}>
-          {data?.map(({title, time}, index) => (
+          {data?.map(({title, time, picture}, index) => (
             <QuranContainer
               key={index}
               title={title}
@@ -64,7 +53,7 @@ export default function QuranPlaylist({navigation}) {
                 navigation.navigate('Quran Play', {
                   title,
                   time,
-                  picture: require('../../images/profilepic/profile.jpg'),
+                  picture,
                 })
               }
             />

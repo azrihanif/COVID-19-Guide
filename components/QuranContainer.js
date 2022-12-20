@@ -6,17 +6,56 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 export default function QuranContainer({title, time, onPress}) {
   const [playing, setPlaying] = useState(false);
+  const [music, setMusic] = useState(null);
+  const [pause, setPause] = useState(false);
+  const [duration, setDuration] = useState(0);
+
+  const play = () => {
+    let alfatiha = new Sound('alfatihah.mp3', Sound.MAIN_BUNDLE, err => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+
+      alfatiha.play(success => {
+        console.log(success);
+      });
+
+      let d = Math.floor(alfatiha.getDuration() / 60);
+      let s = Number(alfatiha.getDuration() % 60).toFixed(0);
+      let t = d.toString();
+      let ss = s.toString();
+
+      setDuration(`${t.padStart(2, '0')}:${ss.padStart(2, '0')}`);
+    });
+
+    setMusic(alfatiha);
+  };
 
   return (
     <View style={[styles.item, styles.Shadow]}>
-      <TouchableOpacity
-        onPress={() => {
-          setPlaying(playing => !playing);
-        }}>
+      <TouchableOpacity>
         {playing ? (
-          <Feather name="pause-circle" color="#030852" size={40} />
+          <Feather
+            name="pause-circle"
+            color="#030852"
+            size={40}
+            onPress={() => {
+              setPlaying(playing => !playing);
+              setPause(true);
+              music.pause();
+            }}
+          />
         ) : (
-          <Ionicons name="play-circle-outline" color={'#030852'} size={40} />
+          <Ionicons
+            name="play-circle-outline"
+            color={'#030852'}
+            size={40}
+            onPress={() => {
+              setPlaying(playing => !playing);
+              pause ? music.play() : play();
+            }}
+          />
         )}
       </TouchableOpacity>
       <TouchableOpacity style={styles.textWrapper} onPress={() => onPress()}>

@@ -5,11 +5,97 @@ import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
+import Sound from 'react-native-sound';
 
 export default function QuranPlay({route}) {
   const {title, time, picture} = route?.params;
   const [playing, setPlaying] = useState(false);
   const {userContext} = useContext(AuthCont);
+  const [music, setMusic] = useState();
+  const [pause, setPause] = useState(false);
+  const [seconds, setSeconds] = useState();
+  const [get, setGet] = useState(0);
+  const [timer, setTimer] = useState({s: 0, m: 0});
+  const [currentSong, setCurrentSong] = useState({title: 'Al-Fatiha'});
+  const songs = [
+    {
+      title: 'Al-Fatiha',
+      time: '01:25',
+      picture: require('../../images/quran/alfatiha.jpg'),
+    },
+  ];
+  var updatedS = timer.s,
+    updatedM = timer.m;
+
+  const start = () => {
+    setSeconds(setInterval(run, 1000));
+  };
+
+  const stop = () => {
+    clearInterval(seconds);
+  };
+
+  const reset = () => {
+    clearInterval(seconds);
+    setGet(0);
+    setTimer({s: 0, m: 0});
+    updatedM = 0;
+    updatedS = 0;
+    start();
+  };
+
+  const run = () => {
+    if (updatedS === 60) {
+      updatedM++;
+      updatedS = 0;
+    }
+    updatedS++;
+    setGet(get => get + 1);
+    return setTimer({s: updatedS, m: updatedM});
+  };
+
+  const play = () => {
+    if (currentSong.title == 'Al-Fatiha') {
+      let alfatiha = new Sound('alfatihah.mp3', Sound.MAIN_BUNDLE, err => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+
+        alfatiha.play(success => {
+          console.log(success);
+        });
+      });
+      setCurrentSong({title: 'Al-Fatiha'});
+      setMusic(alfatiha);
+    }
+  };
+
+  const skipBack = () => {
+    const index = songs.findIndex(x => x.title == currentSong.title);
+    if (index == 0) {
+      setCurrentSong(songs[songs.length - 1]);
+      music.setCurrentTime(0);
+      reset();
+    } else {
+      setCurrentSong(songs[index - 1]);
+      music.setCurrentTime(0);
+      reset();
+    }
+  };
+
+  const skipNext = () => {
+    const index = songs.findIndex(x => x.title == currentSong.title);
+    if (index == songs.length - 1) {
+      setCurrentSong(songs[0]);
+      music.setCurrentTime(0);
+      reset();
+    } else {
+      setCurrentSong(songs[index + 1]);
+      music.setCurrentTime(0);
+      reset();
+    }
+  };
 
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
@@ -27,10 +113,12 @@ export default function QuranPlay({route}) {
             <Text style={[styles.text, {fontSize: 22}]}>{title}</Text>
           </View>
           <View style={{flexDirection: 'row', paddingTop: 16}}>
-            <Text style={styles.text}>0:00</Text>
+            <Text style={styles.text}>{`${timer.m}:${
+              timer.s < 10 ? '0' + timer.s : timer.s
+            }`}</Text>
             <Slider
               style={styles.progress}
-              value={10}
+              value={get}
               minimumValue={0}
               maximumValue={100}
               thumbTintColor={'#030852'}
@@ -44,36 +132,50 @@ export default function QuranPlay({route}) {
             </Text>
           </View>
           <View style={styles.player}>
-            <TouchableOpacity style={{paddingLeft: 32}} onPress={() => {}}>
+            <TouchableOpacity style={{paddingLeft: 32}}>
               <Ionicons
                 name="play-skip-back-circle-outline"
                 color={'#030852'}
                 size={50}
+                onPress={() => {
+                  skipBack();
+                }}
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setPlaying(playing => !playing);
-              }}>
+            <TouchableOpacity>
               {playing ? (
                 <Ionicons
                   name="pause-circle-outline"
                   color="#030852"
                   size={100}
+                  onPress={() => {
+                    setPlaying(playing => !playing);
+                    setPause(true);
+                    music.pause();
+                    stop();
+                  }}
                 />
               ) : (
                 <Ionicons
                   name="play-circle-outline"
                   color={'#030852'}
                   size={100}
+                  onPress={() => {
+                    setPlaying(playing => !playing);
+                    pause ? music.play() : play();
+                    start();
+                  }}
                 />
               )}
             </TouchableOpacity>
-            <TouchableOpacity style={{paddingRight: 32}} onPress={() => {}}>
+            <TouchableOpacity style={{paddingRight: 32}}>
               <Ionicons
                 name="play-skip-forward-circle-outline"
                 color={'#030852'}
                 size={50}
+                onPress={() => {
+                  skipNext();
+                }}
               />
             </TouchableOpacity>
           </View>
@@ -93,15 +195,21 @@ export default function QuranPlay({route}) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={[styles.text, {fontSize: 22, color: CustomDarkTheme?.colors?.text}]}>{title}</Text>
+            <Text
+              style={[
+                styles.text,
+                {fontSize: 22, color: CustomDarkTheme?.colors?.text},
+              ]}>
+              {title}
+            </Text>
           </View>
           <View style={{flexDirection: 'row', paddingTop: 16}}>
             <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
-              0:00
+              {`${timer.m}:${timer.s < 10 ? '0' + timer.s : timer.s}`}
             </Text>
             <Slider
               style={styles.progress}
-              value={10}
+              value={get}
               minimumValue={0}
               maximumValue={100}
               thumbTintColor={CustomDarkTheme?.colors?.text}
@@ -123,32 +231,48 @@ export default function QuranPlay({route}) {
             </Text>
           </View>
           <View style={styles.player}>
-            <TouchableOpacity style={{paddingLeft: 32}} onPress={() => {}}>
+            <TouchableOpacity
+              style={{paddingLeft: 32}}
+              onPress={() => {
+                skipBack();
+              }}>
               <Ionicons
                 name="play-skip-back-circle-outline"
                 color={CustomDarkTheme?.colors?.text}
                 size={50}
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setPlaying(playing => !playing);
-              }}>
+            <TouchableOpacity>
               {playing ? (
                 <Ionicons
                   name="pause-circle-outline"
                   color={CustomDarkTheme?.colors?.text}
                   size={100}
+                  onPress={() => {
+                    setPlaying(playing => !playing);
+                    setPause(true);
+                    music.pause();
+                    stop();
+                  }}
                 />
               ) : (
                 <Ionicons
                   name="play-circle-outline"
                   color={CustomDarkTheme?.colors?.text}
                   size={100}
+                  onPress={() => {
+                    setPlaying(playing => !playing);
+                    pause ? music.play() : play();
+                    start();
+                  }}
                 />
               )}
             </TouchableOpacity>
-            <TouchableOpacity style={{paddingRight: 32}} onPress={() => {}}>
+            <TouchableOpacity
+              style={{paddingRight: 32}}
+              onPress={() => {
+                skipNext();
+              }}>
               <Ionicons
                 name="play-skip-forward-circle-outline"
                 color={CustomDarkTheme?.colors?.text}
@@ -179,7 +303,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderColor: '#C0C0C0',
     width: 300,
-    height: 300,
+    height: 400,
     borderRadius: 8,
   },
   text: {
@@ -187,7 +311,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Sans-serif',
   },
   progress: {
-    width: 300,
+    width: 320,
     height: 40,
     marginTop: -8,
     flexDirection: 'row',

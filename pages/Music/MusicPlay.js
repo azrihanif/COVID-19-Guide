@@ -22,7 +22,7 @@ export default function MusicPlay({route}) {
       name: 'Harry Styles',
       title: 'As it was',
       time: '2:46',
-      picture: require('../../images/music/asitwas.jpg')
+      picture: require('../../images/music/asitwas.jpg'),
     },
   ];
   var updatedS = timer.s,
@@ -34,6 +34,15 @@ export default function MusicPlay({route}) {
 
   const stop = () => {
     clearInterval(seconds);
+  };
+
+  const reset = () => {
+    clearInterval(seconds);
+    setGet(0);
+    setTimer({s: 0, m: 0});
+    updatedM = 0;
+    updatedS = 0;
+    start();
   };
 
   const run = () => {
@@ -71,8 +80,12 @@ export default function MusicPlay({route}) {
     const index = songs.findIndex(x => x.title == currentSong.title);
     if (index == 0) {
       setCurrentSong(songs[songs.length - 1]);
+      music.setCurrentTime(0);
+      reset();
     } else {
       setCurrentSong(songs[index - 1]);
+      music.setCurrentTime(0);
+      reset();
     }
   };
 
@@ -80,8 +93,12 @@ export default function MusicPlay({route}) {
     const index = songs.findIndex(x => x.title == currentSong.title);
     if (index == songs.length - 1) {
       setCurrentSong(songs[0]);
+      music.setCurrentTime(0);
+      reset();
     } else {
       setCurrentSong(songs[index + 1]);
+      music.setCurrentTime(0);
+      reset();
     }
   };
 
@@ -121,11 +138,14 @@ export default function MusicPlay({route}) {
             </Text>
           </View>
           <View style={styles.player}>
-            <TouchableOpacity style={{paddingLeft: 32}} onPress={() => {}}>
+            <TouchableOpacity style={{paddingLeft: 32}}>
               <Ionicons
                 name="play-skip-back-circle-outline"
                 color={'#030852'}
                 size={50}
+                onPress={() => {
+                  skipBack();
+                }}
               />
             </TouchableOpacity>
             <TouchableOpacity>
@@ -154,11 +174,14 @@ export default function MusicPlay({route}) {
                 />
               )}
             </TouchableOpacity>
-            <TouchableOpacity style={{paddingRight: 32}} onPress={() => {}}>
+            <TouchableOpacity style={{paddingRight: 32}}>
               <Ionicons
                 name="play-skip-forward-circle-outline"
                 color={'#030852'}
                 size={50}
+                onPress={() => {
+                  skipNext();
+                }}
               />
             </TouchableOpacity>
           </View>
@@ -223,9 +246,6 @@ export default function MusicPlay({route}) {
               style={{paddingLeft: 32}}
               onPress={() => {
                 skipBack();
-                setPlaying(playing => !playing);
-                pause ? music.play() : play();
-                start();
               }}>
               <Ionicons
                 name="play-skip-back-circle-outline"
@@ -263,9 +283,6 @@ export default function MusicPlay({route}) {
               style={{paddingRight: 32}}
               onPress={() => {
                 skipNext();
-                setPlaying(playing => !playing);
-                pause ? music.play() : play();
-                start();
               }}>
               <Ionicons
                 name="play-skip-forward-circle-outline"
