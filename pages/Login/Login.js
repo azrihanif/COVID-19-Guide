@@ -1,11 +1,18 @@
-import React, {useContext, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
+import React, {useContext, useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  Alert,
+} from 'react-native';
 import {sha256} from 'react-native-sha256';
 import {AuthCont} from '../../constants/AuthContext';
 import LinearGradient from 'react-native-linear-gradient';
 import {connector} from '../../constants/Connector';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const Login = ({navigation}) => {
   const [username, setUsername] = useState(null);
@@ -13,7 +20,11 @@ const Login = ({navigation}) => {
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [isFocus, setIsFocus] = useState('');
   const {setUserContext} = useContext(AuthCont);
-  const {i18n} = useTranslation()
+  const {i18n} = useTranslation();
+
+  useEffect(() => {
+    checkInternet();
+  }, []);
 
   const hashPassword = pass => {
     sha256(pass).then(hash => {
@@ -42,8 +53,27 @@ const Login = ({navigation}) => {
         if (responseJSON?.error) {
           alert(responseJSON?.msg);
         } else {
-          i18n.changeLanguage(responseJSON?.msg?.language)
+          i18n.changeLanguage(responseJSON?.msg?.language);
           setUserContext(responseJSON?.msg);
+        }
+      } else {
+        console.log('Error!');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const checkInternet = async () => {
+    try {
+      let res = await fetch(connector + '/checkInternet');
+      if (res) {
+        const response = await res.text();
+        if (response !== 'Internet is connected') {
+          Alert.alert(
+            'Error',
+            'Please connect to the internet to use this application',
+          );
         }
       } else {
         console.log('Error!');

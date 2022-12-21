@@ -15,6 +15,7 @@ const db = require('./routes/database');
 const passport = require('passport');
 const local = require('./strategies/local');
 const res = require('express/lib/response');
+const http = require('http');
 
 app.use((req, _res, next) => {
   console.log(req.method, ' : ', req.url);
@@ -699,13 +700,40 @@ app.post('/forgotPass', async (req, res) => {
 
   const query = await db
     .promise()
-    .query(
-      `UPDATE user SET password = ? WHERE username = ?`,[req?.body?.password, req?.body?.username]
-    );
+    .query(`UPDATE user SET password = ? WHERE username = ?`, [
+      req?.body?.password,
+      req?.body?.username,
+    ]);
 
   if (!!query[0]?.affectedRows) {
     res.status(200).send({msg: 'Successfully changed password', error: null});
   } else {
     res.status(400).send({msg: 'Error occured', error: '400'});
   }
+});
+
+app.get('/checkInternet', async (_req, res) => {
+  try {
+    const response = await new Promise((resolve, reject) => {
+      const req = http.get('http://10.167.175.110:3005', res => {
+        resolve(res);
+      });
+      req.on('error', reject);
+    });
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      console.log('Internet is connected');
+      res.status(200).send('Internet is connected');
+    } else {
+      console.log('Internet is not connected');
+      res.status(500).send('Internet is not connected');
+    }
+  } catch (error) {
+    console.log('Internet is not connected');
+    res.status(500).send('Internet is not connected');
+  }
+});
+
+app.get('/', async (_req, res) => {
+  res.status(200).send();
 });
