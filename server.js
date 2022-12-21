@@ -22,6 +22,28 @@ app.use((req, _res, next) => {
   next();
 });
 
+const checkInternet = async () => {
+  try {
+    const response = await new Promise((resolve, reject) => {
+      const req = http.get('http://10.167.175.110:3005', res => {
+        resolve(res);
+      });
+      req.on('error', reject);
+    });
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      console.log('Internet is connected');
+      return false;
+    } else {
+      console.log('Internet is not connected');
+      return true;
+    }
+  } catch (error) {
+    console.log('Internet is not connected');
+    return true;
+  }
+};
+
 app.use(
   bodyParser.json({
     type: 'application/json',
@@ -62,6 +84,13 @@ const storage = multer.diskStorage({
 var upload = multer({storage: storage});
 
 app.post('/uploadFile', upload.single('profilepic'), async (req, result) => {
+  const check = await checkInternet();
+  if (check) {
+    return result
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const {id} = req.body;
   if (req?.file?.filename && id) {
     const query = await db
@@ -86,6 +115,12 @@ app.post(
   '/deleteUser',
   check('id').notEmpty().withMessage('Id cannot be empty'),
   async (req, result) => {
+    const check = await checkInternet();
+    if (check) {
+      return result
+        .status(500)
+        .send({msg: 'Internet is not connected', error: '500'});
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return result.status(400).json(errors);
@@ -111,6 +146,13 @@ app.post(
   '/getAdvice',
   check('id').notEmpty().withMessage('Id cannot be empty'),
   async (req, result) => {
+    const check = await checkInternet();
+    if (check) {
+      return result
+        .status(500)
+        .send({msg: 'Internet is not connected', error: '500'});
+    }
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return result.status(400).json(errors);
@@ -137,6 +179,13 @@ app.post(
 );
 
 app.post('/updateLike', async (req, result) => {
+  const check = await checkInternet();
+  if (check) {
+    return result
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return result.status(400).json(errors);
@@ -160,6 +209,13 @@ app.post(
   '/getData',
   check('id').notEmpty().withMessage('Id cannot be empty'),
   async (req, result) => {
+    const check = await checkInternet();
+    if (check) {
+      return result
+        .status(500)
+        .send({msg: 'Internet is not connected', error: '500'});
+    }
+
     const {id} = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -186,29 +242,36 @@ app.post(
   check('username').notEmpty().withMessage('Username cannot be empty'),
   check('password').notEmpty().withMessage('Password cannot be empty'),
   async (req, result) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return result.status(400).json(errors);
-    }
-    const {username, password} = req.body;
-    if (username && password) {
-      try {
-        const query = await db
-          .promise()
-          .query(
-            `SELECT a.id, a.name, b.dark_mode, b.language FROM user a INNER JOIN miscellaneous b ON a.id = b.user_id WHERE username = ? AND password = ?`,
-            [username, password],
-          );
+    const check = await checkInternet();
+    if (check) {
+      return result
+        .status(500)
+        .send({msg: 'Internet is not connected', error: '500'});
+    } else {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return result.status(400).json(errors);
+      }
+      const {username, password} = req.body;
+      if (username && password) {
+        try {
+          const query = await db
+            .promise()
+            .query(
+              `SELECT a.id, a.name, b.dark_mode, b.language FROM user a INNER JOIN miscellaneous b ON a.id = b.user_id WHERE username = ? AND password = ?`,
+              [username, password],
+            );
 
-        if (query[0][0]) {
-          result.status(200).send({msg: query[0][0], error: null});
-        } else {
-          result
-            .status(400)
-            .send({msg: 'Could not find the specified user', error: '400'});
+          if (query[0][0]) {
+            result.status(200).send({msg: query[0][0], error: null});
+          } else {
+            result
+              .status(400)
+              .send({msg: 'Could not find the specified user', error: '400'});
+          }
+        } catch (err) {
+          result.status(400).send(err);
         }
-      } catch (err) {
-        result.status(400).send(err);
       }
     }
   },
@@ -218,6 +281,13 @@ app.post(
   '/getProfile',
   check('id').notEmpty().withMessage('Id cannot be empty'),
   async (req, result) => {
+    const check = await checkInternet();
+    if (check) {
+      return result
+        .status(500)
+        .send({msg: 'Internet is not connected', error: '500'});
+    }
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return result.status(400).json(errors);
@@ -245,6 +315,13 @@ app.post(
   '/updateProfile',
   check('id').notEmpty().withMessage('Id cannot be empty'),
   async (req, result) => {
+    const check = await checkInternet();
+    if (check) {
+      return result
+        .status(500)
+        .send({msg: 'Internet is not connected', error: '500'});
+    }
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return result.status(400).json(errors);
@@ -272,6 +349,13 @@ app.post(
   '/getCOVIDInfo',
   check('id').notEmpty().withMessage('Id cannot be empty'),
   async (req, result) => {
+    const check = await checkInternet();
+    if (check) {
+      return result
+        .status(500)
+        .send({msg: 'Internet is not connected', error: '500'});
+    }
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return result.status(400).json(errors);
@@ -300,6 +384,13 @@ app.post(
   '/getActivity',
   check('id').notEmpty().withMessage('Id cannot be empty'),
   async (req, result) => {
+    const check = await checkInternet();
+    if (check) {
+      return result
+        .status(500)
+        .send({msg: 'Internet is not connected', error: '500'});
+    }
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return result.status(400).json(errors);
@@ -348,6 +439,13 @@ app.post(
 );
 
 app.post('/addActivity', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const {id, activity, frequency} = req.body;
 
   if (id && activity && frequency) {
@@ -364,6 +462,13 @@ app.post('/addActivity', async (req, res) => {
 });
 
 app.post('/changeUsername', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const {oldUsername, newUsername} = req.body;
 
   if (!oldUsername || !newUsername)
@@ -380,6 +485,13 @@ app.post('/changeUsername', async (req, res) => {
 });
 
 app.post('/changePhone', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const {oldPhone, newPhone} = req.body;
 
   if (!oldPhone || !newPhone) {
@@ -398,6 +510,13 @@ app.post('/changePhone', async (req, res) => {
 });
 
 app.post('/changeEmail', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const {oldEmail, newEmail} = req.body;
 
   if (!oldEmail || !newEmail)
@@ -415,6 +534,13 @@ app.post('/changeEmail', async (req, res) => {
 });
 
 app.post('/changePass', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const {currentPass, confirmPass, newPass} = req.body;
 
   if (!currentPass || !confirmPass || !newPass)
@@ -452,6 +578,13 @@ app.post('/changePass', async (req, res) => {
 });
 
 app.post('/changeLanguage', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const {id, language} = req.body;
 
   if (!id || !language) {
@@ -474,6 +607,13 @@ app.post('/changeLanguage', async (req, res) => {
 });
 
 app.post('/changeDarkMode', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const {id, darkMode} = req.body;
 
   if (!id || !darkMode) {
@@ -496,6 +636,13 @@ app.post('/changeDarkMode', async (req, res) => {
 });
 
 app.post('/signUp', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const {username, password} = req.body;
 
   if (!username || !password) {
@@ -537,6 +684,13 @@ app.post('/signUp', async (req, res) => {
 });
 
 app.post('/sendEmail', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   if (!req?.body?.email) {
     res.status(400).send({
       msg: 'Please enter your email address to receive OTP',
@@ -604,6 +758,13 @@ app.post('/sendEmail', async (req, res) => {
 });
 
 app.post('/sendSMS', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   try {
     const data = new FormData();
     data.append('mobile', `+6${req?.body?.phoneNo}`);
@@ -642,6 +803,13 @@ app.post('/sendSMS', async (req, res) => {
 });
 
 app.post('/verifyOTPSMS', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const query = await db
     .promise()
     .query(`SELECT otp_id FROM user WHERE username = ?`, [req?.body?.username]);
@@ -672,6 +840,13 @@ app.post('/verifyOTPSMS', async (req, res) => {
 });
 
 app.post('/verifyOTPEmail', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   const query = await db
     .promise()
     .query(`SELECT otp_code FROM user WHERE username = ?`, [
@@ -686,6 +861,13 @@ app.post('/verifyOTPEmail', async (req, res) => {
 });
 
 app.post('/forgotPass', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
   if (!req?.body?.password || !req?.body?.confPass) {
     res.status(400).send({msg: 'Please enter your new password', error: '400'});
     return;
