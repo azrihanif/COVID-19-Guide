@@ -267,7 +267,7 @@ app.post(
           } else {
             result
               .status(400)
-              .send({msg: 'Could not find the specified user', error: '400'});
+              .send({msg: 'Invalid username or password', error: '400'});
           }
         } catch (err) {
           result.status(400).send(err);
@@ -648,7 +648,7 @@ app.post('/checkUsername', async (req, res) => {
     const query = await db
       .promise()
       .query('SELECT username FROM user WHERE username LIKE ?', [username]);
-      console.log(!!query[0], query[0])
+      
     if (!!query[0]?.length) {
       res
         .status(200)

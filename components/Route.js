@@ -101,7 +101,6 @@ const Route = () => {
         text: t('yes'),
         onPress: () => {
           setUserContext(null);
-          navigation.navigate('Covid-19 Guide');
         },
       },
       {

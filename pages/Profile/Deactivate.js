@@ -1,18 +1,68 @@
 import React, {useContext} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {UnorderedList} from '../../components/UnorderedList';
 import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
+import {connector} from '../../constants/Connector';
+import {useNavigation} from '@react-navigation/native';
 
 export default function Deactivate({route}) {
+  const navigation = useNavigation();
   const {data} = route?.params;
-  const {userContext} = useContext(AuthCont);
+  const {userContext, setUserContext} = useContext(AuthCont);
 
   const listTexts = [
     "You won't be able to log in and use any services\nwith that account",
     'You will lose all access to your account',
   ];
+
+  const deleteAcc = async () => {
+    const {id} = userContext;
+    try {
+      let res = await fetch(connector + '/deleteUser', {
+        method: 'post',
+        mode: 'no-cors',
+        body: JSON.stringify({id}),
+        headers: {
+          Accept: 'application/json',
+          'Content-type': 'application/json',
+        },
+      });
+      if (res) {
+        let responseJSON = await res.json();
+
+        if (responseJSON?.error) {
+          Alert.alert('Error', responseJSON?.msg);
+        } else {
+          Alert.alert('Success', responseJSON?.msg);
+          setUserContext(null);
+        }
+      } else {
+        Alert.alert('Error', 'Error Occurred');
+      }
+    } catch (e) {
+      Alert.alert('Error', 'Error Occurred');
+    }
+  };
+
+  const popUp = () => {
+    Alert.alert(
+      'Confirmation',
+      'Are you sure you want to delete your account?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => {
+            deleteAcc();
+          },
+        },
+        {
+          text: 'No',
+        },
+      ],
+    );
+  };
 
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
@@ -26,7 +76,7 @@ export default function Deactivate({route}) {
             deactivation, you can reactivate your account anytime. After 7 days,
             your account and data will be deleted permanently. {'\n\n'}If you
             delete your account: {'\n'}
-            <UnorderedList texts={listTexts} color={'#030852'}/>
+            <UnorderedList texts={listTexts} color={'#030852'} />
             {'\n'}Do you want to continue?
           </Text>
         </View>
@@ -38,7 +88,11 @@ export default function Deactivate({route}) {
             justifyContent: 'center',
             width: '100%',
           }}>
-          <TouchableOpacity style={styles.button} onPress={() => {}}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              popUp();
+            }}>
             <Text style={styles.loginText}>{'CONTINUE'}</Text>
           </TouchableOpacity>
         </View>
@@ -46,7 +100,15 @@ export default function Deactivate({route}) {
     ) : (
       <View style={[styles.container, CustomDarkTheme]}>
         <View style={{paddingHorizontal: 16}}>
-          <Text style={[styles.text, {fontWeight: 'bold', fontSize: 20, color:CustomDarkTheme?.colors?.text}]}>
+          <Text
+            style={[
+              styles.text,
+              {
+                fontWeight: 'bold',
+                fontSize: 20,
+                color: CustomDarkTheme?.colors?.text,
+              },
+            ]}>
             {data?.username} : delete this account?
           </Text>
           <Text style={[styles.text, {color: CustomDarkTheme?.colors?.text}]}>
@@ -54,7 +116,10 @@ export default function Deactivate({route}) {
             deactivation, you can reactivate your account anytime. After 7 days,
             your account and data will be deleted permanently. {'\n\n'}If you
             delete your account: {'\n'}
-            <UnorderedList texts={listTexts} color={CustomDarkTheme?.colors?.text}/>
+            <UnorderedList
+              texts={listTexts}
+              color={CustomDarkTheme?.colors?.text}
+            />
             {'\n'}Do you want to continue?
           </Text>
         </View>
@@ -66,7 +131,11 @@ export default function Deactivate({route}) {
             justifyContent: 'center',
             width: '100%',
           }}>
-          <TouchableOpacity style={styles.button} onPress={() => {}}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              popUp();
+            }}>
             <Text style={styles.loginText}>{'CONTINUE'}</Text>
           </TouchableOpacity>
         </View>

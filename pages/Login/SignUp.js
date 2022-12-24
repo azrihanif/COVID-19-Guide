@@ -30,7 +30,6 @@ export default function SignUp({navigation}) {
       });
       if (res) {
         let responseJSON = await res.json();
-        console.log(responseJSON);
         if (responseJSON?.error) {
           setPopUp(true);
           setErrorMsg(responseJSON?.msg);
