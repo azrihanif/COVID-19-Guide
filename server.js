@@ -25,7 +25,7 @@ app.use((req, _res, next) => {
 const checkInternet = async () => {
   try {
     const response = await new Promise((resolve, reject) => {
-      const req = http.get('http://10.167.175.110:3005', res => {
+      const req = http.get('http://10.167.167.205:3005', res => {
         resolve(res);
       });
       req.on('error', reject);
@@ -635,6 +635,33 @@ app.post('/changeDarkMode', async (req, res) => {
   }
 });
 
+app.post('/checkUsername', async (req, res) => {
+  const check = await checkInternet();
+  if (check) {
+    return res
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
+  const {username} = req.body;
+  if (username) {
+    const query = await db
+      .promise()
+      .query('SELECT username FROM user WHERE username LIKE ?', [username]);
+      console.log(!!query[0], query[0])
+    if (!!query[0]?.length) {
+      res
+        .status(200)
+        .send({
+          msg: 'Username is taken. Please choose another username',
+          error: '400',
+        });
+    } else {
+      res.status(200).send({msg: '', error: null});
+    }
+  }
+});
+
 app.post('/signUp', async (req, res) => {
   const check = await checkInternet();
   if (check) {
@@ -897,7 +924,7 @@ app.post('/forgotPass', async (req, res) => {
 app.get('/checkInternet', async (_req, res) => {
   try {
     const response = await new Promise((resolve, reject) => {
-      const req = http.get('http://10.167.175.110:3005', res => {
+      const req = http.get('http://10.167.167.205:3005', res => {
         resolve(res);
       });
       req.on('error', reject);
