@@ -5,18 +5,11 @@ import QuranContainer from '../../components/QuranContainer';
 import MusicPlayer from '../../components/MusicPlayer';
 import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 
 export default function QuranPlaylist({navigation}) {
   const {userContext} = useContext(AuthCont);
   const [songs, setSongs] = useState();
-  // const data = [
-  //   {
-  //     title: 'Al-Fatiha',
-  //     time: '1:25',
-  //     picture: require('../../images/quran/alfatiha.jpg'),
-  //   },
-  // ];
 
   useEffect(() => {
     getQuran();
@@ -30,11 +23,11 @@ export default function QuranPlaylist({navigation}) {
       const response = await res.json();
       if (response) {
         setSongs(
-          response?.map(({name, recitation}) => ({
+          response?.map(({name, recitation}, index) => ({
+            index: index + 1,
             title: name,
             quran: recitation,
             time: '01:25',
-            picture: require('../../images/quran/alfatiha.jpg'),
           })),
         );
       }
@@ -45,7 +38,7 @@ export default function QuranPlaylist({navigation}) {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <ScrollView style={{paddingLeft: 16, paddingRight: 16}}>
-          {songs?.map(({title, time, picture}, index) => (
+          {songs?.map(({title, time}, index) => (
             <QuranContainer
               key={index}
               title={title}
@@ -54,8 +47,8 @@ export default function QuranPlaylist({navigation}) {
                 navigation.navigate('Quran Play', {
                   title,
                   time,
-                  picture,
-                  songs
+                  songs,
+                  currSong: songs[index],
                 })
               }
             />
@@ -77,7 +70,8 @@ export default function QuranPlaylist({navigation}) {
                   title,
                   time,
                   picture,
-                  songs
+                  songs,
+                  currSong: songs[index],
                 })
               }
             />

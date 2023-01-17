@@ -8,7 +8,7 @@ import {AuthCont} from '../../constants/AuthContext';
 
 export default function MusicPlaylist({navigation}) {
   const {userContext} = useContext(AuthCont);
-  const data = [
+  const songs = [
     {
       name: 'Harry Styles',
       title: 'As it was',
@@ -21,7 +21,7 @@ export default function MusicPlaylist({navigation}) {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <View style={{paddingLeft: 16, paddingRight: 16}}>
-          {data?.map(({name, title, time, picture}, index) => (
+          {songs?.map(({name, title, time, picture}, index) => (
             <MusicContainer
               key={index}
               title={title}
@@ -33,6 +33,7 @@ export default function MusicPlaylist({navigation}) {
                   name,
                   time,
                   picture: picture,
+                  currSong: songs[index]
                 })
               }
             />
@@ -45,7 +46,7 @@ export default function MusicPlaylist({navigation}) {
     ) : (
       <View style={[styles.container, CustomDarkTheme]}>
         <View style={{paddingLeft: 16, paddingRight: 16}}>
-          {data?.map(({name, title, time, picture}, index) => (
+          {songs?.map(({name, title, time, picture}, index) => (
             <MusicContainer
               key={index}
               title={title}
@@ -57,6 +58,7 @@ export default function MusicPlaylist({navigation}) {
                   name,
                   time,
                   picture: picture,
+                  currSong: songs[index]
                 })
               }
             />

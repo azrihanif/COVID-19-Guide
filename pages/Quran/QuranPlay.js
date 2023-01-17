@@ -1,14 +1,15 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import Slider from '@react-native-community/slider';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
 import Sound from 'react-native-sound';
+import {ScrollView} from 'react-native-gesture-handler';
 
 export default function QuranPlay({route}) {
-  const {title, time, picture, songs} = route?.params;
+  const {title, time, songs, currSong} = route?.params;
   const [playing, setPlaying] = useState(false);
   const {userContext} = useContext(AuthCont);
   const [music, setMusic] = useState();
@@ -16,9 +17,26 @@ export default function QuranPlay({route}) {
   const [seconds, setSeconds] = useState();
   const [get, setGet] = useState(0);
   const [timer, setTimer] = useState({s: 0, m: 0});
-  const [currentSong, setCurrentSong] = useState(songs[0]);
+  const [currentSong, setCurrentSong] = useState(currSong);
+  const [text, setText] = useState('');
   var updatedS = timer.s,
     updatedM = timer.m;
+
+  useEffect(() => {
+    getQuran();
+  }, [currentSong]);
+
+  const getQuran = async () => {
+    const res = await fetch(
+      `https://raw.githubusercontent.com/penggguna/QuranJSON/master/surah/${currentSong?.index}.json`,
+    );
+    if (res) {
+      const response = await res.json();
+      if (response) {
+        setText(response?.verses?.map(({text}) => text));
+      }
+    }
+  };
 
   const start = () => {
     setSeconds(setInterval(run, 1000));
@@ -96,10 +114,12 @@ export default function QuranPlay({route}) {
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
+        <ScrollView>
+          <Text style={[styles.text, {fontSize: 26, paddingHorizontal: 16}]}>
+            {text}
+          </Text>
+        </ScrollView>
         <View style={{paddingHorizontal: 16}}>
-          <View style={styles.imageWrapper}>
-            <Image style={styles.image} source={picture} />
-          </View>
           <View
             style={{
               paddingTop: 16,
@@ -187,10 +207,12 @@ export default function QuranPlay({route}) {
       <View
         colors={['#DFF6FF', '#FFFFFF']}
         style={[styles.container, CustomDarkTheme]}>
+        <ScrollView>
+          <Text style={[styles.text, {fontSize: 26, paddingHorizontal: 16, color: CustomDarkTheme?.colors?.text}]}>
+            {text}
+          </Text>
+        </ScrollView>
         <View style={{paddingHorizontal: 16}}>
-          <View style={styles.imageWrapper}>
-            <Image style={styles.image} source={picture} />
-          </View>
           <View
             style={{
               paddingTop: 16,
@@ -323,7 +345,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   player: {
-    paddingVertical: 32,
+    paddingVertical: 8,
     borderColor: '#000',
     flexDirection: 'row',
     alignItems: 'center',

@@ -8,7 +8,7 @@ import {AuthCont} from '../../constants/AuthContext';
 import Sound from 'react-native-sound';
 
 export default function MusicPlay({route}) {
-  const {title, name, time, picture} = route?.params;
+  const {title, name, time, picture, currSong} = route?.params;
   const [playing, setPlaying] = useState(false);
   const {userContext} = useContext(AuthCont);
   const [music, setMusic] = useState();
@@ -16,7 +16,7 @@ export default function MusicPlay({route}) {
   const [seconds, setSeconds] = useState();
   const [get, setGet] = useState(0);
   const [timer, setTimer] = useState({s: 0, m: 0});
-  const [currentSong, setCurrentSong] = useState({title: 'As it was'});
+  const [currentSong, setCurrentSong] = useState(currSong);
   const songs = [
     {
       name: 'Harry Styles',
@@ -55,7 +55,9 @@ export default function MusicPlay({route}) {
     return setTimer({s: updatedS, m: updatedM});
   };
 
-  const play = () => {
+  const play = curr => {
+    setPlaying(true);
+    console.log(curr);
     if (currentSong.title == 'As it was') {
       let harryStyles = new Sound(
         'harry_styles.mp3',
@@ -75,16 +77,18 @@ export default function MusicPlay({route}) {
       setMusic(harryStyles);
     }
   };
-
+  
   const skipBack = () => {
     const index = songs.findIndex(x => x.title == currentSong.title);
     if (index == 0) {
       setCurrentSong(songs[songs.length - 1]);
-      music.setCurrentTime(0);
+      music?.setCurrentTime(0);
+      play(songs[songs.length - 1]);
       reset();
     } else {
       setCurrentSong(songs[index - 1]);
-      music.setCurrentTime(0);
+      music?.setCurrentTime(0);
+      play(songs[index - 1]);
       reset();
     }
   };
@@ -93,11 +97,13 @@ export default function MusicPlay({route}) {
     const index = songs.findIndex(x => x.title == currentSong.title);
     if (index == songs.length - 1) {
       setCurrentSong(songs[0]);
-      music.setCurrentTime(0);
+      music?.setCurrentTime(0);
+      play(songs[0]);
       reset();
     } else {
       setCurrentSong(songs[index + 1]);
-      music.setCurrentTime(0);
+      music?.setCurrentTime(0);
+      play(songs[index + 1]);
       reset();
     }
   };
@@ -144,6 +150,8 @@ export default function MusicPlay({route}) {
                 color={'#030852'}
                 size={50}
                 onPress={() => {
+                  setPlaying(false);
+                  music?.stop();
                   skipBack();
                 }}
               />
@@ -157,7 +165,7 @@ export default function MusicPlay({route}) {
                   onPress={() => {
                     setPlaying(playing => !playing);
                     setPause(true);
-                    music.pause();
+                    music?.pause();
                     stop();
                   }}
                 />
@@ -168,7 +176,7 @@ export default function MusicPlay({route}) {
                   size={100}
                   onPress={() => {
                     setPlaying(playing => !playing);
-                    pause ? music.play() : play();
+                    pause ? music?.play() : play();
                     start();
                   }}
                 />
@@ -180,6 +188,8 @@ export default function MusicPlay({route}) {
                 color={'#030852'}
                 size={50}
                 onPress={() => {
+                  setPlaying(false);
+                  music?.stop();
                   skipNext();
                 }}
               />
@@ -245,6 +255,8 @@ export default function MusicPlay({route}) {
             <TouchableOpacity
               style={{paddingLeft: 32}}
               onPress={() => {
+                setPlaying(false);
+                music?.stop();
                 skipBack();
               }}>
               <Ionicons
@@ -282,6 +294,8 @@ export default function MusicPlay({route}) {
             <TouchableOpacity
               style={{paddingRight: 32}}
               onPress={() => {
+                setPlaying(false);
+                music?.stop();
                 skipNext();
               }}>
               <Ionicons
