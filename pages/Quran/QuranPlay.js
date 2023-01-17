@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
 import Slider from '@react-native-community/slider';
 import LinearGradient from 'react-native-linear-gradient';
@@ -8,7 +8,7 @@ import {AuthCont} from '../../constants/AuthContext';
 import Sound from 'react-native-sound';
 
 export default function QuranPlay({route}) {
-  const {title, time, picture} = route?.params;
+  const {title, time, picture, songs} = route?.params;
   const [playing, setPlaying] = useState(false);
   const {userContext} = useContext(AuthCont);
   const [music, setMusic] = useState();
@@ -16,14 +16,14 @@ export default function QuranPlay({route}) {
   const [seconds, setSeconds] = useState();
   const [get, setGet] = useState(0);
   const [timer, setTimer] = useState({s: 0, m: 0});
-  const [currentSong, setCurrentSong] = useState({title: 'Al-Fatiha'});
-  const songs = [
-    {
-      title: 'Al-Fatiha',
-      time: '01:25',
-      picture: require('../../images/quran/alfatiha.jpg'),
-    },
-  ];
+  const [currentSong, setCurrentSong] = useState(songs[0]);
+  // const songs = [
+  //   {
+  //     title: 'Al-Fatiha',
+  //     time: '01:25',
+  //     picture: require('../../images/quran/alfatiha.jpg'),
+  //   },
+  // ];
   var updatedS = timer.s,
     updatedM = timer.m;
 
@@ -110,7 +110,7 @@ export default function QuranPlay({route}) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={[styles.text, {fontSize: 22}]}>{title}</Text>
+            <Text style={[styles.text, {fontSize: 22}]}>{currentSong?.title}</Text>
           </View>
           <View style={{flexDirection: 'row', paddingTop: 16}}>
             <Text style={styles.text}>{`${timer.m}:${
@@ -200,7 +200,7 @@ export default function QuranPlay({route}) {
                 styles.text,
                 {fontSize: 22, color: CustomDarkTheme?.colors?.text},
               ]}>
-              {title}
+              {currentSong?.title}
             </Text>
           </View>
           <View style={{flexDirection: 'row', paddingTop: 16}}>

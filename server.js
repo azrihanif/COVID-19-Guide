@@ -17,6 +17,9 @@ const local = require('./strategies/local');
 const res = require('express/lib/response');
 const http = require('http');
 
+const portNum = ':3005';
+const ipAddress = '10.167.175.220' + portNum;
+
 app.use((req, _res, next) => {
   console.log(req.method, ' : ', req.url);
   next();
@@ -25,7 +28,7 @@ app.use((req, _res, next) => {
 const checkInternet = async () => {
   try {
     const response = await new Promise((resolve, reject) => {
-      const req = http.get('http://10.167.167.205:3005', res => {
+      const req = http.get(`http://${ipAddress}`, res => {
         resolve(res);
       });
       req.on('error', reject);
@@ -648,14 +651,12 @@ app.post('/checkUsername', async (req, res) => {
     const query = await db
       .promise()
       .query('SELECT username FROM user WHERE username LIKE ?', [username]);
-      
+
     if (!!query[0]?.length) {
-      res
-        .status(200)
-        .send({
-          msg: 'Username is taken. Please choose another username',
-          error: '400',
-        });
+      res.status(200).send({
+        msg: 'Username is taken. Please choose another username',
+        error: '400',
+      });
     } else {
       res.status(200).send({msg: '', error: null});
     }
@@ -924,7 +925,7 @@ app.post('/forgotPass', async (req, res) => {
 app.get('/checkInternet', async (_req, res) => {
   try {
     const response = await new Promise((resolve, reject) => {
-      const req = http.get('http://10.167.167.205:3005', res => {
+      const req = http.get(`http://${ipAddress}`, res => {
         resolve(res);
       });
       req.on('error', reject);
