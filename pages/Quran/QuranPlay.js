@@ -17,13 +17,6 @@ export default function QuranPlay({route}) {
   const [get, setGet] = useState(0);
   const [timer, setTimer] = useState({s: 0, m: 0});
   const [currentSong, setCurrentSong] = useState(songs[0]);
-  // const songs = [
-  //   {
-  //     title: 'Al-Fatiha',
-  //     time: '01:25',
-  //     picture: require('../../images/quran/alfatiha.jpg'),
-  //   },
-  // ];
   var updatedS = timer.s,
     updatedM = timer.m;
 
@@ -54,32 +47,33 @@ export default function QuranPlay({route}) {
     return setTimer({s: updatedS, m: updatedM});
   };
 
-  const play = () => {
-    if (currentSong.title == 'Al-Fatiha') {
-      let alfatiha = new Sound('alfatihah.mp3', Sound.MAIN_BUNDLE, err => {
-        if (err) {
-          console.log(err);
-          return;
-        }
+  const play = curr => {
+    setPlaying(true);
+    let alfatiha = new Sound(curr?.quran, Sound.MAIN_BUNDLE, err => {
+      if (err) {
+        console.log(err);
+        return;
+      }
 
-        alfatiha.play(success => {
-          console.log(success);
-        });
+      alfatiha.play(success => {
+        console.log(success);
       });
-      setCurrentSong({title: 'Al-Fatiha'});
-      setMusic(alfatiha);
-    }
+    });
+    setCurrentSong(curr);
+    setMusic(alfatiha);
   };
 
   const skipBack = () => {
     const index = songs.findIndex(x => x.title == currentSong.title);
     if (index == 0) {
       setCurrentSong(songs[songs.length - 1]);
-      music.setCurrentTime(0);
+      music?.setCurrentTime(0);
+      play(songs[songs.length - 1]);
       reset();
     } else {
       setCurrentSong(songs[index - 1]);
-      music.setCurrentTime(0);
+      music?.setCurrentTime(0);
+      play(songs[index - 1]);
       reset();
     }
   };
@@ -88,11 +82,13 @@ export default function QuranPlay({route}) {
     const index = songs.findIndex(x => x.title == currentSong.title);
     if (index == songs.length - 1) {
       setCurrentSong(songs[0]);
-      music.setCurrentTime(0);
+      music?.setCurrentTime(0);
+      play(songs[0]);
       reset();
     } else {
       setCurrentSong(songs[index + 1]);
-      music.setCurrentTime(0);
+      music?.setCurrentTime(0);
+      play(songs[index + 1]);
       reset();
     }
   };
@@ -110,7 +106,9 @@ export default function QuranPlay({route}) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={[styles.text, {fontSize: 22}]}>{currentSong?.title}</Text>
+            <Text style={[styles.text, {fontSize: 22}]}>
+              {currentSong?.title}
+            </Text>
           </View>
           <View style={{flexDirection: 'row', paddingTop: 16}}>
             <Text style={styles.text}>{`${timer.m}:${
@@ -138,6 +136,8 @@ export default function QuranPlay({route}) {
                 color={'#030852'}
                 size={50}
                 onPress={() => {
+                  setPlaying(false);
+                  music?.stop();
                   skipBack();
                 }}
               />
@@ -162,7 +162,7 @@ export default function QuranPlay({route}) {
                   size={100}
                   onPress={() => {
                     setPlaying(playing => !playing);
-                    pause ? music.play() : play();
+                    pause ? music.play() : play(currentSong);
                     start();
                   }}
                 />
@@ -174,6 +174,8 @@ export default function QuranPlay({route}) {
                 color={'#030852'}
                 size={50}
                 onPress={() => {
+                  setPlaying(false);
+                  music?.stop();
                   skipNext();
                 }}
               />
@@ -234,6 +236,8 @@ export default function QuranPlay({route}) {
             <TouchableOpacity
               style={{paddingLeft: 32}}
               onPress={() => {
+                setPlaying(false);
+                music?.stop();
                 skipBack();
               }}>
               <Ionicons
@@ -262,7 +266,7 @@ export default function QuranPlay({route}) {
                   size={100}
                   onPress={() => {
                     setPlaying(playing => !playing);
-                    pause ? music.play() : play();
+                    pause ? music.play() : play(currentSong);
                     start();
                   }}
                 />
@@ -271,6 +275,8 @@ export default function QuranPlay({route}) {
             <TouchableOpacity
               style={{paddingRight: 32}}
               onPress={() => {
+                setPlaying(false);
+                music?.stop();
                 skipNext();
               }}>
               <Ionicons
