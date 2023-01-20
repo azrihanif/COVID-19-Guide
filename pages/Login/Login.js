@@ -13,6 +13,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {connector} from '../../constants/Connector';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useTranslation} from 'react-i18next';
+import PushNotification from 'react-native-push-notification';
 
 const Login = ({navigation}) => {
   const [username, setUsername] = useState(null);
@@ -24,7 +25,15 @@ const Login = ({navigation}) => {
 
   useEffect(() => {
     checkInternet();
+    createChannel();
   }, []);
+
+  const createChannel = () => {
+    PushNotification.createChannel({
+      channelId: 'test-channel',
+      channelName: 'covid',
+    });
+  };
 
   const hashPassword = pass => {
     sha256(pass).then(hash => {

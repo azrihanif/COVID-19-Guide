@@ -16,6 +16,7 @@ import moment from 'moment';
 import {connector} from '../../constants/Connector';
 import {AuthCont} from '../../constants/AuthContext';
 import {CustomDarkTheme} from '../../components/Route';
+import PushNotification from 'react-native-push-notification';
 
 export default function Home({navigation}) {
   const [taskItem, setTaskItem] = useState([]);
@@ -28,6 +29,14 @@ export default function Home({navigation}) {
   useEffect(() => {
     getInfo();
   }, []);
+
+  const pushNotifications = () => {
+    PushNotification.localNotification({
+      channelId: 'test-channel',
+      message: 'this is a test for notifications',
+      title: 'COVID-19 Guide',
+    });
+  };
 
   const getInfo = async () => {
     const {id} = userContext;
@@ -50,6 +59,7 @@ export default function Home({navigation}) {
           setErrorMsg(responseJSON?.msg);
           modal();
         } else {
+          pushNotifications();
           setTaskItem(
             responseJSON?.msg?.map(
               ({covid19_info, links, picture, title, date}) => ({

@@ -18,7 +18,7 @@ const res = require('express/lib/response');
 const http = require('http');
 
 const portNum = ':3005';
-const ipAddress = '10.167.175.220' + portNum;
+const ipAddress = '192.168.0.104' + portNum;
 
 app.use((req, _res, next) => {
   console.log(req.method, ' : ', req.url);
