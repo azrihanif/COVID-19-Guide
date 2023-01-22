@@ -5,6 +5,7 @@ import MusicContainer from '../../components/MusicContainer';
 import MusicPlayer from '../../components/MusicPlayer';
 import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
+import Sound from 'react-native-sound';
 
 export default function MusicPlaylist({navigation}) {
   const {userContext} = useContext(AuthCont);
@@ -13,9 +14,44 @@ export default function MusicPlaylist({navigation}) {
       name: 'Harry Styles',
       title: 'As it was',
       time: '2:46',
-      picture: require('../../images/music/asitwas.jpg')
+      song: 'harry_styles.mp3',
+      picture: require('../../images/music/asitwas.jpg'),
     },
   ];
+
+  const convertTime = e => {
+    const h = Math.floor(e / 3600)
+        .toString()
+        .padStart(2, '0'),
+      m = Math.floor((e % 3600) / 60)
+        .toString()
+        .padStart(2, '0'),
+      s = Math.floor(e % 60)
+        .toString()
+        .padStart(2, '0');
+
+    return h + ':' + m + ':' + s;
+  };
+
+  const play = (index, title, name, picture) => {
+    let time;
+    let harryStyles = new Sound(songs[index]?.song, Sound.MAIN_BUNDLE, err => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      time = convertTime(harryStyles.getDuration());
+      navigation.navigate('Music Play', {
+        title,
+        name,
+        time,
+        duration: harryStyles.getDuration(),
+        picture: picture,
+        currSong: songs[index],
+        songs,
+      });
+    });
+  };
 
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
@@ -27,15 +63,7 @@ export default function MusicPlaylist({navigation}) {
               title={title}
               name={name}
               time={time}
-              onPress={() =>
-                navigation.navigate('Music Play', {
-                  title,
-                  name,
-                  time,
-                  picture: picture,
-                  currSong: songs[index]
-                })
-              }
+              onPress={() => play(index, title, name, picture)}
             />
           ))}
         </View>
@@ -52,15 +80,7 @@ export default function MusicPlaylist({navigation}) {
               title={title}
               name={name}
               time={time}
-              onPress={() =>
-                navigation.navigate('Music Play', {
-                  title,
-                  name,
-                  time,
-                  picture: picture,
-                  currSong: songs[index]
-                })
-              }
+              onPress={() => play(index, title, name, picture)}
             />
           ))}
         </View>

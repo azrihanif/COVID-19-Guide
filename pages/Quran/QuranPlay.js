@@ -9,7 +9,7 @@ import Sound from 'react-native-sound';
 import {ScrollView} from 'react-native-gesture-handler';
 
 export default function QuranPlay({route}) {
-  const {title, time, songs, currSong} = route?.params;
+  const {title, currTime, songs, currSong, duration} = route?.params;
   const [playing, setPlaying] = useState(false);
   const {userContext} = useContext(AuthCont);
   const [music, setMusic] = useState();
@@ -19,6 +19,9 @@ export default function QuranPlay({route}) {
   const [timer, setTimer] = useState({s: 0, m: 0});
   const [currentSong, setCurrentSong] = useState(currSong);
   const [text, setText] = useState('');
+  const [time, setTime] = useState(currTime);
+  const [second, setSecond] = useState(duration);
+
   var updatedS = timer.s,
     updatedM = timer.m;
 
@@ -65,6 +68,20 @@ export default function QuranPlay({route}) {
     return setTimer({s: updatedS, m: updatedM});
   };
 
+  const convertTime = e => {
+    const h = Math.floor(e / 3600)
+        .toString()
+        .padStart(2, '0'),
+      m = Math.floor((e % 3600) / 60)
+        .toString()
+        .padStart(2, '0'),
+      s = Math.floor(e % 60)
+        .toString()
+        .padStart(2, '0');
+
+    return h + ':' + m + ':' + s;
+  };
+
   const play = curr => {
     setPlaying(true);
     let alfatiha = new Sound(curr?.quran, Sound.MAIN_BUNDLE, err => {
@@ -76,6 +93,8 @@ export default function QuranPlay({route}) {
       alfatiha.play(success => {
         console.log(success);
       });
+      setTime(convertTime(alfatiha.getDuration()));
+      setSecond(alfatiha.getDuration());
     });
     setCurrentSong(curr);
     setMusic(alfatiha);
@@ -138,7 +157,7 @@ export default function QuranPlay({route}) {
               style={styles.progress}
               value={get}
               minimumValue={0}
-              maximumValue={100}
+              maximumValue={second}
               thumbTintColor={'#030852'}
               minimumTrackTintColor={'#030852'}
               maximumTrackTintColor={'#000'}
@@ -208,7 +227,15 @@ export default function QuranPlay({route}) {
         colors={['#DFF6FF', '#FFFFFF']}
         style={[styles.container, CustomDarkTheme]}>
         <ScrollView>
-          <Text style={[styles.text, {fontSize: 26, paddingHorizontal: 16, color: CustomDarkTheme?.colors?.text}]}>
+          <Text
+            style={[
+              styles.text,
+              {
+                fontSize: 26,
+                paddingHorizontal: 16,
+                color: CustomDarkTheme?.colors?.text,
+              },
+            ]}>
             {text}
           </Text>
         </ScrollView>
@@ -235,7 +262,7 @@ export default function QuranPlay({route}) {
               style={styles.progress}
               value={get}
               minimumValue={0}
-              maximumValue={100}
+              maximumValue={second}
               thumbTintColor={CustomDarkTheme?.colors?.text}
               minimumTrackTintColor={CustomDarkTheme?.colors?.text}
               maximumTrackTintColor={'#FFF'}
@@ -339,7 +366,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Sans-serif',
   },
   progress: {
-    width: 320,
+    width: 300,
     height: 40,
     marginTop: -8,
     flexDirection: 'row',

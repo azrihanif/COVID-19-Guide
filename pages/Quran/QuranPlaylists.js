@@ -2,10 +2,10 @@ import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import QuranContainer from '../../components/QuranContainer';
-import MusicPlayer from '../../components/MusicPlayer';
 import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
 import {ScrollView} from 'react-native-gesture-handler';
+import Sound from 'react-native-sound';
 
 export default function QuranPlaylist({navigation}) {
   const {userContext} = useContext(AuthCont);
@@ -27,30 +27,55 @@ export default function QuranPlaylist({navigation}) {
             index: index + 1,
             title: name,
             quran: recitation,
-            time: '01:25',
           })),
         );
       }
     }
   };
 
+  const convertTime = e => {
+    const h = Math.floor(e / 3600)
+        .toString()
+        .padStart(2, '0'),
+      m = Math.floor((e % 3600) / 60)
+        .toString()
+        .padStart(2, '0'),
+      s = Math.floor(e % 60)
+        .toString()
+        .padStart(2, '0');
+
+    return h + ':' + m + ':' + s;
+  };
+
+  const play = (index, title) => {
+    let time;
+    let alfatiha = new Sound(songs[index]?.quran, Sound.MAIN_BUNDLE, err => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      time = convertTime(alfatiha.getDuration());
+      navigation.navigate('Quran Play', {
+        title,
+        songs,
+        currTime: time,
+        duration: alfatiha.getDuration(),
+        currSong: songs[index],
+      });
+    });
+  };
+
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <ScrollView style={{paddingLeft: 16, paddingRight: 16}}>
-          {songs?.map(({title, time}, index) => (
+          {songs?.map(({title}, index) => (
             <QuranContainer
               key={index}
               title={title}
-              time={time}
-              onPress={() =>
-                navigation.navigate('Quran Play', {
-                  title,
-                  time,
-                  songs,
-                  currSong: songs[index],
-                })
-              }
+              onPress={() => {
+                play(index, title);
+              }}
             />
           ))}
         </ScrollView>
@@ -60,20 +85,13 @@ export default function QuranPlaylist({navigation}) {
         colors={['#DFF6FF', '#FFFFFF']}
         style={[styles.container, CustomDarkTheme]}>
         <ScrollView style={{paddingLeft: 16, paddingRight: 16}}>
-          {songs?.map(({title, time, picture}, index) => (
+          {songs?.map(({title}, index) => (
             <QuranContainer
               key={index}
               title={title}
-              time={time}
-              onPress={() =>
-                navigation.navigate('Quran Play', {
-                  title,
-                  time,
-                  picture,
-                  songs,
-                  currSong: songs[index],
-                })
-              }
+              onPress={() => {
+                play(index, title);
+              }}
             />
           ))}
         </ScrollView>

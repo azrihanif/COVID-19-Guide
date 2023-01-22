@@ -1,14 +1,14 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
 import Slider from '@react-native-community/slider';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {CustomDarkTheme, CustomDefaultTheme} from '../../components/Route';
+import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
 import Sound from 'react-native-sound';
 
 export default function MusicPlay({route}) {
-  const {title, name, time, picture, currSong} = route?.params;
+  const {title, name, time, picture, currSong, duration, songs} = route?.params;
   const [playing, setPlaying] = useState(false);
   const {userContext} = useContext(AuthCont);
   const [music, setMusic] = useState();
@@ -17,14 +17,8 @@ export default function MusicPlay({route}) {
   const [get, setGet] = useState(0);
   const [timer, setTimer] = useState({s: 0, m: 0});
   const [currentSong, setCurrentSong] = useState(currSong);
-  const songs = [
-    {
-      name: 'Harry Styles',
-      title: 'As it was',
-      time: '2:46',
-      picture: require('../../images/music/asitwas.jpg'),
-    },
-  ];
+  const [second, setSecond] = useState(duration);
+  
   var updatedS = timer.s,
     updatedM = timer.m;
 
@@ -57,27 +51,21 @@ export default function MusicPlay({route}) {
 
   const play = curr => {
     setPlaying(true);
-    console.log(curr);
-    if (currentSong.title == 'As it was') {
-      let harryStyles = new Sound(
-        'harry_styles.mp3',
-        Sound.MAIN_BUNDLE,
-        err => {
-          if (err) {
-            console.log(err);
-            return;
-          }
+    let harryStyles = new Sound(curr?.song, Sound.MAIN_BUNDLE, err => {
+      if (err) {
+        console.log(err);
+        return;
+      }
 
-          harryStyles.play(success => {
-            console.log(success);
-          });
-        },
-      );
-      setCurrentSong({title: 'As it was'});
-      setMusic(harryStyles);
-    }
+      harryStyles.play(success => {
+        console.log(success);
+      });
+      setSecond(harryStyles.getDuration());
+    });
+    setCurrentSong(harryStyles);
+    setMusic(harryStyles);
   };
-  
+
   const skipBack = () => {
     const index = songs.findIndex(x => x.title == currentSong.title);
     if (index == 0) {
@@ -132,7 +120,7 @@ export default function MusicPlay({route}) {
               style={styles.progress}
               value={get}
               minimumValue={0}
-              maximumValue={100}
+              maximumValue={second}
               thumbTintColor={'#030852'}
               minimumTrackTintColor={'#030852'}
               maximumTrackTintColor={'#000'}
@@ -176,7 +164,7 @@ export default function MusicPlay({route}) {
                   size={100}
                   onPress={() => {
                     setPlaying(playing => !playing);
-                    pause ? music?.play() : play();
+                    pause ? music?.play() : play(currentSong);
                     start();
                   }}
                 />
@@ -232,7 +220,7 @@ export default function MusicPlay({route}) {
               style={styles.progress}
               value={get}
               minimumValue={0}
-              maximumValue={100}
+              maximumValue={second}
               thumbTintColor={CustomDarkTheme?.colors?.text}
               minimumTrackTintColor={CustomDarkTheme?.colors?.text}
               maximumTrackTintColor={'#FFF'}
@@ -285,7 +273,7 @@ export default function MusicPlay({route}) {
                   size={100}
                   onPress={() => {
                     setPlaying(playing => !playing);
-                    pause ? music.play() : play();
+                    pause ? music.play() : play(currentSong);
                     start();
                   }}
                 />
@@ -336,7 +324,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Sans-serif',
   },
   progress: {
-    width: 320,
+    width: 300,
     height: 40,
     marginTop: -8,
     flexDirection: 'row',

@@ -21,7 +21,7 @@ export default function MusicContainer({name, title, time, onPress}) {
       harryStyles.play(success => {
         console.log(success);
       });
-      console.log(harryStyles.getDuration());
+      
       let d = Math.floor(harryStyles.getDuration() / 60);
       let s = Number(harryStyles.getDuration() % 60).toFixed(0);
       let t = d.toString();
