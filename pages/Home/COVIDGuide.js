@@ -28,7 +28,7 @@ export default function COVIDGuide({route}) {
             <View style={styles.imageWrapper}>
               <Image
                 style={styles.image}
-                source={require('../../images/profilepic/profile.jpg')}
+                source={!!picture ? require('../../images/profilepic/profile.jpg') : require('../../images/no_image.png')}
               />
             </View>
             <Text style={[styles.title,{color: CustomDefaultTheme?.colors?.text}]}>{title}</Text>
@@ -57,7 +57,7 @@ export default function COVIDGuide({route}) {
             <View style={styles.imageWrapper}>
               <Image
                 style={styles.image}
-                source={require('../../images/profilepic/profile.jpg')}
+                source={!!picture ? require('../../images/profilepic/profile.jpg') : require('../../images/no_image.png')}
               />
             </View>
             <Text

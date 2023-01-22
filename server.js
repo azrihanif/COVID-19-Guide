@@ -369,7 +369,7 @@ app.post(
       const query = await db
         .promise()
         .query(
-          'SELECT `covid19_info`, `picture`, `links`, `title`, `date` FROM `covid19_info` ORDER BY `date` DESC',
+          'SELECT `covid19_info`, `picture`, `links`, `title`, `date`, `new_info` FROM `covid19_info` ORDER BY `date` DESC',
         );
 
       if (query[0]) {

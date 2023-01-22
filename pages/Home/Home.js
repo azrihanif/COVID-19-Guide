@@ -30,11 +30,15 @@ export default function Home({navigation}) {
     getInfo();
   }, []);
 
-  const pushNotifications = () => {
-    PushNotification.localNotification({
-      channelId: 'test-channel',
-      message: 'this is a test for notifications',
-      title: 'COVID-19 Guide',
+  const pushNotifications = data => {
+    data.forEach(element => {
+      if (element?.new_info === 'T') {
+        return PushNotification.localNotification({
+          channelId: 'test-channel',
+          message: `${element?.covid19_info}`,
+          title: `${element?.title}`,
+        });
+      }
     });
   };
 
@@ -59,7 +63,6 @@ export default function Home({navigation}) {
           setErrorMsg(responseJSON?.msg);
           modal();
         } else {
-          pushNotifications();
           setTaskItem(
             responseJSON?.msg?.map(
               ({covid19_info, links, picture, title, date}) => ({
@@ -82,6 +85,7 @@ export default function Home({navigation}) {
               }),
             ),
           );
+          pushNotifications(responseJSON?.msg);
         }
       } else {
         setErrorMsg('Error!');

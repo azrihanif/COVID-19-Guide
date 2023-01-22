@@ -194,7 +194,7 @@ export default function Profile({route}) {
             <View style={styles.imageWrapper}>
               <Image
                 style={styles.image}
-                source={require('../../images/profilepic/profile.jpg')}
+                source={!!data?.profilepic ? require('../../images/profilepic/profile.jpg') : require('../../images/profilepic/default_dp.png')}
               />
             </View>
             <Text
@@ -346,7 +346,7 @@ export default function Profile({route}) {
             <View style={styles.imageWrapper}>
               <Image
                 style={styles.image}
-                source={require('../../images/profilepic/profile.jpg')}
+                source={!!data?.profilepic ? require('../../images/profilepic/profile.jpg') : require('../../images/profilepic/default_dp.png')}
               />
             </View>
             <Text
