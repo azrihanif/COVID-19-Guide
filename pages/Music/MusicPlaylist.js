@@ -17,6 +17,13 @@ export default function MusicPlaylist({navigation}) {
       song: 'harry_styles.mp3',
       picture: require('../../images/music/asitwas.jpg'),
     },
+    {
+      name: 'Test',
+      title: 'Test Song',
+      time: '2:46',
+      song: 'https://drive.google.com/uc?id=1bInFLxR2woDrMe-w1dk81g8qFHAhLj-I&export=media',
+      picture: require('../../images/music/asitwas.jpg'),
+    }
   ];
 
   const convertTime = e => {

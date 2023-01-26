@@ -11,6 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 import {AuthCont} from '../../constants/AuthContext';
 import {CustomDarkTheme, CustomDefaultTheme} from '../../components/Route';
+import Video from 'react-native-video';
 
 export default function Activity({route}) {
   const {userContext} = useContext(AuthCont);
@@ -24,10 +25,12 @@ export default function Activity({route}) {
         <ScrollView bounces={false} style={styles.scroll}>
           <View style={styles.taskWrapper}>
             <View style={styles.imageWrapper}>
-              <Image
-                style={styles.image}
-                source={require('../../images/profilepic/profile.jpg')}
-              />
+              {!!picture && (
+                <Image style={styles.image} source={{uri: picture}} />
+              )}
+              {!!video_data && (
+                <Video style={styles.image} resizeMode={'stretch'} source={{uri: video_data}} controls={true}/>
+              )}
               <Text
                 style={[
                   styles.sectionTitle,
@@ -58,10 +61,12 @@ export default function Activity({route}) {
         <ScrollView bounces={false} style={styles.scroll}>
           <View style={styles.taskWrapper}>
             <View style={styles.imageWrapper}>
-              <Image
-                style={styles.image}
-                source={require('../../images/profilepic/profile.jpg')}
-              />
+            {!!picture && (
+                <Image style={styles.image} source={{uri: picture}} />
+              )}
+              {!!video_data && (
+                <Video style={styles.image} resizeMode={'stretch'} source={{uri: video_data}} controls={true}/>
+              )}
               <Text
                 style={[
                   styles.sectionTitle,
@@ -109,7 +114,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   image: {
-    width: 200,
+    width: 330,
     height: 200,
     borderRadius: 5,
   },

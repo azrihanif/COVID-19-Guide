@@ -22,24 +22,53 @@ export default function COVIDGuide({route}) {
 
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
-      <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={[styles.container,{CustomDefaultTheme}]}>
+      <LinearGradient
+        colors={['#DFF6FF', '#FFFFFF']}
+        style={[styles.container, {CustomDefaultTheme}]}>
         <ScrollView bounces={false} style={styles.scroll}>
           <View style={styles.taskWrapper}>
             <View style={styles.imageWrapper}>
               <Image
                 style={styles.image}
-                source={!!picture ? require('../../images/profilepic/profile.jpg') : require('../../images/no_image.png')}
+                source={
+                  !!picture
+                    ? {
+                        uri: picture,
+                      }
+                    : require('../../images/no_image.png')
+                }
               />
             </View>
-            <Text style={[styles.title,{color: CustomDefaultTheme?.colors?.text}]}>{title}</Text>
-            <Text style={[styles.sectionTitle,{color: CustomDefaultTheme?.colors?.text}]}>{text}</Text>
+            <Text
+              style={[styles.title, {color: CustomDefaultTheme?.colors?.text}]}>
+              {title}
+            </Text>
+            <Text
+              style={[
+                styles.sectionTitle,
+                {color: CustomDefaultTheme?.colors?.text},
+              ]}>
+              {text}
+            </Text>
             <View style={styles.wrapper}>
-              <Text style={[styles.text,{color: CustomDefaultTheme?.colors?.text}]}>Date: {date}</Text>
+              <Text
+                style={[
+                  styles.text,
+                  {color: CustomDefaultTheme?.colors?.text},
+                ]}>
+                Date: {date}
+              </Text>
               {links && (
                 <TouchableOpacity
                   style={{flexDirection: 'row'}}
                   onPress={() => goTo(`${links}`)}>
-                  <Text style={[styles.text,{color: CustomDefaultTheme?.colors?.text}]}>Visit us at: </Text>
+                  <Text
+                    style={[
+                      styles.text,
+                      {color: CustomDefaultTheme?.colors?.text},
+                    ]}>
+                    Visit us at:{' '}
+                  </Text>
                   <Text
                     style={{color: 'blue', textDecorationLine: 'underline'}}>
                     {links}
@@ -57,7 +86,13 @@ export default function COVIDGuide({route}) {
             <View style={styles.imageWrapper}>
               <Image
                 style={styles.image}
-                source={!!picture ? require('../../images/profilepic/profile.jpg') : require('../../images/no_image.png')}
+                source={
+                  !!picture
+                    ? {
+                        uri: picture,
+                      }
+                    : require('../../images/no_image.png')
+                }
               />
             </View>
             <Text
@@ -85,7 +120,7 @@ export default function COVIDGuide({route}) {
                       styles.text,
                       {color: CustomDarkTheme?.colors?.text},
                     ]}>
-                    Visit us at:&nbsp; 
+                    Visit us at:&nbsp;
                   </Text>
                   <Text
                     style={{color: 'blue', textDecorationLine: 'underline'}}>
@@ -122,8 +157,8 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 350,
+    height: 350,
     borderRadius: 5,
   },
   title: {

@@ -14,7 +14,7 @@ const COVID_19Guide = ({text, date, title, picture}) => {
           {text}
         </Text>
         <Text style={styles.smallText}>{date}</Text>
-        {picture && <Image style={styles.image} source={picture} />}
+        {picture && <Image style={styles.image} source={{uri: picture}} />}
       </View>
     </View>
   );
