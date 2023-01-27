@@ -66,6 +66,7 @@ export default function Home({navigation}) {
             adviceDate: moment(item?.advice_date).format('DD/MM/YYYY'),
             adviceContact: item?.advice_contact,
             adviceEmail: item?.advice_email,
+            advicePicture: item?.advice_picture
           })
         }>
         <Task

@@ -1,60 +1,82 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Feather from 'react-native-vector-icons/Feather';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import Sound from 'react-native-sound';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AuthCont from '../constants/AuthContext';
+import {connector} from '../constants/Connector';
 
-export default function MusicContainer({name, title, time, onPress}) {
-  const [playing, setPlaying] = useState(false);
-  const [music, setMusic] = useState(null);
-  const [pause, setPause] = useState(false);
-  const [duration, setDuration] = useState(0);
+export default function MusicContainer({
+  name,
+  title,
+  time,
+  onPress,
+  musicID,
+  like,
+  update,
+}) {
+  const [playing, setPlaying] = useState();
+  const {userContext} = useContext(AuthCont);
 
-  const play = () => {
-    let harryStyles = new Sound('harry_styles.mp3', Sound.MAIN_BUNDLE, err => {
-      if (err) {
-        console.log(err);
-        return;
-      }
+  useEffect(() => {
+    if (like === 'T') {
+      setPlaying(true);
+    } else {
+      setPlaying(false);
+    }
+  }, []);
 
-      harryStyles.play(success => {
-        console.log(success);
+  const updateLike = async (l) => {
+    const {id} = userContext;
+
+    try {
+      let res = await fetch(connector + '/updateFavMusic', {
+        method: 'post',
+        mode: 'no-cors',
+        body: JSON.stringify({
+          music_id: musicID,
+          user_id: id,
+          like: l,
+        }),
+        headers: {
+          Accept: 'application/json',
+          'Content-type': 'application/json',
+        },
       });
-      
-      let d = Math.floor(harryStyles.getDuration() / 60);
-      let s = Number(harryStyles.getDuration() % 60).toFixed(0);
-      let t = d.toString();
-      let ss = s.toString();
-      
-      setDuration(`${t.padStart(2, '0')}:${ss.padStart(2, '0')}`);
-    });
-
-    setMusic(harryStyles);
+      if (res) {
+        let responseJSON = await res.json();
+        if (responseJSON?.error) {
+          Alert.alert('System Error', responseJSON?.msg);
+        } else {
+          console.log(responseJSON?.msg);
+        }
+      } else {
+        console.log('Error!');
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
     <View style={[styles.item, styles.Shadow]}>
       <TouchableOpacity>
         {playing ? (
-          <Feather
-            name="pause-circle"
-            color="#030852"
+          <FontAwesome
+            name="heart"
+            color="red"
             size={40}
             onPress={() => {
-              setPlaying(playing => !playing);
-              setPause(true);
-              music.pause();
+              updateLike('F');
+              setPlaying(play => !play);
             }}
           />
         ) : (
-          <Ionicons
-            name="play-circle-outline"
+          <FontAwesome
+            name="heart"
             color={'#030852'}
             size={40}
             onPress={() => {
-              setPlaying(playing => !playing);
-              pause ? music.play() : play();
+              updateLike('T');
+              setPlaying(play => !play);
             }}
           />
         )}
@@ -63,15 +85,6 @@ export default function MusicContainer({name, title, time, onPress}) {
         <Text style={[styles.titleText, {opacity: 0.5}]}>{name}</Text>
         <Text style={styles.titleText}>{title}</Text>
       </TouchableOpacity>
-      <View style={styles.iconWrapper}>
-        <View>
-          {playing ? (
-            <SimpleLineIcons name="options" color="#030852" size={32} />
-          ) : (
-            <Text style={styles.smallText}>{time}</Text>
-          )}
-        </View>
-      </View>
     </View>
   );
 }
@@ -89,7 +102,7 @@ const styles = StyleSheet.create({
     maxHeight: 100,
   },
   textWrapper: {
-    width: '70%',
+    width: '80%',
   },
   titleText: {
     flexDirection: 'row',

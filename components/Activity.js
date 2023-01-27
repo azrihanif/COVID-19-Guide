@@ -16,8 +16,8 @@ const Activity = ({text}) => {
             tintColors={{true: '#3194DF', false: 'grey'}}
           />
         </View>
-        <View>
-          <Text style={styles.titleText}>{text}</Text>
+        <View style={{marginLeft: 36}}>
+          <Text numberOfLines={2} style={styles.titleText}>{text}</Text>
         </View>
       </View>
     </View>

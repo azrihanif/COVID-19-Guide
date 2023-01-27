@@ -114,6 +114,60 @@ app.post('/uploadFile', upload.single('profilepic'), async (req, result) => {
   }
 });
 
+app.post('/getMusic', async (req, res) => {
+  if (!!req?.body?.id && !req?.body?.genre) {
+    const stmt = `SELECT b.favourite, a.id, a.music_title AS 'title', a.music_link AS 'song', a.music_genre AS 'genre', a.music_artist AS 'name', a.music_picture AS 'picture' FROM music a LEFT JOIN user_music b ON b.music_id = a.id`;
+
+    const query = await db.promise().query(stmt);
+    if (query) {
+      return res.status(200).send({msg: query[0], error: null});
+    } else {
+      return res.status(400).send({msg: 'Error', error: '400'});
+    }
+  } else if (!!req?.body?.genre) {
+    const stmt = `SELECT b.favourite, a.id, a.music_title AS 'title', a.music_link AS 'song', a.music_genre AS 'genre', a.music_artist AS 'name', a.music_picture AS 'picture' FROM music a LEFT JOIN user_music b ON b.music_id = a.id WHERE a.music_genre = ?`;
+    const value = [req?.body?.genre];
+    const query = await db.promise().query(stmt, value);
+    if (query) {
+      return res.status(200).send({msg: query[0], error: null});
+    } else {
+      return res.status(400).send({msg: 'Error', error: '400'});
+    }
+  } else {
+    return res.status(400).send({msg: 'Error', error: '400'});
+  }
+});
+
+app.post('/getFavourite', async (req, res) => {
+  if (!!req?.body?.id) {
+    const stmt = `SELECT b.favourite, a.id, a.music_title AS 'title', a.music_link AS 'song', a.music_genre AS 'genre', a.music_artist AS 'name', a.music_picture AS 'picture' FROM music a INNER JOIN user_music b ON b.music_id = a.id WHERE b.user_id = ? AND b.favourite = 'T'`;
+    const value = [req?.body?.id];
+    const query = await db.promise().query(stmt, value);
+    if (query) {
+      return res.status(200).send({msg: query[0], error: null});
+    } else {
+      return res.status(400).send({msg: 'Error', error: '400'});
+    }
+  } else {
+    return res.status(400).send({msg: 'Error', error: '400'});
+  }
+});
+
+app.post('/getGenre', async (req, res) => {
+  if (!!req?.body?.id) {
+    const stmt = `SELECT genre AS title, COUNT(*) AS noOfSongs FROM (SELECT music_title, music_link, music_genre AS genre, music_artist, music_picture FROM music) as t GROUP BY genre`;
+    const value = [req?.body?.id];
+    const query = await db.promise().query(stmt, value);
+    if (query) {
+      return res.status(200).send({msg: query[0], error: null});
+    } else {
+      return res.status(400).send({msg: 'Error', error: '400'});
+    }
+  } else {
+    return res.status(400).send({msg: 'Error', error: '400'});
+  }
+});
+
 app.post(
   '/deleteUser',
   check('id').notEmpty().withMessage('Id cannot be empty'),
@@ -166,7 +220,7 @@ app.post(
       const query = await db
         .promise()
         .query(
-          `SELECT b.like_id, a.id, a.advice_title, a.advice_picture, a.advice, a.advice_contact, a.advice_date, a.advice_email FROM advice_list a LEFT JOIN expert_advice b ON b.advice_id = a.id AND b.user_id = ? ORDER BY a.advice_date DESC`,
+          `SELECT DISTINCT b.like_id, a.id, a.advice_title, a.advice_picture, a.advice, a.advice_contact, a.advice_date, a.advice_email FROM advice_list a LEFT JOIN expert_advice b ON b.advice_id = a.id AND b.user_id = ? AND b.like_id IS NOT NULL ORDER BY a.advice_date DESC`,
           [id],
         );
 
@@ -197,13 +251,70 @@ app.post('/updateLike', async (req, result) => {
   const {advice_id, like, user_id} = req.body;
 
   if (advice_id) {
-    const stmt = `INSERT INTO expert_advice (user_id, advice_id, like_id) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE like_id = ?`;
-    const values = [user_id, advice_id, like, like];
-    const query = await db.promise().query(stmt, values);
-    if (query) {
-      result.status(400).send({msg: 'Successfully update', error: null});
+    const check = `SELECT id FROM expert_advice WHERE user_id = ? AND advice_id = ?`;
+    const checkValue = [user_id, advice_id];
+    const checkQuery = await db.promise().query(check, checkValue);
+
+    if (!!checkQuery[0]?.length) {
+      const stmt = `UPDATE expert_advice SET like_id = ? WHERE user_id = ? AND advice_id = ?`;
+      const values = [like, user_id, advice_id];
+      const query = await db.promise().query(stmt, values);
+      if (query) {
+        result.status(200).send({msg: 'Successfully update', error: null});
+      } else {
+        result.status(400).send({msg: 'Error Updating', error: '400'});
+      }
     } else {
-      result.status(400).send({msg: 'Error Updating', error: '400'});
+      const stmt = `INSERT INTO expert_advice (user_id, advice_id, like_id) VALUES (?, ?, ?)`;
+      const values = [user_id, advice_id, like];
+      const query = await db.promise().query(stmt, values);
+      if (query) {
+        result.status(200).send({msg: 'Successfully update', error: null});
+      } else {
+        result.status(400).send({msg: 'Error Updating', error: '400'});
+      }
+    }
+  }
+});
+
+app.post('/updateFavMusic', async (req, result) => {
+  const check = await checkInternet();
+  if (check) {
+    return result
+      .status(500)
+      .send({msg: 'Internet is not connected', error: '500'});
+  }
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return result.status(400).json(errors);
+  }
+
+  const {music_id, user_id, like} = req.body;
+
+  if (music_id) {
+    const check = `SELECT id FROM user_music WHERE user_id = ? AND music_id = ?`;
+    const checkValue = [user_id, music_id];
+    const checkQuery = await db.promise().query(check, checkValue);
+
+    if (!!checkQuery[0]?.length) {
+      const stmt = `UPDATE user_music SET favourite = ? WHERE user_id = ? AND music_id = ?`;
+      const values = [like, user_id, music_id];
+      const query = await db.promise().query(stmt, values);
+      if (query) {
+        result.status(200).send({msg: 'Successfully update', error: null});
+      } else {
+        result.status(400).send({msg: 'Error Updating', error: '400'});
+      }
+    } else {
+      const stmt = `INSERT INTO user_music (user_id, music_id, favourite) VALUES (?, ?, ?)`;
+      const values = [user_id, music_id, like];
+      const query = await db.promise().query(stmt, values);
+      if (query) {
+        result.status(200).send({msg: 'Successfully update', error: null});
+      } else {
+        result.status(400).send({msg: 'Error Updating', error: '400'});
+      }
     }
   }
 });

@@ -1,12 +1,5 @@
 import React, {useContext} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 import {AuthCont} from '../../constants/AuthContext';
@@ -29,7 +22,12 @@ export default function Activity({route}) {
                 <Image style={styles.image} source={{uri: picture}} />
               )}
               {!!video_data && (
-                <Video style={styles.image} resizeMode={'stretch'} source={{uri: video_data}} controls={true}/>
+                <Video
+                  style={styles.image}
+                  resizeMode={'stretch'}
+                  source={require('../../images/video/TeUViwrJH9aWLwpJpLvXf9N5xjVtebSQZeFiooHa.mp4')}
+                  controls={true}
+                />
               )}
               <Text
                 style={[
@@ -61,11 +59,16 @@ export default function Activity({route}) {
         <ScrollView bounces={false} style={styles.scroll}>
           <View style={styles.taskWrapper}>
             <View style={styles.imageWrapper}>
-            {!!picture && (
+              {!!picture && (
                 <Image style={styles.image} source={{uri: picture}} />
               )}
               {!!video_data && (
-                <Video style={styles.image} resizeMode={'stretch'} source={{uri: video_data}} controls={true}/>
+                <Video
+                  style={styles.image}
+                  resizeMode={'stretch'}
+                  source={require('../../images/video/TeUViwrJH9aWLwpJpLvXf9N5xjVtebSQZeFiooHa.mp4')}
+                  controls={true}
+                />
               )}
               <Text
                 style={[

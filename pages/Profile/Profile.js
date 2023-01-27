@@ -184,7 +184,7 @@ export default function Profile({route}) {
     );
   };
 
-  const getTheme = () => {
+  const getTheme = () => {console.log(data)
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <KeyboardAvoidingView

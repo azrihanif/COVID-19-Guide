@@ -32,6 +32,8 @@ const Task = ({text, date, title, likeID, adviceID, getAdvice}) => {
       newLike = 'T';
     } else if (d === 'T') {
       newLike = 'F';
+    } else {
+      newLike = null
     }
 
     try {

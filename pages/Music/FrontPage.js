@@ -58,13 +58,13 @@ export default function FrontPage({navigation}) {
             title={'My Favourites'}
             color="#68B984"
             name={'heart'}
-            onPress={() => navigation.navigate('Front Page')}
+            onPress={() => navigation.navigate('Favourite Music')}
           />
           <GenreContainer
             title={'Genre'}
             color="#F06292"
             name={'cogs'}
-            onPress={() => navigation.navigate('Playlists')}
+            onPress={() => navigation.navigate('Genre')}
           />
         </View>
       </LinearGradient>
@@ -94,13 +94,13 @@ export default function FrontPage({navigation}) {
             title={'My Favourites'}
             color="#68B984"
             name={'heart'}
-            onPress={() => navigation.navigate('Front Page')}
+            onPress={() => navigation.navigate('Favourite Music')}
           />
           <GenreContainer
             title={'Genre'}
             color="#F06292"
             name={'cogs'}
-            onPress={() => navigation.navigate('Playlists')}
+            onPress={() => navigation.navigate('Genre')}
           />
         </View>
       </View>

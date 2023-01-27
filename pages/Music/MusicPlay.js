@@ -8,7 +8,7 @@ import {AuthCont} from '../../constants/AuthContext';
 import Sound from 'react-native-sound';
 
 export default function MusicPlay({route}) {
-  const {title, name, time, picture, currSong, duration, songs} = route?.params;
+  const {title, name, time, picture, currSong, duration, songs, id} = route?.params;
   const [playing, setPlaying] = useState(false);
   const {userContext} = useContext(AuthCont);
   const [music, setMusic] = useState();
@@ -62,12 +62,12 @@ export default function MusicPlay({route}) {
       });
       setSecond(harryStyles.getDuration());
     });
-    setCurrentSong(harryStyles);
+    setCurrentSong(curr);
     setMusic(harryStyles);
   };
 
   const skipBack = () => {
-    const index = songs.findIndex(x => x.title == currentSong.title);
+    const index = songs.findIndex(x => x.title == currentSong?.title);
     if (index == 0) {
       setCurrentSong(songs[songs.length - 1]);
       music?.setCurrentTime(0);
@@ -82,7 +82,7 @@ export default function MusicPlay({route}) {
   };
 
   const skipNext = () => {
-    const index = songs.findIndex(x => x.title == currentSong.title);
+    const index = songs.findIndex(x => x.title == currentSong?.title);
     if (index == songs.length - 1) {
       setCurrentSong(songs[0]);
       music?.setCurrentTime(0);
@@ -96,12 +96,12 @@ export default function MusicPlay({route}) {
     }
   };
 
-  const getTheme = () => {
+  const getTheme = () => {console.log(currentSong)
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <View style={{paddingHorizontal: 16}}>
           <View style={styles.imageWrapper}>
-            <Image style={styles.image} source={picture} />
+            <Image style={styles.image} source={{uri: currentSong?.picture}} />
           </View>
           <View
             style={{
@@ -109,8 +109,8 @@ export default function MusicPlay({route}) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={[styles.text, {fontSize: 22}]}>{title}</Text>
-            <Text style={[styles.text, {fontSize: 16}]}>{name}</Text>
+            <Text style={[styles.text, {fontSize: 22}]}>{currentSong?.title}</Text>
+            <Text style={[styles.text, {fontSize: 16}]}>{currentSong?.name}</Text>
           </View>
           <View style={{flexDirection: 'row', paddingTop: 16}}>
             <Text style={styles.text}>{`${timer.m}:${
@@ -189,7 +189,7 @@ export default function MusicPlay({route}) {
       <View style={[styles.container, CustomDarkTheme]}>
         <View style={{paddingHorizontal: 16}}>
           <View style={styles.imageWrapper}>
-            <Image style={styles.image} source={picture} />
+            <Image style={styles.image} source={{uri: currentSong?.picture}} />
           </View>
           <View
             style={{
@@ -202,14 +202,14 @@ export default function MusicPlay({route}) {
                 styles.text,
                 {fontSize: 22, color: CustomDarkTheme?.colors?.text},
               ]}>
-              {title}
+              {currentSong?.title}
             </Text>
             <Text
               style={[
                 styles.text,
                 {fontSize: 16, color: CustomDarkTheme?.colors?.text},
               ]}>
-              {name}
+              {currentSong?.name}
             </Text>
           </View>
           <View style={{flexDirection: 'row', paddingTop: 16}}>

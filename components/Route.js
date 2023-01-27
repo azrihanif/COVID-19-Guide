@@ -38,6 +38,8 @@ import VerifyOTP from '../pages/Login/VerifyOTP';
 import ChangePass from '../pages/Login/ChangePass';
 import FrontPage from '../pages/Music/FrontPage';
 import Playlists from '../pages/Music/Playlists';
+import FavouritePage from '../pages/Music/FavouritePage';
+import Genre from '../pages/Music/Genre';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -367,6 +369,20 @@ const Route = () => {
       <Stack.Screen
         name="Music Play"
         component={MusicPlay}
+        options={({route}) => ({
+          headerTitle: t('music'),
+        })}
+      />
+      <Stack.Screen
+        name="Favourite Music"
+        component={FavouritePage}
+        options={({route}) => ({
+          headerTitle: t('music'),
+        })}
+      />
+      <Stack.Screen
+        name="Genre"
+        component={Genre}
         options={({route}) => ({
           headerTitle: t('music'),
         })}

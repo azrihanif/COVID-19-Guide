@@ -14,7 +14,7 @@ import {CustomDarkTheme} from '../../components/Route';
 
 export default function AdviceScreen({route}) {
   const {userContext} = useContext(AuthCont);
-  const {title, advice, adviceDate, adviceContact, adviceEmail} = route.params;
+  const {title, advice, adviceDate, adviceContact, adviceEmail, advicePicture} = route.params;
 
   const makeCall = async contact => {
     await Linking.openURL(`tel:${contact}`);
@@ -34,7 +34,7 @@ export default function AdviceScreen({route}) {
             <View style={styles.imageWrapper}>
               <Image
                 style={styles.image}
-                source={require('../../images/profilepic/profile.jpg')}
+                source={!!advicePicture ? {uri: advicePicture} : require('../../images/no_image.png')}
               />
             </View>
             <Text style={styles.title}>{title}</Text>
@@ -69,7 +69,7 @@ export default function AdviceScreen({route}) {
             <View style={styles.imageWrapper}>
               <Image
                 style={styles.image}
-                source={require('../../images/profilepic/profile.jpg')}
+                source={!!advicePicture ?{uri: advicePicture} :  require('../../images/no_image.png')}
               />
             </View>
             <Text style={[styles.title, {color: CustomDarkTheme?.colors?.text}]}>{title}</Text>
@@ -122,8 +122,8 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 350,
+    height: 300,
     borderRadius: 5,
   },
   title: {
