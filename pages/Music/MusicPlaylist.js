@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import MusicContainer from '../../components/MusicContainer';
@@ -6,10 +6,11 @@ import MusicPlayer from '../../components/MusicPlayer';
 import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
 import Sound from 'react-native-sound';
+import Searchbar from '../../components/Searchbar';
 
 export default function MusicPlaylist({navigation}) {
   const {userContext} = useContext(AuthCont);
-  const songs = [
+  const [songs, setSongs] = useState([
     {
       name: 'Harry Styles',
       title: 'As it was',
@@ -23,8 +24,9 @@ export default function MusicPlaylist({navigation}) {
       time: '2:46',
       song: 'https://drive.google.com/uc?id=1bInFLxR2woDrMe-w1dk81g8qFHAhLj-I&export=media',
       picture: require('../../images/music/asitwas.jpg'),
-    }
-  ];
+    },
+  ]);
+  const [filterItem, setFilterItem] = useState(songs);
 
   const convertTime = e => {
     const h = Math.floor(e / 3600)
@@ -64,6 +66,11 @@ export default function MusicPlaylist({navigation}) {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
         <View style={{paddingLeft: 16, paddingRight: 16}}>
+          <Searchbar
+          item={songs}
+          setItem={setSongs}
+          filterItem={filterItem}
+          />
           {songs?.map(({name, title, time, picture}, index) => (
             <MusicContainer
               key={index}
@@ -81,6 +88,11 @@ export default function MusicPlaylist({navigation}) {
     ) : (
       <View style={[styles.container, CustomDarkTheme]}>
         <View style={{paddingLeft: 16, paddingRight: 16}}>
+          <Searchbar
+          item={songs}
+          setItem={setSongs}
+          filterItem={filterItem}
+          />
           {songs?.map(({name, title, time, picture}, index) => (
             <MusicContainer
               key={index}

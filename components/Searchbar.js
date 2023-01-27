@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import {
   Dimensions,
   TextInput,
   StyleSheet,
   View,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -15,15 +15,18 @@ const deviceWidth = Dimensions.get('window').width;
 
 export default function Searchbar({item, setItem, filterItem}) {
   const [text, setText] = useState(undefined);
-  const {t} = useTranslation()
+  const {t} = useTranslation();
 
-  const filterData = text => {
-    if (text) {
+  const filterData = t => {
+    if (t) {
+      console.log(item);
       setItem(
         item?.filter(
-          ({advice_title, advice}) =>
-            advice_title?.toUpperCase()?.includes(text?.toUpperCase()) ||
-            advice?.toUpperCase()?.includes(text?.toUpperCase()),
+          ({title, text, activity, name}) =>
+            title?.toUpperCase()?.includes(t?.toUpperCase()) ||
+            text?.toUpperCase()?.includes(t?.toUpperCase()) ||
+            activity?.toUpperCase()?.includes(t?.toUpperCase()) ||
+            name?.toUpperCase()?.includes(t?.toUpperCase()),
         ),
       );
     } else {
@@ -41,7 +44,7 @@ export default function Searchbar({item, setItem, filterItem}) {
           style={[styles.search, {marginLeft: 1}]}
         />
         <TextInput
-          placeholder={t("search")}
+          placeholder={t('search')}
           style={styles.formField}
           placeholderTextColor={'#888888'}
           value={text}

@@ -6,10 +6,12 @@ import {CustomDarkTheme} from '../../components/Route';
 import {AuthCont} from '../../constants/AuthContext';
 import {ScrollView} from 'react-native-gesture-handler';
 import Sound from 'react-native-sound';
+import Searchbar from '../../components/Searchbar';
 
 export default function QuranPlaylist({navigation}) {
   const {userContext} = useContext(AuthCont);
   const [songs, setSongs] = useState();
+  const [filterItem, setFilterItem] = useState();
 
   useEffect(() => {
     getQuran();
@@ -23,6 +25,13 @@ export default function QuranPlaylist({navigation}) {
       const response = await res.json();
       if (response) {
         setSongs(
+          response?.map(({name, recitation}, index) => ({
+            index: index + 1,
+            title: name,
+            quran: recitation,
+          })),
+        );
+        setFilterItem(
           response?.map(({name, recitation}, index) => ({
             index: index + 1,
             title: name,
@@ -68,7 +77,10 @@ export default function QuranPlaylist({navigation}) {
   const getTheme = () => {
     return userContext?.dark_mode === 'F' ? (
       <LinearGradient colors={['#DFF6FF', '#FFFFFF']} style={styles.container}>
-        <ScrollView style={{paddingLeft: 16, paddingRight: 16}}>
+        <View style={{paddingHorizontal: 16}}>
+          <Searchbar item={songs} setItem={setSongs} filterItem={filterItem} />
+        </View>
+        <ScrollView style={{paddingHorizontal: 16}}>
           {songs?.map(({title}, index) => (
             <QuranContainer
               key={index}
@@ -84,7 +96,10 @@ export default function QuranPlaylist({navigation}) {
       <View
         colors={['#DFF6FF', '#FFFFFF']}
         style={[styles.container, CustomDarkTheme]}>
-        <ScrollView style={{paddingLeft: 16, paddingRight: 16}}>
+        <View style={{paddingHorizontal: 16}}>
+          <Searchbar item={songs} setItem={setSongs} filterItem={filterItem} />
+        </View>
+        <ScrollView style={{paddingHorizontal: 16}}>
           {songs?.map(({title}, index) => (
             <QuranContainer
               key={index}
