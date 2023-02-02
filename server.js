@@ -873,15 +873,15 @@ app.post('/sendEmail', async (req, res) => {
   `;
 
   let transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
+    host: '#', //user email protocol
     auth: {
-      user: 'wif190029@siswa.um.edu.my',
-      pass: 'mroibmsiwdudvzti',
+      user: '#', //user email address
+      pass: '#', //password for your company email address
     },
   });
 
   let info = await transporter.sendMail({
-    from: '"COVID-19 Guide" <wif190029@siswa.um.edu.my>',
+    from: '"COVID-19 Guide" <#>', //specify the sender email address
     to: `${req?.body?.email}`,
     subject: 'Reset Password Request',
     html: output,
@@ -915,7 +915,7 @@ app.post('/sendSMS', async (req, res) => {
       method: 'POST',
       url: 'https://d7networks.com/api/verifier/send',
       headers: {
-        Authorization: 'Token 8f90fe54ad714883186dac8641ab97b95880dd14',
+        Authorization: 'Token #', //specify the token 
         ...data.getHeaders(),
       },
       data: data,
@@ -962,7 +962,7 @@ app.post('/verifyOTPSMS', async (req, res) => {
       method: 'POST',
       url: 'https://d7networks.com/api/verifier/verify',
       headers: {
-        Authorization: 'Token 8f90fe54ad714883186dac8641ab97b95880dd14',
+        Authorization: 'Token #', //specify the token
         ...data.getHeaders(),
       },
       data: data,
